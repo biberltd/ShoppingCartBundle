@@ -1,0 +1,511 @@
+<?xml version="1.0"?>
+<skipper version="3.0.0.1104" mvc="Symfony2" orm="Doctrine2">
+  <module name="ShoppingCartBundle" import-format="Doctrine2Php" import-path="../Entity" uuid="fed54932-c0a9-4d5b-a21d-1fd73242a39a">
+    <entity name="ShoppingCart" description="Keeps track of shopping carts." uuid="0f225de3-4d79-45b3-b884-789b6a46984a">
+      <field name="id" description="System given id." type="integer" size="15" required="true" unique="true" primary="true" auto-increment="true" uuid="392c0754-1534-4b28-8577-7e3b0b5c7460">
+        <orm-attributes>
+          <attribute name="generator">
+            <attribute name="strategy">AUTO</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="date_created" description="Date when the cart is created for the first time." type="datetime" required="true" uuid="30d6ea6c-0141-4e5d-95ff-033990055e8d"/>
+      <field name="date_cancelled" description="Date when the cart is cancelled." type="datetime" uuid="de39e2f0-fd7f-4a72-8e61-1d0e4bfacbd8"/>
+      <field name="date_ordered" description="Date when the cart is palced as an order." type="datetime" uuid="29734290-4474-44db-91b9-728f93af0d12"/>
+      <field name="date_updated" description="Date when the cart is last updated." type="datetime" required="true" uuid="b47f12c6-1b6f-4927-98c7-b8af73780f8c"/>
+      <field name="count_items" description="Number of items currently added to cart." type="integer" size="10" default="0" required="true" uuid="89c98b31-c9ea-41be-b3cc-c832618306a1"/>
+      <field name="total_amount" description="Current total amount of the cart." type="decimal" size="7" default="0" required="true" uuid="933ced9c-05e7-45c5-9885-83bcc5104fab"/>
+      <field name="member" description="If a registered member who is the cart owner." type="integer" size="10" required="true" uuid="cc3be1fd-046d-4a0b-82b2-5e376a081c1e"/>
+      <field name="session" description="Session that owns the cart." type="integer" size="20" required="true" uuid="4abd6882-f034-458c-850e-d8c522579edb"/>
+      <index name="idx_u_shopping_cart_id" unique="true">
+        <index-field name="id"/>
+      </index>
+      <index name="idx_n_shopping_cart_date_created">
+        <index-field name="date_created"/>
+      </index>
+      <index name="idx_n_shopping_cart_date_cancelled">
+        <index-field name="date_cancelled"/>
+      </index>
+      <index name="idx_n_shopping_cart_date_ordered">
+        <index-field name="date_ordered"/>
+      </index>
+      <index name="idx_n_shopping_cart_date_updated">
+        <index-field name="date_updated"/>
+      </index>
+      <orm-attributes>
+        <attribute name="options">
+          <attribute name="charset">utf8</attribute>
+          <attribute name="collate">utf8_turkish_ci</attribute>
+          <attribute name="engine">innodb</attribute>
+        </attribute>
+        <attribute name="table">shopping_cart</attribute>
+        <attribute name="export-file-name">ShoppingCart.php</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="ShoppingCart" to="Session" caption="idx_f_shopping_cart_session" inverse-alias="session" uuid="3e97ef9c-7255-4557-9e67-0a662b4ce799">
+      <association-field from="session" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <association from="ShoppingCart" to="Member" caption="idx_f_shopping_cart_member" inverse-alias="member" uuid="a28ef88a-1666-45ab-b9c0-2891b0d4f9a7">
+      <association-field from="member" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <entity name="ShoppingCartItem" description="Stores a list of items and associates them with a specific cart." uuid="d9d4f1e9-449e-4991-ae28-12b88b750f71">
+      <field name="id" description="System given id." type="integer" size="20" required="true" unique="true" primary="true" auto-increment="true" uuid="de6b3060-530a-485f-a5a6-f7171751f243">
+        <orm-attributes>
+          <attribute name="generator">
+            <attribute name="strategy">AUTO</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="product" description="Product that belongs to cart." type="integer" size="15" required="true" uuid="607f5b11-967f-4c5f-933e-b61c15586e2e"/>
+      <field name="cart" description="Cart that owns the product." type="integer" size="15" required="true" uuid="b62bfe07-b95d-4de3-b977-706e99680fee"/>
+      <field name="quantity" description="Quantity added to cart." type="integer" size="6" default="1" required="true" uuid="bbedb2fa-afcb-4130-b647-e41c961a5d96"/>
+      <field name="price" description="Item price." type="decimal" size="7" default="0" required="true" uuid="84b8fd8f-3f7f-452a-a4db-ca6597f2c018"/>
+      <field name="subtotal" description="Price * quantity" type="decimal" size="10" default="0" required="true" uuid="1afe39a0-6f2d-4feb-ba76-8fac0f094ada"/>
+      <field name="date_added" description="Date when the item is added to cart." type="datetime" required="true" uuid="90c581cd-cb36-4259-a1a4-6b898b4d5b75"/>
+      <field name="date_updated" description="Date when the information of added item is last updated." type="datetime" required="true" uuid="9b6b74ed-3333-4612-a844-e8fae6892de1"/>
+      <field name="date_removed" description="Date when the item is removed from the cart." type="datetime" uuid="c2f68d61-56f8-4e80-a729-57f46442f1e4"/>
+      <field name="instructions" description="Extra instructions." type="text" uuid="974f5d77-8826-4528-861c-a8bcfc34416d"/>
+      <field name="tax" description="Tax percentage for this item." type="decimal" size="3" default="0" required="true" uuid="1b89ea1e-95cd-4c7b-a358-ff61d9adbd6b"/>
+      <field name="discount" description="Total discount to be applied." type="decimal" size="10" default="0" required="true" uuid="0a4b3299-1708-4f4e-91df-bbd25fe7dee0"/>
+      <field name="total" description="(Subtotal - Discount) * (1+ tax)" type="decimal" size="10" default="0" required="true" uuid="145b6f68-eb59-4edb-b70f-ec5988578019"/>
+      <field name="package_type" description="p:package,b:box" type="string" size="1" default="p" uuid="1b2542e2-a0c8-49f6-95d2-7bac15917cb3"/>
+      <index name="idx_u_shopping_cart_item_id" unique="true">
+        <index-field name="id"/>
+      </index>
+      <index name="idx_n_shopping_cart_item_date_added">
+        <index-field name="date_added"/>
+      </index>
+      <index name="idx_n_shopping_cart_item_date_removed">
+        <index-field name="date_removed"/>
+      </index>
+      <index name="idx_n_shopping_cart_item_date_updated">
+        <index-field name="date_updated"/>
+      </index>
+      <orm-attributes>
+        <attribute name="options">
+          <attribute name="charset">utf8</attribute>
+          <attribute name="collate">utf8_turkish_ci</attribute>
+          <attribute name="engine">innodb</attribute>
+        </attribute>
+        <attribute name="table">shopping_cart_item</attribute>
+        <attribute name="export-file-name">ShoppingCartItem.php</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="ShoppingCartItem" to="Product" caption="idx_f_shopping_cart_item_product" inverse-alias="product" uuid="6d481e92-561d-4362-a101-e05a121e6bdd">
+      <association-field from="product" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <association from="ShoppingCartItem" to="ShoppingCart" caption="idx_f_shopping_cart_item_cart" inverse-alias="cart" uuid="ee33a4ae-ed3e-4b48-9844-09bfe1b97d5e">
+      <association-field from="cart" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <entity name="PaymentTransaction" description="Tracks transactions occurred between gateway and web site." uuid="3d3f1b7c-3e70-420c-ab3a-cedc3fd8c8a5">
+      <field name="id" description="System given id." type="integer" size="10" required="true" unique="true" primary="true" auto-increment="true" uuid="6d0bf8e9-b87f-46c6-9516-73b985a427a3">
+        <orm-attributes>
+          <attribute name="generator">
+            <attribute name="strategy">AUTO</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="transaction_id" description="Gateway returned transaction id." type="string" size="255" required="true" uuid="a1b4ec4e-9b66-4659-9496-1c387fb381ea"/>
+      <field name="order" description="Order that transaction is fired from." type="integer" size="15" required="true" uuid="7cc7f663-431e-49bf-a73b-4b241df33ac4"/>
+      <field name="gateway" description="Gateway used during the transaction." type="integer" size="10" required="true" uuid="61adaaf1-e25f-4007-a4bc-755e92fd165e"/>
+      <field name="amount" description="Transaction amount." type="decimal" size="7" default="0" required="true" uuid="b4f027da-0a1d-47c5-9247-96cbd5684b6f"/>
+      <field name="status" description="ACK or status codes or messages." type="string" size="155" required="true" uuid="32921386-f5cc-49f0-a989-5d1b7be3429c"/>
+      <field name="response" description="Original response returned from gateway." type="text" required="true" uuid="7fe0bea9-6e30-488a-b0b8-07148d99605b"/>
+      <field name="date_added" description="Date when the transaction is added." type="datetime" required="true" uuid="630e6a0e-9a34-4b7d-a996-51b4674bb151"/>
+      <field name="site" description="Site that transaction belongs to." type="integer" size="10" uuid="25d52b13-f2e2-4ea0-9567-fc3bf8442cdd"/>
+      <field name="member" description="Member that transaction belongs to." type="integer" size="10" required="true" uuid="6517d8f0-5bd0-4cfb-8508-3c7cb2663827"/>
+      <index name="idx_u_payment_transaction_id" unique="true">
+        <index-field name="id"/>
+      </index>
+      <index name="idx_n_payment_transaction_date_added">
+        <index-field name="date_added"/>
+      </index>
+      <orm-attributes>
+        <attribute name="options">
+          <attribute name="charset">utf8</attribute>
+          <attribute name="collate">utf8_turkish_ci</attribute>
+          <attribute name="engine">innodb</attribute>
+        </attribute>
+        <attribute name="table">payment_transaction</attribute>
+        <attribute name="export-file-name">PaymentTransaction.php</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="PaymentTransaction" to="Site" caption="idx_f_payment_transaction_site" inverse-alias="site" uuid="3f1d6a73-84f7-4080-9f9f-993ce6c70334">
+      <association-field from="site" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <association from="PaymentTransaction" to="Member" caption="idx_f_payment_transaction_member" inverse-alias="member" uuid="6640d92e-bfee-457f-be1f-a49a2851f961">
+      <association-field from="member" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <association from="PaymentTransaction" to="PaymentGateway" caption="idx_f_payment_transaction_gateway" inverse-alias="gateway" uuid="0856c61f-07e8-4a7e-b542-a5c9ee258a60">
+      <association-field from="gateway" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <association from="PaymentTransaction" to="ShoppingOrder" caption="idx_f_payment_transaction_order" inverse-alias="shopping_order" uuid="689135fa-8203-4942-aae8-f5ca6239cca3">
+      <association-field from="order" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <entity name="ShoppingOrder" description="Tracks orders." uuid="88f90ebc-9af6-40cf-9cbf-9636c9b7af03">
+      <field name="id" description="System given id." type="integer" size="15" required="true" unique="true" primary="true" auto-increment="true" uuid="965c7f73-bde0-41c0-a3eb-26963d129a60">
+        <orm-attributes>
+          <attribute name="generator">
+            <attribute name="strategy">AUTO</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="date_created" description="Date when order is created." type="datetime" required="true" uuid="a42eb141-a4de-472d-9206-c7725053b9c4"/>
+      <field name="date_updated" description="Date when order is last updated." type="datetime" required="true" uuid="6846d616-2e69-48b7-ad71-de809354b038"/>
+      <field name="date_purchased" description="Date when the purchase has been completed." type="datetime" uuid="53ba30b7-80d3-48cc-9126-dd6f7e44402e"/>
+      <field name="date_cancelled" description="Date when the order is cancelled." type="datetime" uuid="51e62eab-38ae-4310-971d-7d3ceb640965"/>
+      <field name="date_returned" description="Date when the order is returned by the customer." type="datetime" uuid="819af0d7-6903-4664-8707-14a5fa622dbe"/>
+      <field name="count_items" description="Number of items in order." type="integer" default="0" required="true" uuid="c1332af7-87a8-47ef-bf9b-f0f65e5eb218"/>
+      <field name="subtotal" description="Total except discount, tax and shipment." type="decimal" size="10" default="0" required="true" uuid="80b3bb16-ba16-4c37-a6a9-1d8c0e1e9adb"/>
+      <field name="total_amount" description="Total amount to be paid." type="decimal" size="7" default="0" required="true" uuid="3a807495-2d26-412f-86e4-cbd9a1986281"/>
+      <field name="total_discount" description="Total discount amount." type="decimal" size="10" default="0" required="true" uuid="09349076-2ca9-4dac-9c06-81bd57fa874f"/>
+      <field name="total_tax" description="Total tax to be paid." type="decimal" size="10" default="," required="true" uuid="0ae4ed43-d635-4579-888c-7dfa2bef6c85"/>
+      <field name="total_shipment" description="Total cargo amount to be paid." type="decimal" default="0" required="true" uuid="052811a2-394f-49a1-8d41-bf3007c6978c"/>
+      <field name="billing" description="Billing information." type="text" required="true" uuid="3ba0589f-efe9-411a-ac1b-a4425efba806"/>
+      <field name="shipping" description="Shipping information." type="text" uuid="1c191a08-3352-49b1-a525-c0ae8c4509e6"/>
+      <field name="instructions" description="Extra instructions." type="text" uuid="bbc8d9c4-2337-489f-b3c5-9d7f7752ce03"/>
+      <field name="flag" description="o:open;r:returned;c:completed" type="string" size="1" default="o" required="true" uuid="4cc6505d-df7a-4633-9908-de367d00b54c"/>
+      <field name="status" description="Order status." type="integer" size="5" required="true" uuid="13c01f65-65b6-413c-8814-069bf6d75463"/>
+      <field name="cart" description="Cart that order is initiated from." type="integer" size="15" required="true" uuid="c6048929-d5c6-475f-9f89-13a4798f990b"/>
+      <field name="purchaser" description="Member who made the purchase." type="integer" size="10" required="true" uuid="3ea09ec0-167e-4e31-bdfc-52a097bea020"/>
+      <field name="order_number" description="Shopping order number. Recommended creation is using date_created field." type="integer" size="20" required="true" unique="true" uuid="16e0bd4c-a26f-4105-b1c9-3936317c44e6"/>
+      <index name="idx_u_shopping_order_id" unique="true">
+        <index-field name="id"/>
+      </index>
+      <index name="idx_n_shopping_order_date_created">
+        <index-field name="date_created"/>
+      </index>
+      <index name="idx_n_shopping_order_date_updated">
+        <index-field name="date_updated"/>
+      </index>
+      <index name="idx_n_shopping_order_date_purchased">
+        <index-field name="date_purchased"/>
+      </index>
+      <index name="idx_n_shopping_order_date_cancelled">
+        <index-field name="date_cancelled"/>
+      </index>
+      <index name="idx_n_shopping_order_date_returned">
+        <index-field name="date_returned"/>
+      </index>
+      <index name="idx_u_shopping_order_number" unique="true">
+        <index-field name="order_number"/>
+      </index>
+      <orm-attributes>
+        <attribute name="options">
+          <attribute name="charset">utf8</attribute>
+          <attribute name="collate">utf8_turkish_ci</attribute>
+          <attribute name="engine">innodb</attribute>
+        </attribute>
+        <attribute name="export-file-name">ShoppingOrder.php</attribute>
+        <attribute name="table">shopping_order</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="ShoppingOrder" to="Member" caption="idx_f_shopping_order_purchaser" inverse-alias="purchaser" uuid="1eb2310e-185c-4c88-8d1c-02758a9b8b24">
+      <association-field from="purchaser" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <association from="ShoppingOrder" to="ShoppingCart" caption="idx_f_shopping_order_cart" inverse-alias="shopping_cart" uuid="1aeeeeed-6555-4474-b10a-703712753593">
+      <association-field from="cart" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <association from="ShoppingOrder" to="ShoppingOrderStatus" caption="idx_f_shopping_order_status" inverse-alias="order_status" uuid="5ad0cd99-f4a3-4f8e-b038-00caecf2aa64">
+      <association-field from="status" to="id"/>
+    </association>
+    <entity name="ShoppingOrderStatus" description="Holds order status definitions." uuid="4e160ea9-72a0-4fac-8936-90992eb9c867">
+      <field name="id" description="System given id." type="integer" size="5" required="true" unique="true" primary="true" auto-increment="true" uuid="3efda873-1fe8-4b9d-bf18-9b77ef1ff74d">
+        <orm-attributes>
+          <attribute name="generator">
+            <attribute name="strategy">AUTO</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="date_added" description="Date when the status is defined." type="datetime" required="true" uuid="fa33df87-89db-4703-b387-1d86d8a0d6de"/>
+      <field name="count_orders" description="Number of orders associated with this status." type="integer" size="10" default="0" required="true" uuid="f4b6a25e-188b-4506-ac7b-78e03eb3acb4"/>
+      <orm-attributes>
+        <attribute name="options">
+          <attribute name="charset">utf8</attribute>
+          <attribute name="collate">utf8_turkish_ci</attribute>
+          <attribute name="engine">innodb</attribute>
+        </attribute>
+        <attribute name="table">shopping_order_status</attribute>
+        <attribute name="export-file-name">ShoppingOrderStatus.php</attribute>
+      </orm-attributes>
+    </entity>
+    <entity name="ShoppingOrderStatusLocalization" description="Holds localized values of order status entries." uuid="42394721-8e1c-494f-8a66-6a86b16207cf">
+      <field name="status" description="Localized order status." type="integer" size="5" required="true" primary="true" uuid="87396b29-6690-4899-a41e-756403146ae5"/>
+      <field name="language" description="Localization language." type="integer" size="5" required="true" primary="true" uuid="60cfc937-686b-4ab8-87df-7e4a88d2743c"/>
+      <field name="name" description="Localized name of status." type="string" size="155" required="true" uuid="392db9a2-6f52-4fff-968b-fd613aad8527"/>
+      <field name="url_key" description="Localized url key of order status." type="string" size="255" required="true" uuid="3ceffeca-4351-446b-a85f-492d75ec4b5b"/>
+      <index name="idx_u_shopping_order_status">
+        <index-field name="status"/>
+        <index-field name="language"/>
+      </index>
+      <index name="idx_u_shopping_order_status_url_key">
+        <index-field name="language"/>
+        <index-field name="url_key"/>
+      </index>
+      <orm-attributes>
+        <attribute name="options">
+          <attribute name="charset">utf8</attribute>
+          <attribute name="collate">utf8_turkish_ci</attribute>
+          <attribute name="engine">innodb</attribute>
+        </attribute>
+        <attribute name="export-file-name">ShoppingOrderStatusLocalization.php</attribute>
+        <attribute name="table">shopping_order_status_localization</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="ShoppingOrderStatusLocalization" to="ShoppingOrderStatus" caption="idx_f_shopping_order_status_status" owner-alias="localizations" inverse-alias="status" uuid="a33693c1-8c51-420b-97e8-352f6e16730f">
+      <association-field from="status" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <association from="ShoppingOrderStatusLocalization" to="Language" caption="idx_f_shopping_order_status_language" inverse-alias="language" uuid="1a7b4d7e-fd3d-423f-b82e-21d5bd589199">
+      <association-field from="language" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <entity name="ShoppingOrderItem" description="Tracks and associates ordered items with orders." uuid="fd800c53-e49b-49d3-a92a-104ef5195190">
+      <field name="id" description="System given id." type="integer" size="20" required="true" unique="true" primary="true" auto-increment="true" uuid="70820762-930d-41e1-a19b-0b6551b54f9d"/>
+      <field name="product" description="Ordered item." type="integer" size="15" required="true" uuid="38f05d7b-bbcc-40ba-9bb7-17bab7cfcd71"/>
+      <field name="order" description="Order that owns the item." type="integer" size="15" required="true" uuid="ecb8f792-411c-4557-8f01-97486a184542"/>
+      <field name="quantity" description="Quantity ordered." type="integer" size="6" default="0" required="true" uuid="b6384dd3-69f6-40fa-bbde-ad9ed74c2f2e"/>
+      <field name="price" description="Item price." type="decimal" size="7" default="0" required="true" uuid="144f064e-b7ca-499a-b575-0ae3dc8595f5"/>
+      <field name="subtotal" description="Quantity * price" type="decimal" size="10" default="0" required="true" uuid="3c7bcf65-b2db-495c-8e8a-208c99953961"/>
+      <field name="date_added" description="Date when the item is added to order." type="datetime" required="true" uuid="a1fd2475-6828-43d7-8f1a-e2b69d180262"/>
+      <field name="date_returned" description="Date when the item is returned." type="datetime" uuid="d7bd476b-4049-46cd-bd12-f6d886aca1e0"/>
+      <field name="instructions" description="Extra instructions." type="text" uuid="e7f4207b-d756-48bf-9ddd-d7fcded8de75"/>
+      <field name="tax" description="Tax percentage." type="decimal" size="3" default="0" required="true" uuid="c4861ac2-e9d6-46c7-a55b-de9dbef0ca32"/>
+      <field name="tax_amount" description="Tax amount. (Total With Tax - Total)" type="decimal" size="10" default="0" required="true" uuid="8a32971c-b6de-4e18-9183-b5bfcddc8dd9"/>
+      <field name="discount" description="Discount applied." type="decimal" size="10" default="0" required="true" uuid="f6bb3606-e24e-4f16-b489-b65c9da44245"/>
+      <field name="total" description="(Subtotal - Discount )" type="decimal" size="10" default="0" required="true" uuid="884a0f3d-b060-483f-813d-986014061f6c"/>
+      <field name="total_with_tax" description="(Subtotal - Discount ) * (1 + tax)" type="decimal" size="10" default="0" required="true" uuid="3fb66446-c649-4310-95c4-162003d48a11"/>
+      <field name="package_type" description="p:package,b:box" type="string" size="1" default="p" uuid="ce9fdaba-fafe-4556-9ea6-9c2a362b2781"/>
+      <index name="idx_u_shopping_order_item_id" unique="true">
+        <index-field name="id"/>
+      </index>
+      <index name="idx_n_shopping_order_item_date_returned">
+        <index-field name="date_returned"/>
+      </index>
+      <index name="idx_n_shopping_order_item_date_added">
+        <index-field name="date_added"/>
+      </index>
+      <orm-attributes>
+        <attribute name="options">
+          <attribute name="charset">utf8</attribute>
+          <attribute name="collate">utf8_turkish_ci</attribute>
+          <attribute name="engine">innodb</attribute>
+        </attribute>
+        <attribute name="table">shopping_order_item</attribute>
+        <attribute name="export-file-name">ShoppingOrderItem.php</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="ShoppingOrderItem" to="ShoppingOrder" caption="idx_f_shopping_order_item_order" inverse-alias="order" uuid="2df8ba0c-f25e-4efd-9bf8-4e898029fbab">
+      <association-field from="order" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <association from="ShoppingOrderItem" to="Product" caption="idx_f_shopping_order_item_product" inverse-alias="product" uuid="19cea12e-b46c-406c-ad27-19b21557c238">
+      <association-field from="product" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <entity name="Coupon" description="Stores coupon definitions." uuid="078e24d9-5894-4ee7-8a0f-f0707f7f0b7a">
+      <field name="id" description="System given id." type="integer" size="10" required="true" unique="true" primary="true" auto-increment="true" uuid="e407fdae-6e3b-45f4-9379-c0e26e8e4001">
+        <orm-attributes>
+          <attribute name="generator">
+            <attribute name="strategy">AUTO</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="code" description="Coupon code." type="string" size="155" required="true" unique="true" uuid="33bc6b4a-fad7-406e-904a-95b20688d434"/>
+      <field name="type" description="Type of amount. a:amount;p:percentage" type="string" size="1" default="a" required="true" uuid="bdfd76c9-e90e-4dbb-bb24-3fa60624dd69"/>
+      <field name="discount" description="Discount amount / percentage." type="decimal" size="10" default="0" required="true" unique="true" uuid="9498b299-0fee-4695-8f53-2277bf28f1dd"/>
+      <field name="limit_redeem" description="Number of times this coupon can be redeemed." type="integer" size="10" uuid="265b3e05-4275-4f85-b051-77165afe165f"/>
+      <field name="limit_order_total" description="For this coupon to be redeemed the order must be at least this much." type="decimal" size="10" uuid="242ec098-0513-43a3-934a-4e2b5d91b828"/>
+      <field name="limit_discount" description="If coupon type is percentage this limits the maximimum amount f the promotion." type="decimal" size="10" uuid="9d81793b-8290-4bbc-932b-91c38c25769c"/>
+      <field name="date_published" description="Date when the coupon is published." type="datetime" required="true" uuid="e378c682-d84f-401d-9257-79fdf91a9a18"/>
+      <field name="date_unpublished" description="Date when the coupon is unpublished." type="datetime" uuid="56a9181f-37ef-421c-8854-220b595a3db6"/>
+      <field name="type_usage" description="s:single;m:multiple" type="string" size="1" default="s" required="true" uuid="01895d0f-dfc2-47ce-aa68-6715bfcb8310"/>
+      <field name="site" description="Site that coupon belongs to." type="integer" size="10" uuid="8cf6262a-e94e-4a45-b2f6-7a063907f995"/>
+      <field name="count_redeemed" description="Number of times this coupon is used." type="integer" size="4" default="0" uuid="0a153db4-3f9d-4b22-b0b0-8f8b50cc5fd3"/>
+      <field name="total_order_amount" description="Total amount or orders that this coupon has been used." type="decimal" default="0" uuid="6663dfde-c6a5-4748-bed8-f5b42aa9e431"/>
+      <field name="total_discount_redeemed" description="Total amount that has been so far redeeemed." type="decimal" default="0" uuid="db43c05b-f839-4fa2-99d6-955ba88f9a5d"/>
+      <field name="validity" description="Holds a json that tracks which members, products, member_groups, and product_groups this coupon is entitled for. i.e.: {&quot;members&quot;:[1,2,3,4],&quot;memberGroups&quot;:[32,324,234],&quot;products&quot;:[3324,234,2342,1110],&quot;productCategories&quot;:[234,435345,353,3]}" type="text" default="unlimited" required="true" uuid="c76c7bce-b0e2-46d8-948e-45cfbd14f5b6"/>
+      <index name="idx_u_coupon_id" unique="true">
+        <index-field name="id"/>
+      </index>
+      <index name="idx_n_coupon_date_published">
+        <index-field name="date_published"/>
+      </index>
+      <index name="idx_n_coupon_date_unpublished">
+        <index-field name="date_unpublished"/>
+      </index>
+      <orm-attributes>
+        <attribute name="options">
+          <attribute name="charset">utf8</attribute>
+          <attribute name="collate">utf8_turkish_ci</attribute>
+          <attribute name="engine">innodb</attribute>
+        </attribute>
+        <attribute name="table">coupon</attribute>
+        <attribute name="export-file-name">Coupon.php</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="Coupon" to="Site" caption="idx_f_coupon_site" inverse-alias="site" uuid="a5cfa14c-8894-4739-87c5-3e3aacfec41b">
+      <association-field from="site" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <entity name="CouponLocalization" description="Stores localized values for each coupon entry." uuid="53f04523-5317-4fe9-8591-654daa32afe3">
+      <field name="coupon" description="Localized coupon." type="integer" size="10" required="true" primary="true" uuid="ea578c9b-0b3e-4094-aa1c-f925a745a6f3"/>
+      <field name="language" description="Localization language." type="integer" size="5" required="true" primary="true" uuid="c49c21ab-c157-4f3e-968b-6b46d50a2005"/>
+      <field name="name" description="Name of coupon." type="string" size="155" required="true" uuid="08c6607b-21fa-4d75-910d-a6e3e8d34af7"/>
+      <field name="description" description="Description of coupon." type="string" size="255" uuid="3b153338-95b8-4fec-a91f-35329221c489"/>
+      <index name="idx_u_coupon_localization" unique="true">
+        <index-field name="coupon"/>
+        <index-field name="language"/>
+      </index>
+      <orm-attributes>
+        <attribute name="options">
+          <attribute name="charset">utf8</attribute>
+          <attribute name="collate">utf8_turkish_ci</attribute>
+          <attribute name="engine">innodb</attribute>
+        </attribute>
+        <attribute name="table">coupon_localization</attribute>
+        <attribute name="export-file-name">CouponLocalization.php</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="CouponLocalization" to="Coupon" caption="idx_f_coupon_localization_coupon" owner-alias="localizations" inverse-alias="coupon" uuid="4ed840d4-9473-44be-a475-2090ee218ab0">
+      <association-field from="coupon" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <association from="CouponLocalization" to="Language" caption="idx_f_coupon_localization_language" inverse-alias="language" uuid="3d39c0b2-e2cf-4872-b306-04507ad8fca0">
+      <association-field from="language" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <entity name="RedeemedCoupon" description="Tracks redeemed coupons." uuid="ec6d50f7-374a-415e-8002-312e2df81083">
+      <field name="id" description="System given id." type="integer" size="15" required="true" unique="true" primary="true" auto-increment="true" uuid="f3833f6c-e738-4be1-b60a-a845a6dbce05">
+        <orm-attributes>
+          <attribute name="generator">
+            <attribute name="strategy">AUTO</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="coupon" description="Coupon that is redeemed." type="integer" size="10" required="true" uuid="f8c481db-1938-4264-9b31-e8043cddefba"/>
+      <field name="member" description="Member who used the coupon." type="integer" size="10" required="true" uuid="e2f2b5e3-cc37-4c58-a51c-f5c3939c47dc"/>
+      <field name="cart" description="Cart that coupon is used for." type="integer" size="15" required="true" uuid="8ed42d9a-a7ce-405e-a91d-693c54a5ecb7"/>
+      <field name="date_redeemed" description="Date when the coupon is redee&#xF6;ed." type="datetime" required="true" uuid="d5da6c67-b7ce-426c-b8b2-9daadec2dbfb"/>
+      <index name="idx_u_redeemed_coupon_id" unique="true">
+        <index-field name="id"/>
+      </index>
+      <index name="idx_n_redeemed_coupon_date_redeemed">
+        <index-field name="date_redeemed"/>
+      </index>
+      <orm-attributes>
+        <attribute name="options">
+          <attribute name="charset">utf8</attribute>
+          <attribute name="collate">utf8_turkish_ci</attribute>
+          <attribute name="engine">innodb</attribute>
+        </attribute>
+        <attribute name="export-file-name">RedeemedCoupon.php</attribute>
+        <attribute name="table">redeemed_coupon</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="RedeemedCoupon" to="Coupon" caption="idx_f_redeemed_coupon_coupon" inverse-alias="coupon" uuid="11bc475e-2491-4805-9496-fee19060c9db">
+      <association-field from="coupon" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <association from="RedeemedCoupon" to="Member" caption="idx_f_redeemed_coupon_member" inverse-alias="member" uuid="ab897e8d-9d18-49d9-b09e-926e8d41e1b7">
+      <association-field from="member" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <association from="RedeemedCoupon" to="ShoppingCart" caption="idx_f_redeemed_coupon_cart" inverse-alias="shopping_cart" uuid="d4ec8b15-6cd0-4c51-9639-f781cb5ced70">
+      <association-field from="cart" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <comment caption="ShoppingCartBundle Pricing" description="coupon: 525 TL&#10;coupon_localization: 130 TL&#10;payment_transaction: 300 TL&#10;shopping_cart: 230 TL&#10;shopping_cart_item:310 TL&#10;shopping_order: 395 TL&#10;shopping_order_item: 290 TL&#10;shopping_order_status: 60 TL&#10;shopping_order_status_localization: 130 TL&#10;&#10;toplam: 2.260 TL" uuid="7cb4d570-2086-43c8-aca6-f5982529ae32"/>
+    <region caption="CouponManagementModule" uuid="eb8f051e-df45-4160-b450-52e9fe147f71">
+      <entity-ref name="Coupon"/>
+      <entity-ref name="CouponLocalization"/>
+      <entity-ref name="RedeemedCoupon"/>
+    </region>
+    <region caption="CartManagementModule" uuid="57a5af89-3daa-4c9e-bbe7-271181ac7e0f">
+      <entity-ref name="ShoppingCart"/>
+      <entity-ref name="ShoppingCartItem"/>
+    </region>
+    <region caption="OrderManagementModule" uuid="ecab9892-0004-4f8f-85dd-c7057a5af9b1">
+      <entity-ref name="ShoppingOrder"/>
+      <entity-ref name="ShoppingOrderStatus"/>
+      <entity-ref name="ShoppingOrderStatusLocalization"/>
+      <entity-ref name="ShoppingOrderItem"/>
+    </region>
+    <region caption="TransactionManagementModule" uuid="a71f3912-abe1-4941-b45a-a9b127753058">
+      <entity-ref name="PaymentTransaction"/>
+    </region>
+    <orm-attributes>
+      <attribute name="namespace">BiberLtd\Core\Bundles\ShoppingCartBundle\Entity</attribute>
+      <attribute name="filename-format">entity-name-only</attribute>
+      <attribute name="file-suffix">without-suffix</attribute>
+    </orm-attributes>
+  </module>
+  <visual-data>
+    <entity uuid="078e24d9-5894-4ee7-8a0f-f0707f7f0b7a" bg-color="4294967295" hdr-color="4292006610" position-x="-311" position-y="50" size-x="0" size-x2="151" size-y="0" size-y2="227"/>
+    <entity uuid="0f225de3-4d79-45b3-b884-789b6a46984a" bg-color="4294967295" hdr-color="4292006610" position-x="50" position-y="50" size-x="0" size-x2="132" size-y="0" size-y2="143"/>
+    <entity uuid="3d3f1b7c-3e70-420c-ab3a-cedc3fd8c8a5" bg-color="4294967295" hdr-color="4292006610" position-x="136" position-y="100" size-x="0" size-x2="20" size-y="0" size-y2="20"/>
+    <entity uuid="42394721-8e1c-494f-8a66-6a86b16207cf" bg-color="4294967295" hdr-color="4292006610" position-x="300" position-y="200" size-x="0" size-x2="172" size-y="0" size-y2="73"/>
+    <entity uuid="4e160ea9-72a0-4fac-8936-90992eb9c867" bg-color="4294967295" hdr-color="4292006610" position-x="350" position-y="50" size-x="0" size-x2="132" size-y="0" size-y2="59"/>
+    <entity uuid="53f04523-5317-4fe9-8591-654daa32afe3" bg-color="4294967295" hdr-color="4292006610" position-x="-61" position-y="50" size-x="0" size-x2="123" size-y="0" size-y2="73"/>
+    <region uuid="57a5af89-3daa-4c9e-bbe7-271181ac7e0f" bg-color="4294112761" position-x="700" position-y="850" size-x="0" size-x2="500" size-y="0" size-y2="350"/>
+    <comment uuid="7cb4d570-2086-43c8-aca6-f5982529ae32" bg-color="4294948765" position-x="0" position-y="17" size-x="0" size-x2="200" size-y="0" size-y2="164" txt-color="4278190080"/>
+    <entity uuid="88f90ebc-9af6-40cf-9cbf-9636c9b7af03" bg-color="4294967295" hdr-color="4292006610" position-x="50" position-y="50" size-x="0" size-x2="136" size-y="0" size-y2="227"/>
+    <region uuid="a71f3912-abe1-4941-b45a-a9b127753058" bg-color="4294834167" position-x="50" position-y="850" size-x="0" size-x2="550" size-y="0" size-y2="300"/>
+    <entity uuid="d9d4f1e9-449e-4991-ae28-12b88b750f71" bg-color="4294967295" hdr-color="4292006610" position-x="320" position-y="51" size-x="0" size-x2="130" size-y="0" size-y2="199"/>
+    <region uuid="eb8f051e-df45-4160-b450-52e9fe147f71" bg-color="4294179829" position-x="611" position-y="50" size-x="361" size-x2="389" size-y="0" size-y2="350"/>
+    <entity uuid="ec6d50f7-374a-415e-8002-312e2df81083" bg-color="4294967295" hdr-color="4292006610" position-x="152" position-y="65" size-x="0" size-x2="20" size-y="0" size-y2="20"/>
+    <region uuid="ecab9892-0004-4f8f-85dd-c7057a5af9b1" bg-color="4294505980" position-x="50" position-y="450" size-x="0" size-x2="950" size-y="0" size-y2="350"/>
+    <entity uuid="fd800c53-e49b-49d3-a92a-104ef5195190" bg-color="4294967295" hdr-color="4292006610" position-x="614" position-y="63" size-x="0" size-x2="109" size-y="0" size-y2="59"/>
+    <module uuid="fed54932-c0a9-4d5b-a21d-1fd73242a39a" bg-color="4285104128" size-x="0" size-x2="1300" size-y="0" size-y2="1300"/>
+  </visual-data>
+</skipper>
