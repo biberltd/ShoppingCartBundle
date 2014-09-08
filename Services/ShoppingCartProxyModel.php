@@ -17,13 +17,13 @@
  * @date        08.07.2014
  *
  */
-namespace BiberLtd\Core\Bundles\ShoppingCartBundle\Services;
+namespace BiberLtd\Bundle\ShoppingCartBundle\Services;
 
 /** Extends CoreModel */
 use BiberLtd\Core\CoreModel;
 
 /** Entities to be used */
-use BiberLtd\Core\Bundles\ShoppingCartBundle\Entity as BundleEntity;
+use BiberLtd\Bundle\ShoppingCartBundle\Entity as BundleEntity;
 
 /** Helper Service*/
 use Doctrine\Common\Collections\ArrayCollection;

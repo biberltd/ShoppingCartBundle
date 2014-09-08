@@ -15,7 +15,7 @@
  * @description Model / Entity class.
  *
  */
-namespace BiberLtd\Core\Bundles\ShoppingCartBundle\Entity;
+namespace BiberLtd\Bundle\ShoppingCartBundle\Entity;
 use Doctrine\ORM\Mapping AS ORM;
 use BiberLtd\Core\CoreEntity;
 /**
@@ -100,13 +100,13 @@ class ShoppingOrderItem extends CoreEntity
     private $package_type;
 
     /**
-     * @ORM\ManyToOne(targetEntity="BiberLtd\Core\Bundles\ShoppingCartBundle\Entity\ShoppingOrder")
+     * @ORM\ManyToOne(targetEntity="BiberLtd\Bundle\ShoppingCartBundle\Entity\ShoppingOrder")
      * @ORM\JoinColumn(name="shopping_order", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      */
     private $order;
 
     /**
-     * @ORM\ManyToOne(targetEntity="BiberLtd\Core\Bundles\ProductManagementBundle\Entity\Product")
+     * @ORM\ManyToOne(targetEntity="BiberLtd\Bundle\ProductManagementBundle\Entity\Product")
      * @ORM\JoinColumn(name="product", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      */
     private $product;

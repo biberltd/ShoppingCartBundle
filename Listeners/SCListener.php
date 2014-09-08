@@ -19,7 +19,7 @@
  *
  */
 
-namespace BiberLtd\Core\Bundles\ShoppingCartBundle\Listeners;
+namespace BiberLtd\Bundle\ShoppingCartBundle\Listeners;
 
 use BiberLtd\Core\Core as Core;
 use Symfony\Component\HttpFoundation\Response;
@@ -30,7 +30,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 /**
  * Requires MultiLanguageSupportBundle
  */
-use BiberLtd\Core\Bundles\MultiLanguageSupportBundle\Services as MLSServices;
+use BiberLtd\Bundle\MultiLanguageSupportBundle\Services as MLSServices;
 
 class SCListener extends Core {
 

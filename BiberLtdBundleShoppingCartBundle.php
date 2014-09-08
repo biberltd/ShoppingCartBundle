@@ -1,10 +1,10 @@
 <?php
 
-namespace BiberLtd\Core\Bundles\ShoppingCartBundle;
+namespace BiberLtd\Bundle\ShoppingCartBundle;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-class BiberLtdCoreBundlesShoppingCartBundle extends Bundle
+class BiberLtdBundleShoppingCartBundle extends Bundle
 {
 
 }

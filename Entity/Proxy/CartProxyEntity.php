@@ -16,11 +16,11 @@
  *
  */
 
-namespace BiberLtd\Core\Bundles\ShoppingCartBundle\Entity\Proxy;
+namespace BiberLtd\Bundle\ShoppingCartBundle\Entity\Proxy;
 
 use Doctrine\Common\Collections\ArrayCollection,
-    \BiberLtd\Core\Bundles\ShoppingCartBundle\Entity as SCBEntity,
-    \BiberLtd\Core\Bundles\MemberManagementBundle\Entity as MMBEntity;
+    \BiberLtd\Bundle\ShoppingCartBundle\Entity as SCBEntity,
+    \BiberLtd\Bundle\MemberManagementBundle\Entity as MMBEntity;
 
 class CartProxyEntity
 {

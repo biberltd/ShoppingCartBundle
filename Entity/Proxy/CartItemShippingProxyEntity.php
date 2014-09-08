@@ -16,7 +16,7 @@
  *
  */
 
-namespace BiberLtd\Core\Bundles\ShoppingCartBundle\Entity\Proxy;
+namespace BiberLtd\Bundle\ShoppingCartBundle\Entity\Proxy;
 
 class CartItemShippingProxyEntity {
 

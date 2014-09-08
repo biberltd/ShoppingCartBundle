@@ -14,7 +14,7 @@
  * @description Model / Entity class.
  *
  */
-namespace BiberLtd\Core\Bundles\ShoppingCartBundle\Entity;
+namespace BiberLtd\Bundle\ShoppingCartBundle\Entity;
 use Doctrine\ORM\Mapping AS ORM;
 use BiberLtd\Core\CoreEntity;
 /**
@@ -61,25 +61,25 @@ class PaymentTransaction extends CoreEntity
     public $date_added;
 
     /**
-     * @ORM\ManyToOne(targetEntity="BiberLtd\Core\Bundles\SiteManagementBundle\Entity\Site")
+     * @ORM\ManyToOne(targetEntity="BiberLtd\Bundle\SiteManagementBundle\Entity\Site")
      * @ORM\JoinColumn(name="site", referencedColumnName="id", onDelete="CASCADE")
      */
     private $site;
 
     /**
-     * @ORM\ManyToOne(targetEntity="BiberLtd\Core\Bundles\MemberManagementBundle\Entity\Member")
+     * @ORM\ManyToOne(targetEntity="BiberLtd\Bundle\MemberManagementBundle\Entity\Member")
      * @ORM\JoinColumn(name="member", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      */
     private $member;
 
     /**
-     * @ORM\ManyToOne(targetEntity="BiberLtd\Core\Bundles\PaymentGatewayBundle\Entity\PaymentGateway")
+     * @ORM\ManyToOne(targetEntity="BiberLtd\Bundle\PaymentGatewayBundle\Entity\PaymentGateway")
      * @ORM\JoinColumn(name="gateway", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      */
     private $gateway;
 
     /**
-     * @ORM\ManyToOne(targetEntity="BiberLtd\Core\Bundles\ShoppingCartBundle\Entity\ShoppingOrder")
+     * @ORM\ManyToOne(targetEntity="BiberLtd\Bundle\ShoppingCartBundle\Entity\ShoppingOrder")
      * @ORM\JoinColumn(name="order", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      */
     private $shopping_order;

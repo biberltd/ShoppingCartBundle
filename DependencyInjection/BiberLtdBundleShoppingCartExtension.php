@@ -1,6 +1,6 @@
 <?php
 
-namespace BiberLtd\Core\Bundles\ShoppingCartBundle\DependencyInjection;
+namespace BiberLtd\Bundle\ShoppingCartBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
@@ -12,7 +12,7 @@ use Symfony\Component\DependencyInjection\Loader;
  *
  * To learn more see {@link http://symfony.com/doc/current/cookbook/bundles/extension.html}
  */
-class BiberLtdCoreBundlesShoppingCartExtension extends Extension
+class BiberLtdBundleShoppingCartExtension extends Extension
 {
     /**
      * {@inheritDoc}

@@ -14,7 +14,7 @@
  * @description Model / Entity class.
  *
  */
-namespace BiberLtd\Core\Bundles\ShoppingCartBundle\Entity;
+namespace BiberLtd\Bundle\ShoppingCartBundle\Entity;
 use Doctrine\ORM\Mapping AS ORM;
 use BiberLtd\Core\CoreLocalizableEntity;
 /** 
@@ -42,7 +42,7 @@ class ShoppingOrderStatus extends CoreLocalizableEntity
 
     /** 
      * @ORM\OneToMany(
-     *     targetEntity="BiberLtd\Core\Bundles\ShoppingCartBundle\Entity\ShoppingOrderStatusLocalization",
+     *     targetEntity="BiberLtd\Bundle\ShoppingCartBundle\Entity\ShoppingOrderStatusLocalization",
      *     mappedBy="status"
      * )
      */

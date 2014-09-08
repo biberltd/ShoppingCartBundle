@@ -1,6 +1,6 @@
 <?php
 
-namespace BiberLtd\Core\Bundles\ShoppingCartBundle\DependencyInjection;
+namespace BiberLtd\Bundle\ShoppingCartBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;

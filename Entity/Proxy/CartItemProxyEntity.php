@@ -16,11 +16,11 @@
  *
  */
 
-namespace BiberLtd\Core\Bundles\ShoppingCartBundle\Entity\Proxy;
+namespace BiberLtd\Bundle\ShoppingCartBundle\Entity\Proxy;
 
 use \Doctrine\Common\Collections\ArrayCollection,
-    BiberLtd\Core\Bundles\TaxManagementBundle\Entity as TaxEntity,
-    \BiberLtd\Core\Bundles\ShoppingCartBundle\Entity as SCBEntity;
+    BiberLtd\Bundle\TaxManagementBundle\Entity as TaxEntity,
+    \BiberLtd\Bundle\ShoppingCartBundle\Entity as SCBEntity;
 
 class CartItemProxyEntity {
 

@@ -18,13 +18,13 @@
  *
  */
 
-namespace BiberLtd\Core\Bundles\ShoppingCartBundle\Controller;
+namespace BiberLtd\Bundle\ShoppingCartBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller,
     Symfony\Component\HttpKernel\Exception,
     Symfony\Component\HttpFoundation\Response,
     BiberLtd\Core\CoreController,
-    BiberLtd\Core\Bundles\ShoppingCartBundle\Entity as BundleEntity;
+    BiberLtd\Bundle\ShoppingCartBundle\Entity as BundleEntity;
 
 class TestController extends CoreController {
 

@@ -17,7 +17,7 @@
  *
  */
 
-namespace BiberLtd\Core\Bundles\ShoppingCartBundle\Entity;
+namespace BiberLtd\Bundle\ShoppingCartBundle\Entity;
 
 use Doctrine\ORM\Mapping AS ORM;
 use BiberLtd\Core\CoreLocalizableEntity;
@@ -110,14 +110,14 @@ class Coupon extends CoreLocalizableEntity {
 
     /**
      * @ORM\OneToMany(
-     *     targetEntity="BiberLtd\Core\Bundles\ShoppingCartBundle\Entity\CouponLocalization",
+     *     targetEntity="BiberLtd\Bundle\ShoppingCartBundle\Entity\CouponLocalization",
      *     mappedBy="coupon"
      * )
      */
     protected $localizations;
 
     /**
-     * @ORM\ManyToOne(targetEntity="BiberLtd\Core\Bundles\SiteManagementBundle\Entity\Site")
+     * @ORM\ManyToOne(targetEntity="BiberLtd\Bundle\SiteManagementBundle\Entity\Site")
      * @ORM\JoinColumn(name="site", referencedColumnName="id", onDelete="CASCADE")
      */
     private $site;
