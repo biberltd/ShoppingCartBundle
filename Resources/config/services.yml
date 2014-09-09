@@ -1,7 +1,7 @@
-parameters:
-#    biber_ltd_shopping_cart.example.class: BiberLtd\Bundle\ShoppingCartBundle\Example
-
 services:
-#    biber_ltd_shopping_cart.example:
-#        class: %biber_ltd_shopping_cart.example.class%
-#        arguments: [@service_id, "plain_value", %parameter%]
+    shoppingcart.model:
+            class:        BiberLtd\Bundle\ShoppingCartBundle\Services\ShoppingCartModel
+            arguments:    [@kernel, "default", "doctrine"]
+    shoppingcartproxy.model:
+            class:        BiberLtd\Bundle\ShoppingCartBundle\Services\ShoppingCartProxyModel
+            arguments:    [@kernel, "default", "doctrine"]
