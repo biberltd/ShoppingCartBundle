@@ -1,7 +1,7 @@
 <?php
 /**
  * @name        ShoppingOrderStatus
- * @package		BiberLtd\Core\ShoppingCartBundle
+ * @package		BiberLtd\Bundle\CoreBundle\ShoppingCartBundle
  *
  * @author		Murat Ünal
  *
@@ -14,9 +14,9 @@
  * @description Model / Entity class.
  *
  */
-namespace BiberLtd\Core\Bundles\ShoppingCartBundle\Entity;
+namespace BiberLtd\Bundle\ShoppingCartBundle\Entity;
 use Doctrine\ORM\Mapping AS ORM;
-use BiberLtd\Core\CoreLocalizableEntity;
+use BiberLtd\Bundle\CoreBundle\CoreLocalizableEntity;
 /** 
  * @ORM\Entity
  * @ORM\Table(name="shopping_order_status", options={"charset":"utf8","collate":"utf8_turkish_ci","engine":"innodb"})
@@ -42,7 +42,7 @@ class ShoppingOrderStatus extends CoreLocalizableEntity
 
     /** 
      * @ORM\OneToMany(
-     *     targetEntity="BiberLtd\Core\Bundles\ShoppingCartBundle\Entity\ShoppingOrderStatusLocalization",
+     *     targetEntity="BiberLtd\Bundle\ShoppingCartBundle\Entity\ShoppingOrderStatusLocalization",
      *     mappedBy="status"
      * )
      */

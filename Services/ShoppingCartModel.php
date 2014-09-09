@@ -40,27 +40,27 @@
  *
  */
 
-namespace BiberLtd\Core\Bundles\ShoppingCartBundle\Services;
+namespace BiberLtd\Bundle\ShoppingCartBundle\Services;
 
 /** Extends CoreModel */
-use BiberLtd\Core\Bundles\MultiLanguageSupportBundle\Services\MultiLanguageSupportModel;
-use BiberLtd\Core\CoreModel;
+use BiberLtd\Bundle\MultiLanguageSupportBundle\Services\MultiLanguageSupportModel;
+use BiberLtd\Bundle\CoreBundle\CoreModel;
 /** Entities to be used */
-use BiberLtd\Core\Bundles\ShoppingCartBundle\Entity as BundleEntity;
-use BiberLtd\Core\Bundles\MemberManagementBundle\Entity as MMBEntity;
-use BiberLtd\Core\Bundles\MultiLanguageSupportBundle\Entity as MLSEntity;
-use BiberLtd\Core\Bundles\PaymentGatewayBundle\Entity as PGBEntity;
-use BiberLtd\Core\Bundles\ProductManagementBundle\Entity as PMBEntity;
-use BiberLtd\Core\Bundles\SiteManagementBundle\Entity as SMBEntity;
+use BiberLtd\Bundle\ShoppingCartBundle\Entity as BundleEntity;
+use BiberLtd\Bundle\MemberManagementBundle\Entity as MMBEntity;
+use BiberLtd\Bundle\MultiLanguageSupportBundle\Entity as MLSEntity;
+use BiberLtd\Bundle\PaymentGatewayBundle\Entity as PGBEntity;
+use BiberLtd\Bundle\ProductManagementBundle\Entity as PMBEntity;
+use BiberLtd\Bundle\SiteManagementBundle\Entity as SMBEntity;
 /** Helper Models */
-use BiberLtd\Core\Bundles\LogBundle\Services as LBService;
-use BiberLtd\Core\Bundles\MemberManagementBundle\Services as MMBService;
-use BiberLtd\Core\Bundles\SiteManagementBundle\Services as SMMService;
-use BiberLtd\Core\Bundles\PaymentGatewayBundle\Services as PGBService;
-use BiberLtd\Core\Bundles\ProductManagementBundle\Services as PMBService;
+use BiberLtd\Bundle\LogBundle\Services as LBService;
+use BiberLtd\Bundle\MemberManagementBundle\Services as MMBService;
+use BiberLtd\Bundle\SiteManagementBundle\Services as SMMService;
+use BiberLtd\Bundle\PaymentGatewayBundle\Services as PGBService;
+use BiberLtd\Bundle\ProductManagementBundle\Services as PMBService;
 /** Core Service */
-use BiberLtd\Core\Services as CoreServices;
-use BiberLtd\Core\Exceptions as CoreExceptions;
+use BiberLtd\Bundle\CoreBundle\Services as CoreServices;
+use BiberLtd\Bundle\CoreBundle\Exceptions as CoreExceptions;
 
 class ShoppingCartModel extends CoreModel {
 

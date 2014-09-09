@@ -1,7 +1,7 @@
 <?php
 /**
  * @name        ShoppingCart
- * @package		BiberLtd\Core\ShoppingCartBundle
+ * @package		BiberLtd\Bundle\CoreBundle\ShoppingCartBundle
  *
  * @author		Murat Ünal
  *
@@ -14,9 +14,9 @@
  * @description Model / Entity class.
  *
  */
-namespace BiberLtd\Core\Bundles\ShoppingCartBundle\Entity;
+namespace BiberLtd\Bundle\ShoppingCartBundle\Entity;
 use Doctrine\ORM\Mapping AS ORM;
-use BiberLtd\Core\CoreEntity;
+use BiberLtd\Bundle\CoreBundle\CoreEntity;
 /**
  * @ORM\Entity
  * @ORM\Table(
@@ -72,20 +72,20 @@ class ShoppingCart extends CoreEntity
 
     /**
      * @ORM\OneToMany(
-     *     targetEntity="BiberLtd\Core\Bundles\ShoppingCartBundle\Entity\ShoppingCartItem",
+     *     targetEntity="BiberLtd\Bundle\ShoppingCartBundle\Entity\ShoppingCartItem",
      *     mappedBy="shopping_cart"
      * )
      */
     private $shopping_cart_items;
 
     /**
-     * @ORM\ManyToOne(targetEntity="BiberLtd\Core\Bundles\LogBundle\Entity\Session")
+     * @ORM\ManyToOne(targetEntity="BiberLtd\Bundle\LogBundle\Entity\Session")
      * @ORM\JoinColumn(name="session", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      */
     private $session;
 
     /**
-     * @ORM\ManyToOne(targetEntity="BiberLtd\Core\Bundles\MemberManagementBundle\Entity\Member")
+     * @ORM\ManyToOne(targetEntity="BiberLtd\Bundle\MemberManagementBundle\Entity\Member")
      * @ORM\JoinColumn(name="member", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      */
     private $member;

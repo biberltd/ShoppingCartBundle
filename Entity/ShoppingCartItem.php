@@ -1,7 +1,7 @@
 <?php
 /**
  * @name        ShoppingCartItem
- * @package		BiberLtd\Core\ShoppingCartBundle
+ * @package		BiberLtd\Bundle\CoreBundle\ShoppingCartBundle
  *
  * @author      Can Berkol
  * @author		Murat Ünal
@@ -15,9 +15,9 @@
  * @description Model / Entity class.
  *
  */
-namespace BiberLtd\Core\Bundles\ShoppingCartBundle\Entity;
+namespace BiberLtd\Bundle\ShoppingCartBundle\Entity;
 use Doctrine\ORM\Mapping AS ORM;
-use BiberLtd\Core\CoreEntity;
+use BiberLtd\Bundle\CoreBundle\CoreEntity;
 /**
  * @ORM\Entity
  * @ORM\Table(
@@ -96,14 +96,14 @@ class ShoppingCartItem extends CoreEntity
     private $package_type;
 
     /**
-     * @ORM\ManyToOne(targetEntity="BiberLtd\Core\Bundles\ProductManagementBundle\Entity\Product")
+     * @ORM\ManyToOne(targetEntity="BiberLtd\Bundle\ProductManagementBundle\Entity\Product")
      * @ORM\JoinColumn(name="product", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      */
     private $product;
 
     /**
      * @ORM\ManyToOne(
-     *     targetEntity="BiberLtd\Core\Bundles\ShoppingCartBundle\Entity\ShoppingCart",
+     *     targetEntity="BiberLtd\Bundle\ShoppingCartBundle\Entity\ShoppingCart",
      *     inversedBy="shopping_cart_items"
      * )
      * @ORM\JoinColumn(name="cart", referencedColumnName="id", nullable=false, onDelete="CASCADE")
