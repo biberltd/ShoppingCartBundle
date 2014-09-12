@@ -17,15 +17,15 @@
         }
     ],
     "require": {
-        "biberltd/core-bundle" : "self.version",
-	"biberltd/file-management-bundle" : "self.version",
-	"biberltd/member-management-bundle" : "self.version",
-	"biberltd/site-management-bundle" : "self.version",
-	"biberltd/multilanguage-support-bundle" : "self.version",
-	"biberltd/log-bundle" : "self.version",
-	"biberltd/payment-gateway-bundle" : "self.version",
-	"biberltd/product-management-bundle" : "self.version",
-	"biberltd/shipment-gateway-bundle" : "self.version",
+        "biberltd/core-bundle" : "~3.1",
+	"biberltd/file-management-bundle" : "~3.1",
+	"biberltd/member-management-bundle" : "~3.1",
+	"biberltd/site-management-bundle" : "~3.1",
+	"biberltd/multilanguage-support-bundle" : "~3.1",
+	"biberltd/log-bundle" : "~3.1",
+	"biberltd/payment-gateway-bundle" : "~3.1",
+	"biberltd/product-management-bundle" : "~3.1",
+	"biberltd/shipment-gateway-bundle" : "~3.1",
 	"sylius/omnipay-bundle" : "dev-master"
     },
     "autoload": {
