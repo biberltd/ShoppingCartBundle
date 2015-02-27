@@ -90,6 +90,16 @@ class ShoppingCartProxyModel extends CoreModel
      *
      */
     private $cartUpdated;
+    /**
+     * @name            $selectedShippingBoxes
+     *
+     * @author          Said İmamoğlu
+     *
+     * @since           1.0.9
+     * @version         1.0.9
+     *
+     */
+    private $selectedShippingBoxes = array();
 
     /**
      * @name            __construct ()
@@ -174,7 +184,7 @@ class ShoppingCartProxyModel extends CoreModel
             if (!$response['error']) {
                 $debugStr .= 'cart found from db with session id<br>';
                 $cart = $response['result']['set'];
-            }else{
+            } else {
                 /** Is user logged in? */
                 if ($this->isUserLoggedIn()) {
                     $debugStr .= 'user logged in<br>';
@@ -214,7 +224,7 @@ class ShoppingCartProxyModel extends CoreModel
                                     $debugStr .= 'cart owner is different. destroying cart<br>';
                                     unset($cart);
                                 }
-                            }else{
+                            } else {
                                 $debugStr .= 'cart owner is different. destroying cart<br>';
                                 unset($cart);
                             }
@@ -512,10 +522,10 @@ class ShoppingCartProxyModel extends CoreModel
      */
     public function updateCart($cart)
     {
-        $this->setCart($cart);
         if ($cart instanceof BundleEntity\ShoppingCart) {
-            $this->setCart($this->convertToSessionObject());
+            $cart = $this->setCart($this->convertToSessionObject());
         }
+        $this->setCart($cart);
     }
 
     /**
@@ -713,6 +723,20 @@ class ShoppingCartProxyModel extends CoreModel
                             $discountedPrice = $responseVP['result']['set']->getDiscountedPrice();
                         }
                         unset($responseVP);
+                    } else {
+                        $responseVP = $productModel->listVolumePricingsOfProduct($cartItem->getProduct()->getId());
+                        $currentVP = false;
+                        if (!$responseVP['error']) {
+                            foreach ($responseVP['result']['set'] as $vp) {
+                                if ($newCartItem->getQuantity() >= $vp->getQuantityLimit()) {
+                                    $currentVP = $vp;
+                                }
+                            }
+                            if ($currentVP) {
+                                $price = $this->_numberFormat($vp->getPrice());
+                                $discountedPrice = $this->_numberFormat($vp->getDiscountedPrice());
+                            }
+                        }
                     }
                     $newCartItem->setPrice($price);
                     $newCartItem->setDiscountedPrice($discountedPrice);
@@ -1135,8 +1159,8 @@ class ShoppingCartProxyModel extends CoreModel
         /** Box Count */
         $boxCount = 1;
         if ($type == 'b') {
-            $boxCount = json_decode(stripslashes($product->getExtraInfo()));
-            $boxCount = isset($boxCount->box) ? $boxCount->box : 1;
+            $extraInfo = json_decode(stripslashes($product->getExtraInfo()));
+            $boxCount = isset($extraInfo->boxPackageCount) ? $extraInfo->boxPackageCount : 1;
         }
         $newCartItem = new BundleEntity\Proxy\CartItemProxyEntity();
         $newCartItem->setTaxRate($taxRate);
@@ -1146,7 +1170,6 @@ class ShoppingCartProxyModel extends CoreModel
         $newCartItem->setProduct($product->getId());
         $newCartItem->setPrice($product->getPrice());
         $newCartItem->setDiscountedPrice($product->getDiscountPrice());
-        $newCartItem->setTaxAmount($newCartItem->getBoxCount() * $newCartItem->getTaxRate() * $newCartItem->getPrice() * $newCartItem->getQuantity() / 100);
         if ($type == 'b') {
             $responseVP = $productModel->getVolumePricingOfProductWithMaximumQuantity($product);
             if (!$responseVP['error']) {
@@ -1155,7 +1178,22 @@ class ShoppingCartProxyModel extends CoreModel
                 $newCartItem->setDiscountedPrice($volumePricing->getDiscountedPrice());
             }
             unset($responseVP);
+        } else {
+            $responseVP = $productModel->listVolumePricingsOfProduct($product);
+            $currentVP = false;
+            if (!$responseVP['error']) {
+                foreach ($responseVP['result']['set'] as $vp) {
+                    if ($newCartItem->getQuantity() >= $vp->getQuantityLimit()) {
+                        $currentVP = $vp;
+                    }
+                }
+                if ($currentVP) {
+                    $newCartItem->setPrice($this->_numberFormat($vp->getPrice()));
+                    $newCartItem->setDiscountedPrice($this->_numberFormat($vp->getDiscountedPrice()));
+                }
+            }
         }
+        $newCartItem->setTaxAmount($newCartItem->getBoxCount() * $newCartItem->getTaxRate() * $newCartItem->getPrice() * $newCartItem->getQuantity() / 100);
         $newCartItem->setTotalAmount(($newCartItem->getBoxCount() * $newCartItem->getPrice() * $newCartItem->getQuantity()) + $newCartItem->getTaxAmount());
         if ($newCartItem->getDiscountedPrice() > 0 && $newCartItem->getDiscountedPrice() < $newCartItem->getPrice()) {
             $newCartItem->setTaxAmount($newCartItem->getBoxCount() * $newCartItem->getTaxRate() * $newCartItem->getDiscountedPrice() * $newCartItem->getQuantity() / 100);
@@ -1238,7 +1276,7 @@ class ShoppingCartProxyModel extends CoreModel
                 'last_insert_id' => null,
             ),
             'error' => false,
-            'code' => is_array($response['code']) ? $$response['code'] : "success.item.updated",
+            'code' => is_array($response['code']) ? $response['code'] : "success.item.updated",
         );
 
         return $response;
@@ -1288,6 +1326,8 @@ class ShoppingCartProxyModel extends CoreModel
         $response = new \stdClass();
         $response->currency = "TL";
         $products = array();
+        $pBoxes = array();
+        $pPackages = array();
         $totalTax = 0;
         $totalAmount = 0;
         $totalDiscount = 0;
@@ -1298,6 +1338,8 @@ class ShoppingCartProxyModel extends CoreModel
                 $products[] = $item->getProduct();
             }
         }
+        $maxDimension = array('key' => '', 'value' => 0);
+        $totalDesi = $totalBoxDesi = $totalPackageDesi = (float) 0;
         if (count($products) > 0) {
             $productModel = $this->kernel->getContainer()->get('productmanagement.model');
             $filter = array();
@@ -1322,7 +1364,7 @@ class ShoppingCartProxyModel extends CoreModel
             unset($responseObj);
             foreach ($cart->getItems() as $item) {
                 if (!isset($productCollection[$item->getProduct()])) {
-                    return $response;
+                    break;
                 }
                 $product = $productCollection[$item->getProduct()];
                 $newProductItem = new \stdClass();
@@ -1333,13 +1375,16 @@ class ShoppingCartProxyModel extends CoreModel
                 $newProductItem->small_photo = '';
                 if (!is_null($file)) {
                     $folder = $file->getFolder()->getPathAbsolute();
-                    $newProductItem->small_photo = $folder . '/' . $file->getSourcePreview();
-                    $newProductItem->large_photo = $folder . '/' . $file->getSourceOriginal();
+                    $newProductItem->small_photo = is_null($file->getSourcePreview()) ? '/placeholder.jpg' : $folder . '/' . $file->getSourcePreview();
+                    $newProductItem->large_photo = is_null($file->getSourceOriginal()) ? '/placeholder.jpg' : $folder . '/' . $file->getSourceOriginal();
+                } else {
+                    $newProductItem->small_photo = '/placeholder.jpg';
+                    $newProductItem->large_photo = '/placeholder.jpg';
                 }
 
                 /** Box count */
-                $boxCount = json_decode(stripslashes($product->getExtraInfo()));
-                $boxCount = isset($boxCount->box) && !empty($boxCount->box) ? $boxCount->box : 1;
+                $extraInfo = json_decode(stripslashes($product->getExtraInfo()));
+                $boxCount = isset($extraInfo->box) && !empty($extraInfo->box) ? $extraInfo->box : 1;
                 /** Quantity and Box Type */
                 $newProductItem->quantity = $item->getQuantity();
                 $totalQuantity += $item->getQuantity();
@@ -1350,6 +1395,24 @@ class ShoppingCartProxyModel extends CoreModel
                 $newProductItem->description = $product->getLocalization($locale)->getDescription();
                 $newProductItem->item_price = $this->_numberFormat($item->getPrice());
                 $newProductItem->item_discounted_price = $this->_numberFormat($item->getDiscountedPrice());
+                /**
+                 * Calculating deci
+                 */
+                $newProductItem->dimensions = $this->calculateDimensions($extraInfo, $newProductItem->quantity_type);
+                foreach ($newProductItem->dimensions as $key => $value) {
+                    if ($value > $maxDimension['value']) {
+                        $maxDimension = array('key' => $key, 'value' => $value);
+                    }
+                }
+                $newProductItem->dimensions['desi'] = ((float)$newProductItem->dimensions['width'] * (float)$newProductItem->dimensions['height'] * (float)$newProductItem->dimensions['depth']) / 3000;
+                if ($newProductItem->quantity_type == 'b') {
+                    $totalBoxDesi += $newProductItem->dimensions['desi'] * $newProductItem->quantity;
+                    $pBoxes[] = $newProductItem;
+                }else{
+                    $totalPackageDesi += $newProductItem->dimensions['desi'] * $newProductItem->quantity;
+                    $pPackages[] = $newProductItem;
+                }
+                $totalDesi += ($totalBoxDesi + $totalPackageDesi);
                 if ($item->getBoxType() == 'b') {
                     $responseVP = $productModel->getVolumePricingOfProductWithMaximumQuantity($product);
                     if (!$responseVP['error']) {
@@ -1357,30 +1420,265 @@ class ShoppingCartProxyModel extends CoreModel
                         $newProductItem->item_discounted_price = $this->_numberFormat($responseVP['result']['set']->getDiscountedPrice());
                     }
                     unset($responseVP);
+                } else {
+                    $responseVP = $productModel->listVolumePricingsOfProduct($product);
+                    $currentVP = false;
+                    if (!$responseVP['error']) {
+                        foreach ($responseVP['result']['set'] as $vp) {
+                            if ($item->getQuantity() >= $vp->getQuantityLimit()) {
+                                $currentVP = $vp;
+                            }
+                        }
+                        if ($currentVP) {
+                            $newProductItem->item_price = $this->_numberFormat($vp->getPrice());
+                            $newProductItem->item_discounted_price = $this->_numberFormat($vp->getDiscountedPrice());
+                        }
+                    }
                 }
                 $newProductItem->total_price = $this->_numberFormat($item->getTotalAmount());
                 $newProductItem->tax_rate = $item->getTaxRate();
                 $newProductItem->tax = $this->_numberFormat($item->getTaxAmount());
+                $newProductItem->total_price -= $newProductItem->tax;
+                $newProductItem->total_price = $this->_numberFormat($newProductItem->total_price);
                 $newProductItem->discount = $this->_numberFormat($item->getDiscount());
                 $totalTax += $item->getTaxAmount();
                 $totalAmount += $item->getTotalAmount();
                 $totalDiscount += $item->getDiscount();
                 $response->products[] = $newProductItem;
             }
-
         }
+        $shipmentPrice = 0;
+        $shippingBoxes = array();
+        $shippingPackages = array();
+        /**
+         * Calculate packages
+         */
+        if (!empty($pPackages)) {
+            $shippingPackages = $this->findProperShippingPackages($pPackages, $totalPackageDesi);
+            if (isset($shippingPackages['error']) && $shippingPackages['error'] == TRUE) {
+                $shippingPackages['new'] = array(
+                    'dimensions' => array(),
+                    'desi' => $totalPackageDesi,
+                    'price' => 5,
+                    'weight' => 1
+                );
+            }
+            foreach ($shippingPackages as $boxKey => $boxItem) {
+                $shipmentPrice += $boxItem['price'];
+            }
+        }
+        /**
+         * Calculate boxes
+         */
+        if (!empty($pBoxes)) {
+            $shippingBoxes = $this->findProperShippingBoxes($pBoxes, $totalBoxDesi);
+            if (isset($shippingBoxes['error']) && $shippingBoxes['error'] == TRUE) {
+                $shippingBoxes['new'] = array(
+                    'dimensions' => array(),
+                    'desi' => $totalBoxDesi,
+                    'price' => 5,
+                    'weight' => 1
+                );
+            }
+            foreach ($shippingBoxes as $boxKey => $boxItem) {
+                $shipmentPrice += $boxItem['price'];
+            }
+        }
+        $shipmentItems = array_merge($shippingBoxes,$shippingPackages);
+        $totalAmount += $shipmentPrice;
         $cart->setQuantity($totalQuantity);
         $cart->setTotalAmount($this->_numberFormat($totalAmount));
         $cart->setTotalTax($this->_numberFormat($totalTax));
+        $cart->setShipment(json_encode($shipmentItems));
         $cart->setTotalDiscount($this->_numberFormat($totalDiscount));
         $this->updateCart($cart);
         $response->quantity = $totalQuantity;
+        $response->subtotal = $this->_numberFormat($totalAmount - $totalTax - $shipmentPrice);
         $response->tax = $this->_numberFormat($totalTax);
+        $response->shipment = $this->_numberFormat($shipmentPrice);
         $response->discount = $this->_numberFormat($totalDiscount);
         $response->total = $this->_numberFormat($totalAmount);
-        $response->subtotal = $this->_numberFormat($totalAmount - $totalTax);
-
         return $response;
+    }
+
+    private function calculateDimensions($extraInfo, $type)
+    {
+        $boxPackageCount = 1;
+        if (property_exists($extraInfo, 'boxPackageCount')) {
+            $boxPackageCount = $extraInfo->boxPackageCount;
+        }
+        $defaultDimensions = array('w' => 'width', 'h' => 'height', 'd' => 'depth');
+        $packageDimensions = new \stdClass();
+        $boxDimensions = new \stdClass();
+        foreach ($defaultDimensions as $dimKey => $dimValue) {
+            $packageDimensions->{$dimKey} = 0;
+            $boxDimensions->{$dimKey} = 0;
+        }
+        if (property_exists($extraInfo, 'boxDimensions')) {
+            $boxDimensions = $extraInfo->boxDimensions;
+        }
+        if (property_exists($extraInfo, 'packageDimensions')) {
+            $packageDimensions = $extraInfo->packageDimensions;
+        }
+        if ($type == 'b') {
+            foreach ($defaultDimensions as $dimKey => $dimValue) {
+                if (!property_exists($boxDimensions, $dimKey) || !$boxDimensions->{$dimKey} > 0) {
+                    $boxDimensions->{$dimKey} = $boxDimensions->{$dimKey} * $boxPackageCount;
+                }
+            }
+            $dimensions = $boxDimensions;
+        } else {
+            foreach ($defaultDimensions as $dimKey => $dimValue) {
+                if (!property_exists($packageDimensions, $dimKey) || !$packageDimensions->{$dimKey} > 0) {
+                    $packageDimensions->{$dimKey} = $boxDimensions->{$dimKey} / $boxPackageCount;
+                }
+            }
+            $dimensions = $packageDimensions;
+        }
+
+        $dimensions = json_decode(json_encode($dimensions), 1);
+        foreach ($defaultDimensions as $dimKey => $dimValue) {
+            $dimensions[$dimValue] = $dimensions[$dimKey];
+            unset($dimensions[$dimKey]);
+        }
+        asort($dimensions);
+        return $dimensions;
+    }
+
+    private function findProperShippingPackages($products, $totalDesi)
+    {
+        $shippingModel = $this->kernel->getContainer()->get('shipmentgateway.model');
+        $responseSG = $shippingModel->getShipmentGateway('aras', 'url_key');
+        if ($responseSG['error']) {
+            return $responseSG;
+        }
+        $shippingEntity = $responseSG['result']['set'];
+        $settings = json_decode($shippingEntity->getSettings(), 1);
+        $maxDimensionOfProducts = $this->getMaxDimensionOfProducts($products);
+        $maxDimensionOfBoxes = $this->getMaxDimensionOfBoxes($settings['packages']);
+        if ($maxDimensionOfProducts['value'] > $maxDimensionOfBoxes['value']) {
+            return $selectedShippingBoxes[] = array(
+                'dimensions' => array(),
+                'desi' => $totalDesi,
+                'price' => 5,
+                'weight' => 1
+            );
+        }
+        $desiDifferences = array();
+        foreach ($settings['packages'] as $key => $boxItem) {
+            $difference = $boxItem['desi'] - $totalDesi;
+            if ($difference > 0) {
+                $desiDifferences[$key] = $difference;
+            }
+        }
+        if (empty($desiDifferences)) {
+            //ikili kombinasyonlarının totaldesi den farkı hesaplanabilir.
+            foreach ($settings['packages'] as $fKey => $fItem) {
+                foreach ($settings['packages'] as $sKey => $sItem) {
+                    if (!isset($desiDifferencesOfCombines[$fKey . '_' . $sKey]) && !isset($desiDifferencesOfCombines[$sKey . '_' . $fKey])) {
+                        $differenceOfCombine = $totalDesi - ($fItem['desi'] + $sItem['desi']);
+                        if ($differenceOfCombine > 0) {
+                            $desiDifferencesOfCombines[$fKey . '_' . $sKey] = $differenceOfCombine;
+                        }
+                    }
+                }
+            }
+            arsort($desiDifferencesOfCombines);
+            if (!empty($desiDifferencesOfCombines)) {
+                $keys = array_keys($desiDifferencesOfCombines);
+                $selectedKey = $keys[count($keys) - 1];
+                $selectedKeys = explode('_', $selectedKey);
+                $selectedShippingBoxes[] = $settings['packages'][$selectedKeys[0]];
+                $selectedShippingBoxes[] = $settings['packages'][$selectedKeys[1]];
+            } else {
+                return $selectedShippingBoxes[] = array(
+                    'dimensions' => array(),
+                    'desi' => $totalDesi,
+                    'price' => 5,
+                    'weight' => 1
+                );
+            }
+        } else {
+            arsort($desiDifferences);
+            //sonuncu eleman en az desi farkına sahip kutu
+            $keys = array_keys($desiDifferences);
+            $selectedKey = $keys[count($keys) - 1];
+            $selectedShippingBoxes[] = $settings['packages'][$selectedKey];
+        }
+        return $selectedShippingBoxes;
+
+    }
+    private function findProperShippingBoxes($products, $totalDesi)
+    {
+        $shippingModel = $this->kernel->getContainer()->get('shipmentgateway.model');
+        $responseSG = $shippingModel->getShipmentGateway('aras', 'url_key');
+        if ($responseSG['error']) {
+            return $responseSG;
+        }
+        $shippingEntity = $responseSG['result']['set'];
+        $settings = json_decode($shippingEntity->getSettings(), 1);
+        foreach ($products as $product) {
+            $boxFound = false;
+            if ($product->dimensions['desi'] > 30) {
+                $difference = $product->dimensions['desi'] - 30;
+                $selectedShippingPackages[] = $settings['boxes'][30];
+//                $roundedDesi = round($difference,0,PHP_ROUND_HALF_EVEN);
+                $roundedDifference = ceil($difference);
+                $price = ($roundedDifference * 0.58);
+                $selectedShippingPackages[] = array(
+                    'name' => 'overDesi',
+                    'dimensions' => array(),
+                    'desi' => $roundedDifference,
+                    'price' => $price
+                );
+            }else{
+                foreach ($settings['boxes'] as $boxKey => $boxValue) {
+                    if ($product->dimensions['desi'] <= $boxValue['desi'] && $boxFound == false) {
+                        for($i=1 ; $i<=$product->quantity; $i++){
+                            $selectedShippingPackages[] = $boxValue;
+                        }
+                        $boxFound = true;
+                    }
+                }
+            }
+        }
+        return $selectedShippingPackages;
+
+    }
+
+    private function getMaxDimensionOfProducts($products)
+    {
+        $maxDimension = array('key' => '', 'value' => 0);
+        foreach ($products as $product) {
+            if (property_exists($product, 'dimensions')) {
+                if (is_array($product->dimensions)) {
+                    if (isset($product->dimensions['desi'])) {
+                        $tmpDesi = $product->dimensions['desi'];
+                        unset($product->dimensions['desi']);
+                        foreach ($product->dimensions as $key => $value) {
+                            if ($value > $maxDimension['value']) {
+                                $maxDimension = array('key' => $key, 'value' => $value);
+                            }
+                        }
+                        $product->dimensions['desi'] = $tmpDesi;
+                    }
+                }
+            }
+        }
+        return $maxDimension;
+    }
+
+    private function getMaxDimensionOfBoxes($boxes)
+    {
+        $maxDimension = array('key' => '', 'value' => 0);
+        foreach ($boxes as $box) {
+            foreach ($box['dimensions'] as $key => $value) {
+                if ($value > $maxDimension['value']) {
+                    $maxDimension = array('key' => $key, 'value' => $value);
+                }
+            }
+        }
+        return $maxDimension;
     }
 
     /**
@@ -1886,12 +2184,20 @@ class ShoppingCartProxyModel extends CoreModel
         }
         $cartEntity = $response['result']['set'];
         unset($response);
+        $shipmentBoxes = json_decode(stripcslashes($cart->getShipment()), 1);
+        $shipmentPrice = 0;
+        foreach ($shipmentBoxes as $key => $item) {
+            $shipmentPrice += $item['price'];
+        }
         $order = new \stdClass();
         $order->count_items = $cart->getQuantity();
         $order->total_amount = $cart->calculateTotalAmount();
-        $order->total_tax = $cart->calculateTotalTax();
+        $order->total_amount += $shipmentPrice;
+        $order->total_tax = $cart->getTotalTax();
+        $order->instructions = json_encode(array('shipmentBoxes' => json_decode($cart->getShipment())));
+        $order->total_shipment = $shipmentPrice;
         $order->total_discount = $cart->getTotalDiscount();
-        $order->sub_total = $order->total_amount;
+        $order->sub_total = $order->total_amount - $order->total_shipment - $order->total_tax;
         $order->flag = 'o';
         $order->status = 1;
         $order->purchaser = $this->sessionManager->get_detail('id');
@@ -1920,6 +2226,7 @@ class ShoppingCartProxyModel extends CoreModel
                 $itemEntity->price = $item->getPrice();
                 $itemEntity->sub_total = $itemEntity->price * $itemEntity->quantity;
                 $itemEntity->tax = (float)$item->getTaxRate();
+                $itemEntity->total_with_tax = $item->getPrice() + $item->getTaxAmount();
                 $itemEntity->discount = $item->getDiscount();
                 $itemEntity->total = $item->getTotalAmount();
                 $itemEntity->tax_amount = $item->getTaxAmount();
@@ -1970,8 +2277,9 @@ class ShoppingCartProxyModel extends CoreModel
         );
         return $response;
     }
+
     /**
-     * @name    numberFormat()
+     * @name    numberFormat ()
      *
      * @author  Said İmamoğlu
      * @since   1.0.8
@@ -1980,12 +2288,13 @@ class ShoppingCartProxyModel extends CoreModel
      * @param   int $number
      * @return  float
      */
-    private function _numberFormat($number){
+    private function _numberFormat($number)
+    {
         $decimal = 2;
         if ($this->kernel->getContainer()->hasParameter('currency_decimal')) {
             $decimal = $this->kernel->getContainer()->getParameter('currency_decimal');
         }
-        return number_format($number,$decimal);
+        return number_format($number, $decimal);
     }
 
 }

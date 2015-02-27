@@ -1465,7 +1465,7 @@ class ShoppingCartModel extends CoreModel {
      */
     public function getPaymentTransaction($transaction, $by = 'id') {
         $this->resetResponse();
-        $by_opts = array('id');
+        $by_opts = array('id','shopping_order');
         if (!in_array($by, $by_opts)) {
             return $this->createException('InvalidParameterValueException', implode(',', $by_opts), 'err.invalid.parameter.by');
         }
@@ -2123,8 +2123,14 @@ class ShoppingCartModel extends CoreModel {
                             unset($response, $sModel);
                             break;
                         case 'gateway':
-                            /** @todo   Said İmamoğlu:  Complete payment gateway bundle  */
-                            $entity->$set(null);
+                            $paymentGatewayModel = $this->kernel->getContainer()->get('paymentgateway.model');
+                            $response = $paymentGatewayModel->getPaymentGateway($value, 'id');
+                            if (!$response['error']) {
+                                $entity->$set($response['result']['set']);
+                            } else {
+                                new CoreExceptions\EntityDoesNotExist($this->kernel, $value);
+                            }
+                            unset($response, $paymentGatewayModel);
                             break;
                         default:
                             $entity->$set($value);
@@ -5109,7 +5115,7 @@ class ShoppingCartModel extends CoreModel {
         $updatedItems = array();
 
         foreach ($collection as $data) {
-            if ($data instanceof BundleEntity\ShoppingOrderItem) {
+            if ($data instanceof BundleEntity\ShoppingOrder) {
                 $entity = $data;
                 $this->em->persist($entity);
                 $updatedItems[] = $entity;
@@ -5912,18 +5918,18 @@ class ShoppingCartModel extends CoreModel {
     /**
      * @name            updateCoupon()
      * Updates single item. The item must be either a post data (array) or an entity
-     * 
+     *
      * @since           1.0.2
      * @version         1.0.7
      * @author          Said Imamoglu
-     * 
+     *
      * @use             $this->resetResponse()
      * @use             $this->updateCoupons()
-     * 
+     *
      * @param           mixed   $coupon     Entity or Entity id of a folder
-     * 
+     *
      * @return          array   $response
-     * 
+     *
      */
 
     public function updateCoupon($coupon) {
@@ -5933,23 +5939,23 @@ class ShoppingCartModel extends CoreModel {
     /**
      * @name            updateCoupons()
      *                  Updates one or more item details in database.
-     * 
+     *
      * @since           1.0.2
      * @version         1.0.7
      * @author          Can Berkol
      * @author          Said Imamoglu
-     * 
+     *
      * @use             $this->update_entities()
      * @use             $this->createException()
      * @use             $this->listCoupons()
-     * 
-     * 
+     *
+     *
      * @throws          InvalidParameterException
-     * 
+     *
      * @param           array   $collection     Collection of item's entities or array of entity details.
-     * 
+     *
      * @return          array   $response
-     * 
+     *
      */
     public function updateCoupons($collection) {
         $this->resetResponse();
@@ -6309,9 +6315,9 @@ class ShoppingCartModel extends CoreModel {
      * @param           mixed               $filter           ProductCategoru entity, id
      * @param           array               $sortorder          Array
      *                                                          'column'            => 'asc|desc'
-     * @param           array               $limit 
-     * @param           array               $query_str 
-     * 
+     * @param           array               $limit
+     * @param           array               $query_str
+     *
      *
      * @return          array           $response
      */
@@ -6389,17 +6395,17 @@ class ShoppingCartModel extends CoreModel {
         );
         return $this->response;
     }
-    
+
     /**
      * @name    getShoppingOrderOfMember()
      *          Gets shopping order of member
-     * 
+     *
      * @since   1.1.3
      * @version 1.1.3
-     * 
+     *
      * @param   mixed   $order
      * @param   mixed   $member
-     * 
+     *
      * @return  Response
      */
     public function getShoppingOrderOfMember($order,$member){
@@ -6418,7 +6424,7 @@ class ShoppingCartModel extends CoreModel {
         if ($order instanceof BundleEntity\ShoppingOrder) {
             $order = $order->getId();
         }
-        
+
         /** Prepare filter */
         $filter = array();
         $filter[] = array(
@@ -6451,11 +6457,11 @@ class ShoppingCartModel extends CoreModel {
      *
      * @param   mixed   $order
      * @param   mixed   $member
-     * @param   mixed   $transaction
+     * @param   array   $params
      *
      * @return  Response
      */
-    public function completeOrder($order,$member,$transaction = null){
+    public function completeOrder($order,$member,$params = array()){
         if ((!is_int($order) && !$order instanceof \stdClass && !$order instanceof BundleEntity\ShoppingOrder) || (!is_int($member) && !$member instanceof \stdClass && !$member instanceof MMBEntity\Member)) {
             return $this->createException('InvalidParameter', 'ShoppingOrder or Member', 'err.invalid.parameter');
         }
@@ -6468,51 +6474,59 @@ class ShoppingCartModel extends CoreModel {
         if ($order instanceof \stdClass) {
             $order = $order->id;
         }
-        if ($order instanceof BundleEntity\ShoppingOrder) {
-
-            $order = $order->getId();
-            $amount = $order->getTotalAmount();
-        }else{
+        if (!$order instanceof BundleEntity\ShoppingOrder) {
             $response = $this->getShoppingOrderOfMember($order,$member);
-            if (!$response['error']) {
-                $amount = $response['result']['set']->getTotalAmount();
+            if ($response['error']) {
+                return $response;
             }
+            $orderEntity = $response['result']['set'];
             unset($response);
+        }else{
+            $orderEntity = $order;
         }
+
         $date =new \DateTime('now', new \DateTimeZone($this->kernel->getContainer()->getParameter('app_timezone')));
-        /** Update Order */
-        $orderEntity = new \stdClass();
-        $orderEntity->id = $order;
-        $orderEntity->order_number =(int) ($date->format('YmdHis').$order);
-        $orderEntity->status = 2;
-        $orderEntity->flag = 'c';
-        $orderEntity->date_purchased = $date;
-        $response = $this->updateShoppingOrder($orderEntity);
-        if ($response['error']) {
-            return $response;
+        $transactionData = !isset($params['transaction'])?array():$params['transaction'];
+        /**
+         * Calculate installment fee
+         */
+        $installmentFee = 0;
+        if (isset($transactionData['response']) && $transactionData['gateway'] != 2) {
+            $transactionResponse = json_decode($params['transaction']['response']);
+            if (property_exists($transactionResponse, 'AMOUNT')) {
+                $installmentFee = $transactionResponse->AMOUNT - $orderEntity->getTotalAmount();
+                if (($transactionResponse->AMOUNT - $orderEntity->getTotalAmount() < 0)) {
+                    $installmentFee = 0;
+                }
+            }
         }
-        $updatedOrder = $response['result']['set'][0];
+        /** Update Order */
+        $orderClass = new \stdClass();
+        $orderClass->id = $order;
+        $orderClass->order_number =isset($transactionData['id']) ? $transactionData['id'] : ($date->format('YmdHis').$order);
+        $orderClass->status = isset($params['orderStatus']) ? $params['orderStatus'] : 2;
+        $orderClass->flag = 'c';
+        $orderClass->date_purchased = $date;
+        $orderClass->installment_fee = $installmentFee;
+        $orderClass->total_amount = $orderEntity->getTotalAmount() + $installmentFee;
+
+        $response = $this->updateShoppingOrder($orderClass);
+        $orderEntity = $response['result']['set'][0];
         unset($response);
         /** Completing cart*/
         $cart = new \stdClass();
-        $cart->id = $updatedOrder->getCart()->getId();
+        $cart->id = $orderEntity->getCart()->getId();
         $cart->date_ordered = $date;
-        $response = $this->updateShoppingCart($cart);
-        if ($response['error']) {
-            return $response;
-        }
-        $updatedCart = $response['result']['set'][0];
-        unset($response);
+        $this->updateShoppingCart($cart);
 
         /** Create transaction **/
         $transaction = new \stdClass();
-        $transaction->transaction_id = mt_rand();
-        $transaction->shopping_order = $orderEntity->id;
-        /** @todo   Said İmamoğlu : Complete payment gateway bundle */
-        $transaction->gateway = 1;
-        $transaction->amount = $amount;
-        $transaction->status = 'PAYMENT_OK';
-        $transaction->response = '100';
+        $transaction->transaction_id = isset($transactionData['id']) ? $transactionData['id'] : ($date->format('YmdHis').$order);
+        $transaction->shopping_order = $orderClass->id;
+        $transaction->gateway = isset($transactionData['gateway']) ? $transactionData['gateway'] : 1;
+        $transaction->amount = $orderEntity->getTotalAmount();
+        $transaction->status = isset($transactionData['status']) ? $transactionData['status'] : 'FAILED';
+        $transaction->response = isset($transactionData['response']) ? $transactionData['response'] : '[]';
         $transaction->date_added = $date;
         $transaction->site = 1;
         $transaction->member = $member;

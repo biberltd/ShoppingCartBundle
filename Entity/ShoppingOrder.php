@@ -507,7 +507,7 @@ class ShoppingOrder extends CoreEntity
      */
     public function setInstallmentFee($installment_fee)
     {
-        if (!$this->setModifiled('installment_fee', $installment_fee)->isModified()) {
+        if (!$this->setModified('installment_fee', $installment_fee)->isModified()) {
             return $this;
         }
         $this->installment_fee = $installment_fee;
