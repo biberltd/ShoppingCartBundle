@@ -79,6 +79,10 @@ class ShoppingOrder extends CoreEntity
      * @ORM\Column(type="decimal", length=10, nullable=false)
      */
     private $subtotal;
+    /**
+     * @ORM\Column(type="decimal", length=10, nullable=false)
+     */
+    private $installment_fee;
 
     /**
      * @ORM\Column(type="decimal", length=7, nullable=false)
@@ -126,34 +130,23 @@ class ShoppingOrder extends CoreEntity
     private $order_number;
 
     /**
-     * @ORM\ManyToOne(targetEntity="BiberLtd\Bundle\MemberManagementBundle\Entity\Member")
+     * @ORM\ManyToOne(targetEntity="BiberLtd\Core\Bundles\MemberManagementBundle\Entity\Member")
      * @ORM\JoinColumn(name="purchaser", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      */
     private $purchaser;
 
     /**
-     * @ORM\ManyToOne(targetEntity="BiberLtd\Bundle\ShoppingCartBundle\Entity\ShoppingOrderStatus")
+     * @ORM\ManyToOne(targetEntity="BiberLtd\Core\Bundles\ShoppingCartBundle\Entity\ShoppingOrderStatus")
      * @ORM\JoinColumn(name="status", referencedColumnName="id", nullable=false)
      */
-    private $order_status;
+    private $status;
 
     /**
-     * @ORM\ManyToOne(targetEntity="BiberLtd\Bundle\ShoppingCartBundle\Entity\ShoppingCart")
+     * @ORM\ManyToOne(targetEntity="BiberLtd\Core\Bundles\ShoppingCartBundle\Entity\ShoppingCart")
      * @ORM\JoinColumn(name="cart", referencedColumnName="id", nullable=false, onDelete="CASCADE")
-     */
-    private $shopping_cart;
-
-    /**
-     * 
-     * 
      */
     private $cart;
 
-    /**
-     * 
-     * 
-     */
-    private $status;
 
     /******************************************************************
      * PUBLIC SET AND GET FUNCTIONS                                   *
@@ -232,8 +225,8 @@ class ShoppingOrder extends CoreEntity
         if(!$this->setModified('billing', $billing)->isModified()) {
             return $this;
         }
-		$this->billing = $billing;
-		return $this;
+        $this->billing = $billing;
+        return $this;
     }
 
     /**
@@ -271,8 +264,8 @@ class ShoppingOrder extends CoreEntity
         if(!$this->setModified('count_items', $count_items)->isModified()) {
             return $this;
         }
-		$this->count_items = $count_items;
-		return $this;
+        $this->count_items = $count_items;
+        return $this;
     }
 
     /**
@@ -310,8 +303,8 @@ class ShoppingOrder extends CoreEntity
         if(!$this->setModified('date_cancelled', $date_cancelled)->isModified()) {
             return $this;
         }
-		$this->date_cancelled = $date_cancelled;
-		return $this;
+        $this->date_cancelled = $date_cancelled;
+        return $this;
     }
 
     /**
@@ -349,8 +342,8 @@ class ShoppingOrder extends CoreEntity
         if(!$this->setModified('date_created', $date_created)->isModified()) {
             return $this;
         }
-		$this->date_created = $date_created;
-		return $this;
+        $this->date_created = $date_created;
+        return $this;
     }
 
     /**
@@ -388,8 +381,8 @@ class ShoppingOrder extends CoreEntity
         if(!$this->setModified('date_purchased', $date_purchased)->isModified()) {
             return $this;
         }
-		$this->date_purchased = $date_purchased;
-		return $this;
+        $this->date_purchased = $date_purchased;
+        return $this;
     }
 
     /**
@@ -427,8 +420,8 @@ class ShoppingOrder extends CoreEntity
         if(!$this->setModified('date_returned', $date_returned)->isModified()) {
             return $this;
         }
-		$this->date_returned = $date_returned;
-		return $this;
+        $this->date_returned = $date_returned;
+        return $this;
     }
 
     /**
@@ -466,8 +459,8 @@ class ShoppingOrder extends CoreEntity
         if(!$this->setModified('flag', $flag)->isModified()) {
             return $this;
         }
-		$this->flag = $flag;
-		return $this;
+        $this->flag = $flag;
+        return $this;
     }
 
     /**
@@ -483,6 +476,42 @@ class ShoppingOrder extends CoreEntity
      */
     public function getFlag() {
         return $this->flag;
+    }
+
+    /**
+     * @name        getInstallmentFee ()
+     *
+     * @author      Said İmamoğlu
+     *
+     * @since       1.0.4
+     * @version     1.0.4
+     *
+     * @return      mixed
+     */
+    public function getInstallmentFee()
+    {
+        return $this->installment_fee;
+    }
+
+    /**
+     * @name        setInstallmentFee ()
+     *
+     * @author      Said İmamoğlu
+     *
+     * @since       1.0.4
+     * @version     1.0.4
+     *
+     * @param       mixed $installment_fee
+     *
+     * @return      $this
+     */
+    public function setInstallmentFee($installment_fee)
+    {
+        if (!$this->setModifiled('installment_fee', $installment_fee)->isModified()) {
+            return $this;
+        }
+        $this->installment_fee = $installment_fee;
+        return $this;
     }
 
     /**
@@ -505,8 +534,8 @@ class ShoppingOrder extends CoreEntity
         if(!$this->setModified('instructions', $instructions)->isModified()) {
             return $this;
         }
-		$this->instructions = $instructions;
-		return $this;
+        $this->instructions = $instructions;
+        return $this;
     }
 
     /**
@@ -544,8 +573,8 @@ class ShoppingOrder extends CoreEntity
         if(!$this->setModified('purchaser', $member)->isModified()) {
             return $this;
         }
-		$this->purchaser = $member;
-		return $this;
+        $this->purchaser = $member;
+        return $this;
     }
 
     /**
@@ -583,8 +612,8 @@ class ShoppingOrder extends CoreEntity
         if(!$this->setModified('shipping', $shipping)->isModified()) {
             return $this;
         }
-		$this->shipping = $shipping;
-		return $this;
+        $this->shipping = $shipping;
+        return $this;
     }
 
     /**
@@ -622,8 +651,8 @@ class ShoppingOrder extends CoreEntity
         if(!$this->setModified('cart', $cart)->isModified()) {
             return $this;
         }
-		$this->cart = $cart;
-		return $this;
+        $this->cart = $cart;
+        return $this;
     }
 
     /**
@@ -661,8 +690,8 @@ class ShoppingOrder extends CoreEntity
         if(!$this->setModified('status', $status)->isModified()) {
             return $this;
         }
-		$this->status = $status;
-		return $this;
+        $this->status = $status;
+        return $this;
     }
 
     /**
@@ -700,8 +729,8 @@ class ShoppingOrder extends CoreEntity
         if(!$this->setModified('total_amount', $total_amount)->isModified()) {
             return $this;
         }
-		$this->total_amount = $total_amount;
-		return $this;
+        $this->total_amount = $total_amount;
+        return $this;
     }
 
     /**
@@ -878,6 +907,12 @@ class ShoppingOrder extends CoreEntity
 }
 /**
  * Change Log:
+ * *************************************
+ * v1.0.4                      Can Berkol
+ * 27.02.2015
+ * **************************************
+ * A getInstallmentFee()
+ * A setInstallmentFee()
  * *************************************
  * v1.0.3                      Can Berkol
  * 01.07.2014
