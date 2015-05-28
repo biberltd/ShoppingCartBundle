@@ -130,19 +130,19 @@ class ShoppingOrder extends CoreEntity
     private $order_number;
 
     /**
-     * @ORM\ManyToOne(targetEntity="BiberLtd\Core\Bundles\MemberManagementBundle\Entity\Member")
+     * @ORM\ManyToOne(targetEntity="BiberLtd\Bundle\MemberManagementBundle\Entity\Member")
      * @ORM\JoinColumn(name="purchaser", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      */
     private $purchaser;
 
     /**
-     * @ORM\ManyToOne(targetEntity="BiberLtd\Core\Bundles\ShoppingCartBundle\Entity\ShoppingOrderStatus")
+     * @ORM\ManyToOne(targetEntity="BiberLtd\Bundle\ShoppingCartBundle\Entity\ShoppingOrderStatus")
      * @ORM\JoinColumn(name="status", referencedColumnName="id", nullable=false)
      */
     private $status;
 
     /**
-     * @ORM\ManyToOne(targetEntity="BiberLtd\Core\Bundles\ShoppingCartBundle\Entity\ShoppingCart")
+     * @ORM\ManyToOne(targetEntity="BiberLtd\Bundle\ShoppingCartBundle\Entity\ShoppingCart")
      * @ORM\JoinColumn(name="cart", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      */
     private $cart;
