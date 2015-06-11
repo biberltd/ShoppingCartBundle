@@ -1436,7 +1436,7 @@ class ShoppingCartProxyModel extends CoreModel
                     }
                 }
                 $newProductItem->total_price = $this->_numberFormat($item->getTotalAmount());
-                $newProductItem->tax_rate = $item->getTaxRate();
+                $newProductItem->tax_rate = (int)$item->getTaxRate();
                 $newProductItem->tax = $this->_numberFormat($item->getTaxAmount());
                 $newProductItem->total_price -= $newProductItem->tax;
                 $newProductItem->total_price = $this->_numberFormat($newProductItem->total_price);
