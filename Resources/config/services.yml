@@ -2,6 +2,3 @@ services:
     shoppingcart.model:
             class:        BiberLtd\Bundle\ShoppingCartBundle\Services\ShoppingCartModel
             arguments:    [@kernel, "default", "doctrine"]
-    shoppingcartproxy.model:
-            class:        BiberLtd\Bundle\ShoppingCartBundle\Services\ShoppingCartProxyModel
-            arguments:    [@kernel, "default", "doctrine"]

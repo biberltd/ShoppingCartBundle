@@ -1,18 +1,11 @@
 <?php
 /**
- * @name        PaymentTransaction
- * @package		BiberLtd\Bundle\CoreBundle\ShoppingCartBundle
+ * @author		Can Berkol
  *
- * @author		Murat Ünal
+ * @copyright   Biber Ltd. (http://www.biberltd.com) (C) 2015
+ * @license     GPLv3
  *
- * @version     1.0.0
- * @date        23.09.2013
- *
- * @copyright   Biber Ltd. (http://www.biberltd.com)
- * @license     GPL v3.0
- *
- * @description Model / Entity class.
- *
+ * @date        27.12.2015
  */
 namespace BiberLtd\Bundle\ShoppingCartBundle\Entity;
 use Doctrine\ORM\Mapping AS ORM;
@@ -22,8 +15,8 @@ use BiberLtd\Bundle\CoreBundle\CoreEntity;
  * @ORM\Table(
  *     name="payment_transaction",
  *     options={"charset":"utf8","collate":"utf8_turkish_ci","engine":"innodb"},
- *     indexes={@ORM\Index(name="idx_n_payment_transaction_date_added", columns={"date_added"})},
- *     uniqueConstraints={@ORM\UniqueConstraint(name="idx_u_payment_transaction_id", columns={"id"})}
+ *     indexes={@ORM\Index(name="idxNPaymentTransactionDateAdded", columns={"date_added"})},
+ *     uniqueConstraints={@ORM\UniqueConstraint(name="idxUPaymentTransactionId", columns={"id"})}
  * )
  */
 class PaymentTransaction extends CoreEntity
@@ -32,92 +25,80 @@ class PaymentTransaction extends CoreEntity
      * @ORM\Id
      * @ORM\Column(type="integer", length=10)
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @var int
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=false)
+     * @var string
      */
     private $transaction_id;
 
     /**
-     * @ORM\Column(type="decimal", length=7, nullable=false)
+     * @ORM\Column(type="decimal", length=7, nullable=false, options={"default":0})
+     * @var float
      */
     private $amount;
 
     /**
      * @ORM\Column(type="string", length=155, nullable=false)
+     * @var string
      */
     private $status;
 
     /**
      * @ORM\Column(type="text", nullable=false)
+     * @var string
      */
     private $response;
 
     /**
      * @ORM\Column(type="datetime", nullable=false)
+     * @var \DateTime
      */
     public $date_added;
 
     /**
      * @ORM\ManyToOne(targetEntity="BiberLtd\Bundle\SiteManagementBundle\Entity\Site")
      * @ORM\JoinColumn(name="site", referencedColumnName="id", onDelete="CASCADE")
+     * @var \BiberLtd\Bundle\SiteManagementBundle\Entity\Site
      */
     private $site;
 
     /**
      * @ORM\ManyToOne(targetEntity="BiberLtd\Bundle\MemberManagementBundle\Entity\Member")
      * @ORM\JoinColumn(name="member", referencedColumnName="id", nullable=false, onDelete="CASCADE")
+     * @var \BiberLtd\Bundle\MemberManagementBundle\Entity\Member
      */
     private $member;
 
     /**
-     * @ORM\ManyToOne(targetEntity="BiberLtd\Bundle\PaymentGatewayBundle\Entity\PaymentGateway")
+     * @ORM\ManyToOne(targetEntity="PaymentGateway")
      * @ORM\JoinColumn(name="gateway", referencedColumnName="id", nullable=false, onDelete="CASCADE")
+     * @var \BiberLtd\Bundle\PaymentGatewayBundle\Entity\PaymentGateway
      */
     private $gateway;
 
     /**
-     * @ORM\ManyToOne(targetEntity="BiberLtd\Bundle\ShoppingCartBundle\Entity\ShoppingOrder")
-     * @ORM\JoinColumn(name="order", referencedColumnName="id", nullable=false, onDelete="CASCADE")
+     * @ORM\ManyToOne(targetEntity="ShoppingOrder")
+     * @ORM\JoinColumn(name="shopping_order", referencedColumnName="id", nullable=false, onDelete="CASCADE")
+     * @var \BiberLtd\Bundle\ShoppingCartBundle\Entity\ShoppingOrder
      */
     private $shopping_order;
-    /******************************************************************
-     * PUBLIC SET AND GET FUNCTIONS                                   *
-     ******************************************************************/
 
     /**
-     * @name            getId()
-     *  				Gets $id property.
-     * .
-     * @author          Murat Ünal
-     * @since			1.0.0
-     * @version         1.0.0
-     *
-     * @return          string          $this->id
+     * @return mixed
      */
     public function getId(){
         return $this->id;
     }
-
     /**
-     * @name                  setAmount ()
-     *                                  Sets the amount property.
-     *                                  Updates the data only if stored value and value to be set are different.
+     * @param float $amount
      *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @use             $this->setModified()
-     *
-     * @param           mixed $amount
-     *
-     * @return          object                $this
+     * @return $this
      */
-    public function setAmount($amount) {
+    public function setAmount(\float $amount) {
         if(!$this->setModified('amount', $amount)->isModified()) {
             return $this;
         }
@@ -126,37 +107,17 @@ class PaymentTransaction extends CoreEntity
     }
 
     /**
-     * @name            getAmount ()
-     *                            Returns the value of amount property.
-     *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @return          mixed           $this->amount
+     * @return float
      */
     public function getAmount() {
         return $this->amount;
     }
-
     /**
-     * @name                  setMember ()
-     *                                  Sets the member property.
-     *                                  Updates the data only if stored value and value to be set are different.
+     * @param \BiberLtd\Bundle\MemberManagementBundle\Entity\Member $member
      *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @use             $this->setModified()
-     *
-     * @param           mixed $member
-     *
-     * @return          object                $this
+     * @return $this
      */
-    public function setMember($member) {
+    public function setMember(\BiberLtd\Bundle\MemberManagementBundle\Entity\Member $member) {
         if(!$this->setModified('member', $member)->isModified()) {
             return $this;
         }
@@ -165,37 +126,18 @@ class PaymentTransaction extends CoreEntity
     }
 
     /**
-     * @name            getMember ()
-     *                            Returns the value of member property.
-     *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @return          mixed           $this->member
+     * @return \BiberLtd\Bundle\MemberManagementBundle\Entity\Member
      */
     public function getMember() {
         return $this->member;
     }
 
     /**
-     * @name                  setGateway ()
-     *                                          Sets the gateway property.
-     *                                          Updates the data only if stored value and value to be set are different.
+     * @param \BiberLtd\Bundle\PaymentGatewayBundle\Entity\PaymentGateway $gateway
      *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @use             $this->setModified()
-     *
-     * @param           mixed $gateway
-     *
-     * @return          object                $this
+     * @return $this
      */
-    public function setGateway($gateway) {
+    public function setGateway(\BiberLtd\Bundle\PaymentGatewayBundle\Entity\PaymentGateway $gateway) {
         if(!$this->setModified('gateway', $gateway)->isModified()) {
             return $this;
         }
@@ -204,37 +146,18 @@ class PaymentTransaction extends CoreEntity
     }
 
     /**
-     * @name            getGateway ()
-     *                                    Returns the value of gateway property.
-     *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @return          mixed           $this->gateway
+     * @return \BiberLtd\Bundle\PaymentGatewayBundle\Entity\PaymentGateway
      */
     public function getGateway() {
         return $this->gateway;
     }
 
     /**
-     * @name                  setResponse ()
-     *                                    Sets the response property.
-     *                                    Updates the data only if stored value and value to be set are different.
+     * @param string $response
      *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @use             $this->setModified()
-     *
-     * @param           mixed $response
-     *
-     * @return          object                $this
+     * @return $this
      */
-    public function setResponse($response) {
+    public function setResponse(\string $response) {
         if(!$this->setModified('response', $response)->isModified()) {
             return $this;
         }
@@ -243,37 +166,17 @@ class PaymentTransaction extends CoreEntity
     }
 
     /**
-     * @name            getResponse ()
-     *                              Returns the value of response property.
-     *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @return          mixed           $this->response
+     * @return string
      */
     public function getResponse() {
         return $this->response;
     }
-
-    /**
-     * @name                  setShoppingOrder ()
-     *                                         Sets the shopping_order property.
-     *                                         Updates the data only if stored value and value to be set are different.
+        /**
+     * @param \BiberLtd\Bundle\ShoppingCartBundle\Entity\ShoppingOrder $shopping_order
      *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @use             $this->setModified()
-     *
-     * @param           mixed $shopping_order
-     *
-     * @return          object                $this
+     * @return $this
      */
-    public function setShoppingOrder($shopping_order) {
+    public function setShoppingOrder(\BiberLtd\Bundle\ShoppingCartBundle\Entity\ShoppingOrder $shopping_order) {
         if(!$this->setModified('shopping_order', $shopping_order)->isModified()) {
             return $this;
         }
@@ -282,37 +185,18 @@ class PaymentTransaction extends CoreEntity
     }
 
     /**
-     * @name            getShoppingOrder ()
-     *                                   Returns the value of shopping_order property.
-     *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @return          mixed           $this->shopping_order
+     * @return \BiberLtd\Bundle\ShoppingCartBundle\Entity\ShoppingOrder
      */
     public function getShoppingOrder() {
         return $this->shopping_order;
     }
 
     /**
-     * @name                  setSite ()
-     *                                Sets the site property.
-     *                                Updates the data only if stored value and value to be set are different.
+     * @param \BiberLtd\Bundle\SiteManagementBundle\Entity\Site $site
      *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @use             $this->setModified()
-     *
-     * @param           mixed $site
-     *
-     * @return          object                $this
+     * @return $this
      */
-    public function setSite($site) {
+    public function setSite(\BiberLtd\Bundle\SiteManagementBundle\Entity\Site $site) {
         if(!$this->setModified('site', $site)->isModified()) {
             return $this;
         }
@@ -321,37 +205,18 @@ class PaymentTransaction extends CoreEntity
     }
 
     /**
-     * @name            getSite ()
-     *                          Returns the value of site property.
-     *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @return          mixed           $this->site
+     * @return \BiberLtd\Bundle\SiteManagementBundle\Entity\Site
      */
     public function getSite() {
         return $this->site;
     }
 
     /**
-     * @name                  setStatus ()
-     *                                  Sets the status property.
-     *                                  Updates the data only if stored value and value to be set are different.
+     * @param string $status
      *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @use             $this->setModified()
-     *
-     * @param           mixed $status
-     *
-     * @return          object                $this
+     * @return $this
      */
-    public function setStatus($status) {
+    public function setStatus(\string $status) {
         if(!$this->setModified('status', $status)->isModified()) {
             return $this;
         }
@@ -360,37 +225,15 @@ class PaymentTransaction extends CoreEntity
     }
 
     /**
-     * @name            getStatus ()
-     *                            Returns the value of status property.
-     *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @return          mixed           $this->status
+     * @return string
      */
     public function getStatus() {
         return $this->status;
     }
 
     /**
-     * @name            setTransactionId()
-     *                                       Sets the transaction_id property.
-     *                                       Updates the data only if stored value and value to be set are different.
-     *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @use             $this->setModified()
-     *
-     * @param           mixed $transaction_id
-     *
-     * @return          object                $this
-     */
-    public function setTransactionId($transaction_id) {
+     * */
+    public function setTransactionId(\string $transaction_id) {
         if(!$this->setModified('transaction_id', $transaction_id)->isModified()) {
             return $this;
         }
@@ -399,45 +242,9 @@ class PaymentTransaction extends CoreEntity
     }
 
     /**
-     * @name            getTransactionId()
-     *                                 Returns the value of transaction_id property.
-     *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @return          mixed           $this->transaction_id
+     * @return string
      */
     public function getTransactionId() {
         return $this->transaction_id;
     }
 }
-/**
- * Change Log:
- * **************************************
- * v1.0.0                      Murat Ünal
- * 23.09.2013
- * **************************************
- * A get_amount()
- * A getDateAdded()
- * A getId()
- * A getMember()
- * A getGateway()
- * A getResponse()
- * A getShoppingOrder()
- * A getSite()
- * A getStatus()
- * A get_transaction_id()
- *
- * A set_amount()
- * A setDateAdded()
- * A setMember()
- * A etGateway()
- * A setResponse()
- * A setShoppingOrder()
- * A setSite()
- * A setStatus()
- * A set_transaction_id()
- *
- */

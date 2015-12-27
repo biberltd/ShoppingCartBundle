@@ -1,3 +1,0 @@
-biber_ltd_core_bundles_core_login:
-    pattern:  /cart
-    defaults: { _controller: BiberLtdCoreBundlesShoppingCartBundle:Test:test }

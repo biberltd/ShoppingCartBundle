@@ -1,18 +1,11 @@
 <?php
 /**
- * @name        redeemedCoupon
- * @package		BiberLtd\Bundle\CoreBundle\ShoppingCartBundle
+ * @author		Can Berkol
  *
- * @author		Murat Ünal
+ * @copyright   Biber Ltd. (http://www.biberltd.com) (C) 2015
+ * @license     GPLv3
  *
- * @version     1.0.0
- * @date        23.09.2013
- *
- * @copyright   Biber Ltd. (http://www.biberltd.com)
- * @license     GPL v3.0
- *
- * @description Model / Entity class.
- *
+ * @date        27.12.2015
  */
 namespace BiberLtd\Bundle\ShoppingCartBundle\Entity;
 use Doctrine\ORM\Mapping AS ORM;
@@ -22,8 +15,8 @@ use BiberLtd\Bundle\CoreBundle\CoreEntity;
  * @ORM\Table(
  *     name="redeemed_coupon",
  *     options={"charset":"utf8","collate":"utf8_turkish_ci","engine":"innodb"},
- *     indexes={@ORM\Index(name="idx_n_redeemed_coupon_date_redeemed", columns={"date_redeemed"})},
- *     uniqueConstraints={@ORM\UniqueConstraint(name="idx_u_redeemed_coupon_id", columns={"id"})}
+ *     indexes={@ORM\Index(name="idxNRedeemedCouponDateRedeemed", columns={"date_redeemed"})},
+ *     uniqueConstraints={@ORM\UniqueConstraint(name="idxURedeemedCouponId", columns={"id"})}
  * )
  */
 class RedeemedCoupon extends CoreEntity
@@ -32,34 +25,37 @@ class RedeemedCoupon extends CoreEntity
      * @ORM\Id
      * @ORM\Column(type="integer", length=15)
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @var int
      */
     private $id;
 
     /** 
      * @ORM\Column(type="datetime", nullable=false)
+     * @var \DateTime
      */
     private $date_redeemed;
 
     /** 
-     * @ORM\ManyToOne(targetEntity="BiberLtd\Bundle\ShoppingCartBundle\Entity\Coupon")
+     * @ORM\ManyToOne(targetEntity="Coupon")
      * @ORM\JoinColumn(name="coupon", referencedColumnName="id", nullable=false, onDelete="CASCADE")
+     * @var \BiberLtd\Bundle\ShoppingCartBundle\Entity\Coupon
      */
     private $coupon;
 
     /** 
      * @ORM\ManyToOne(targetEntity="BiberLtd\Bundle\MemberManagementBundle\Entity\Member")
      * @ORM\JoinColumn(name="member", referencedColumnName="id", nullable=false, onDelete="CASCADE")
+     * @var \BiberLtd\Bundle\MemberManagementBundle\Entity\Member
      */
     private $member;
 
-    /** 
-     * @ORM\ManyToOne(targetEntity="BiberLtd\Bundle\ShoppingCartBundle\Entity\ShoppingCart")
-     * @ORM\JoinColumn(name="cart", referencedColumnName="id", nullable=false, onDelete="CASCADE")
+    /**
+     * @ORM\ManyToOne(targetEntity="ShoppingOrder")
+     * @ORM\JoinColumn(name="shopping_order", referencedColumnName="id")
+     * @var \BiberLtd\Bundle\ShoppingCartBundle\Entity\ShoppingOrder
      */
-    private $shopping_cart;
-    /******************************************************************
-     * PUBLIC SET AND GET FUNCTIONS                                   *
-     ******************************************************************/
+    private $shopping_order;
+
 
     /**
      * @name            getId()
@@ -76,22 +72,11 @@ class RedeemedCoupon extends CoreEntity
     }
 
     /**
-     * @name                  setCoupon ()
-     *                                  Sets the coupon property.
-     *                                  Updates the data only if stored value and value to be set are different.
+     * @param \BiberLtd\Bundle\ShoppingCartBundle\Entity\Coupon $coupon
      *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @use             $this->setModified()
-     *
-     * @param           mixed $coupon
-     *
-     * @return          object                $this
+     * @return $this
      */
-    public function setCoupon($coupon) {
+    public function setCoupon(\BiberLtd\Bundle\ShoppingCartBundle\Entity\Coupon $coupon) {
         if(!$this->setModified('coupon', $coupon)->isModified()) {
             return $this;
         }
@@ -100,37 +85,18 @@ class RedeemedCoupon extends CoreEntity
     }
 
     /**
-     * @name            getCoupon ()
-     *                            Returns the value of coupon property.
-     *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @return          mixed           $this->coupon
+     * @return \BiberLtd\Bundle\ShoppingCartBundle\Entity\Coupon
      */
     public function getCoupon() {
         return $this->coupon;
     }
 
     /**
-     * @name                  setDateRedeemed ()
-     *                                        Sets the date_redeemed property.
-     *                                        Updates the data only if stored value and value to be set are different.
+     * @param \DateTime $date_redeemed
      *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @use             $this->setModified()
-     *
-     * @param           mixed $date_redeemed
-     *
-     * @return          object                $this
+     * @return $this
      */
-    public function setDateRedeemed($date_redeemed) {
+    public function setDateRedeemed(\DateTime $date_redeemed) {
         if(!$this->setModified('date_redeemed', $date_redeemed)->isModified()) {
             return $this;
         }
@@ -139,37 +105,18 @@ class RedeemedCoupon extends CoreEntity
     }
 
     /**
-     * @name            getDateRedeemed ()
-     *                                  Returns the value of date_redeemed property.
-     *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @return          mixed           $this->date_redeemed
+     * @return \DateTime
      */
     public function getDateRedeemed() {
         return $this->date_redeemed;
     }
 
     /**
-     * @name                  setMember ()
-     *                                  Sets the member property.
-     *                                  Updates the data only if stored value and value to be set are different.
+     * @param \BiberLtd\Bundle\MemberManagementBundle\Entity\Member $member
      *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @use             $this->setModified()
-     *
-     * @param           mixed $member
-     *
-     * @return          object                $this
+     * @return $this
      */
-    public function setMember($member) {
+    public function setMember(\BiberLtd\Bundle\MemberManagementBundle\Entity\Member $member) {
         if(!$this->setModified('member', $member)->isModified()) {
             return $this;
         }
@@ -178,75 +125,29 @@ class RedeemedCoupon extends CoreEntity
     }
 
     /**
-     * @name            getMember ()
-     *                            Returns the value of member property.
-     *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @return          mixed           $this->member
+     * @return \BiberLtd\Bundle\MemberManagementBundle\Entity\Member
      */
     public function getMember() {
         return $this->member;
     }
 
     /**
-     * @name                  setShoppingCart ()
-     *                                        Sets the shopping_cart property.
-     *                                        Updates the data only if stored value and value to be set are different.
+     * @param \BiberLtd\Bundle\ShoppingCartBundle\Entity\ShoppingOrder $order
      *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @use             $this->setModified()
-     *
-     * @param           mixed $shopping_cart
-     *
-     * @return          object                $this
+     * @return $this
      */
-    public function setShoppingCart($shopping_cart) {
-        if(!$this->setModified('shopping_cart', $shopping_cart)->isModified()) {
+    public function setShoppingOrder(\BiberLtd\Bundle\ShoppingCartBundle\Entity\ShoppingOrder $order) {
+        if(!$this->setModified('shopping_order', $order)->isModified()) {
             return $this;
         }
-		$this->shopping_cart = $shopping_cart;
+		$this->shopping_order = $order;
 		return $this;
     }
 
     /**
-     * @name            getShoppingCart ()
-     *                                  Returns the value of shopping_cart property.
-     *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @return          mixed           $this->shopping_cart
+     * @return \BiberLtd\Bundle\ShoppingCartBundle\Entity\ShoppingOrder
      */
-    public function getShoppingCart() {
-        return $this->shopping_cart;
+    public function getShoppingOrder() {
+        return $this->shopping_order;
     }
-
 }
-/**
- * Change Log:
- * **************************************
- * v1.0.0                      Murat Ünal
- * 23.09.2013
- * **************************************
- * A getCoupon()
- * A getDateRedeemed()
- * A getId()
- * A getMember()
- * A getShoppingCart()
- *
- * A setCoupon()
- * A setDateRedeemed()
- * A setMember()
- * A shopping_cart()
- *
- */

@@ -17,16 +17,16 @@
         }
     ],
     "require": {
-        "biberltd/core-bundle" : "~3.1",
-	"biberltd/file-management-bundle" : "~3.1",
-	"biberltd/member-management-bundle" : "~3.1",
-	"biberltd/site-management-bundle" : "~3.1",
-	"biberltd/multilanguage-support-bundle" : "~3.1",
-	"biberltd/log-bundle" : "~3.1",
-	"biberltd/payment-gateway-bundle" : "~3.1",
-	"biberltd/product-management-bundle" : "~3.1",
-	"biberltd/shipment-gateway-bundle" : "~3.1",
-	"sylius/omnipay-bundle" : "dev-master"
+        "biberltd/core-bundle" : "~3.4",
+	    "biberltd/file-management-bundle" : "~3.4",
+	    "biberltd/member-management-bundle" : "~3.4",
+	    "biberltd/site-management-bundle" : "~3.4",
+	    "biberltd/multilanguage-support-bundle" : "~3.4",
+	    "biberltd/log-bundle" : "~3.4",
+	    "biberltd/payment-gateway-bundle" : "~3.4",
+	    "biberltd/product-management-bundle" : "~3.4",
+	    "biberltd/shipment-gateway-bundle" : "~3.4",
+	    "sylius/omnipay-bundle" : "dev-master"
     },
     "autoload": {
         "psr-0": { "BiberLtd\\Bundle\\ShoppingCartBundle": "" }

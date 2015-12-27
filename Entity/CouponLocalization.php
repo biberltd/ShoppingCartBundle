@@ -1,18 +1,11 @@
 <?php
 /**
- * @name        CouponLocalization
- * @package		BiberLtd\Bundle\CoreBundle\ShoppingCartBundle
+ * @author		Can Berkol
  *
- * @author		Murat Ünal
+ * @copyright   Biber Ltd. (http://www.biberltd.com) (C) 2015
+ * @license     GPLv3
  *
- * @version     1.0.0
- * @date        23.09.2013
- *
- * @copyright   Biber Ltd. (http://www.biberltd.com)
- * @license     GPL v3.0
- *
- * @description Model / Entity class.
- *
+ * @date        27.12.2015
  */
 namespace BiberLtd\Bundle\ShoppingCartBundle\Entity;
 use Doctrine\ORM\Mapping AS ORM;
@@ -22,28 +15,28 @@ use BiberLtd\Bundle\CoreBundle\CoreEntity;
  * @ORM\Table(
  *     name="coupon_localization",
  *     options={"charset":"utf8","collate":"utf8_turkish_ci","engine":"innodb"},
- *     uniqueConstraints={@ORM\UniqueConstraint(name="idx_u_coupon_localization", columns={"coupon","language"})}
+ *     uniqueConstraints={@ORM\UniqueConstraint(name="idxUCouponLocalization", columns={"coupon","language"})}
  * )
  */
 class CouponLocalization extends CoreEntity
 {
     /** 
      * @ORM\Column(type="string", length=155, nullable=false)
+     * @var string
      */
     private $name;
 
     /** 
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @var string
      */
     private $description;
 
     /** 
      * @ORM\Id
-     * @ORM\ManyToOne(
-     *     targetEntity="BiberLtd\Bundle\ShoppingCartBundle\Entity\Coupon",
-     *     inversedBy="localizations"
-     * )
+     * @ORM\ManyToOne(targetEntity="Coupon", inversedBy="localizations")
      * @ORM\JoinColumn(name="coupon", referencedColumnName="id", nullable=false, onDelete="CASCADE")
+     * @var \BiberLtd\Bundle\ShoppingCartBundle\Entity\Coupon
      */
     private $coupon;
 
@@ -51,26 +44,16 @@ class CouponLocalization extends CoreEntity
      * @ORM\Id
      * @ORM\ManyToOne(targetEntity="BiberLtd\Bundle\MultiLanguageSupportBundle\Entity\Language")
      * @ORM\JoinColumn(name="language", referencedColumnName="id", nullable=false, onDelete="CASCADE")
+     * @var \BiberLtd\Bundle\MultiLanguageSupportBundle\Entity\Language
      */
     private $language;
 
     /**
-     * @name                  setCoupon ()
-     *                                  Sets the coupon property.
-     *                                  Updates the data only if stored value and value to be set are different.
+     * @param \BiberLtd\Bundle\ShoppingCartBundle\Entity\Coupon $coupon
      *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @use             $this->setModified()
-     *
-     * @param           mixed $coupon
-     *
-     * @return          object                $this
+     * @return $this
      */
-    public function setCoupon($coupon) {
+    public function setCoupon(\BiberLtd\Bundle\ShoppingCartBundle\Entity\Coupon $coupon) {
         if(!$this->setModified('coupon', $coupon)->isModified()) {
             return $this;
         }
@@ -79,37 +62,18 @@ class CouponLocalization extends CoreEntity
     }
 
     /**
-     * @name            getCoupon ()
-     *                            Returns the value of coupon property.
-     *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @return          mixed           $this->coupon
+     * @return \BiberLtd\Bundle\ShoppingCartBundle\Entity\Coupon
      */
     public function getCoupon() {
         return $this->coupon;
     }
 
     /**
-     * @name                  setDescription ()
-     *                                       Sets the description property.
-     *                                       Updates the data only if stored value and value to be set are different.
+     * @param string $description
      *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @use             $this->setModified()
-     *
-     * @param           mixed $description
-     *
-     * @return          object                $this
+     * @return $this
      */
-    public function setDescription($description) {
+    public function setDescription(\string $description) {
         if(!$this->setModified('description', $description)->isModified()) {
             return $this;
         }
@@ -118,37 +82,18 @@ class CouponLocalization extends CoreEntity
     }
 
     /**
-     * @name            getDescription ()
-     *                                 Returns the value of description property.
-     *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @return          mixed           $this->description
+     * @return string
      */
     public function getDescription() {
         return $this->description;
     }
 
     /**
-     * @name                  setLanguage ()
-     *                                    Sets the language property.
-     *                                    Updates the data only if stored value and value to be set are different.
+     * @param \BiberLtd\Bundle\MultiLanguageSupportBundle\Entity\Language $language
      *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @use             $this->setModified()
-     *
-     * @param           mixed $language
-     *
-     * @return          object                $this
+     * @return $this
      */
-    public function setLanguage($language) {
+    public function setLanguage(\BiberLtd\Bundle\MultiLanguageSupportBundle\Entity\Language $language) {
         if(!$this->setModified('language', $language)->isModified()) {
             return $this;
         }
@@ -157,37 +102,18 @@ class CouponLocalization extends CoreEntity
     }
 
     /**
-     * @name            getLanguage ()
-     *                              Returns the value of language property.
-     *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @return          mixed           $this->language
+     * @return \BiberLtd\Bundle\MultiLanguageSupportBundle\Entity\Language
      */
     public function getLanguage() {
         return $this->language;
     }
 
     /**
-     * @name                  setName ()
-     *                                Sets the name property.
-     *                                Updates the data only if stored value and value to be set are different.
+     * @param string $name
      *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @use             $this->setModified()
-     *
-     * @param           mixed $name
-     *
-     * @return          object                $this
+     * @return $this
      */
-    public function setName($name) {
+    public function setName(\string $name) {
         if(!$this->setModified('name', $name)->isModified()) {
             return $this;
         }
@@ -196,38 +122,9 @@ class CouponLocalization extends CoreEntity
     }
 
     /**
-     * @name            getName ()
-     *                          Returns the value of name property.
-     *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @return          mixed           $this->name
+     * @return string
      */
-    public function getName() {
+    public function getName(){
         return $this->name;
     }
-    /******************************************************************
-     * PUBLIC SET AND GET FUNCTIONS                                   *
-     ******************************************************************/
-
 }
-/**
- * Change Log:
- * **************************************
- * v1.0.0                      Murat Ünal
- * 23.09.2013
- * **************************************
- * A getCoupon()
- * A getDescription()
- * A getLanguage()
- * A getName()
- *
- * A setCoupon()
- * A setDescription()
- * A setLanguage()
- * A setName()
- *
- */

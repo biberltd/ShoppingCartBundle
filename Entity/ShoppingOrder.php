@@ -1,21 +1,14 @@
 <?php
 /**
- * @name        ShoppingOrder
- * @package		BiberLtd\Bundle\CoreBundle\ShoppingCartBundle
+ * @author		Can Berkol
  *
- * @author      Can Berkol
- * @author		Murat Ünal
+ * @copyright   Biber Ltd. (http://www.biberltd.com) (C) 2015
+ * @license     GPLv3
  *
- * @version     1.0.3
- * @date        01.07.2014
- *
- * @copyright   Biber Ltd. (http://www.biberltd.com)
- * @license     GPL v3.0
- *
- * @description Model / Entity class.
- *
+ * @date        27.12.2015
  */
 namespace BiberLtd\Bundle\ShoppingCartBundle\Entity;
+use BiberLtd\Bundle\PhpOrientBundle\Odm\Types\DateTime;
 use Doctrine\ORM\Mapping AS ORM;
 use BiberLtd\Bundle\CoreBundle\CoreEntity;
 /**
@@ -24,15 +17,16 @@ use BiberLtd\Bundle\CoreBundle\CoreEntity;
  *     name="shopping_order",
  *     options={"charset":"utf8","collate":"utf8_turkish_ci","engine":"innodb"},
  *     indexes={
- *         @ORM\Index(name="idx_n_shopping_order_date_created", columns={"date_created"}),
- *         @ORM\Index(name="idx_n_shopping_order_date_updated", columns={"date_updated"}),
- *         @ORM\Index(name="idx_n_shopping_order_date_purchased", columns={"date_purchased"}),
- *         @ORM\Index(name="idx_n_shopping_order_date_cancelled", columns={"date_cancelled"}),
- *         @ORM\Index(name="idx_n_shopping_order_date_returned", columns={"date_returned"})
+ *         @ORM\Index(name="idxNShoppingOrderDateCreated", columns={"date_created"}),
+ *         @ORM\Index(name="idxNShoppingOrderDateUpdated", columns={"date_updated"}),
+ *         @ORM\Index(name="idxNShoppingOrderDatePurchased", columns={"date_purchased"}),
+ *         @ORM\Index(name="idxNShoppingOrderDateCancelled", columns={"date_cancelled"}),
+ *         @ORM\Index(name="idxNShoppingOrderDateReturned", columns={"date_returned"}),
+ *         @ORM\Index(name="idxNShoppingOrderStatus", columns={"status"})
  *     },
  *     uniqueConstraints={
- *         @ORM\UniqueConstraint(name="idx_u_shopping_order_id", columns={"id"}),
- *         @ORM\UniqueConstraint(name="idx_u_shopping_order_number", columns={"order_number"})
+ *         @ORM\UniqueConstraint(name="idxUShoppingOrderId", columns={"id"}),
+ *         @ORM\UniqueConstraint(name="idxUShoppingOrderNumber", columns={"order_number"})
  *     }
  * )
  */
@@ -42,147 +36,150 @@ class ShoppingOrder extends CoreEntity
      * @ORM\Id
      * @ORM\Column(type="integer", length=15)
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @var int
      */
     private $id;
 
     /**
      * @ORM\Column(type="datetime", nullable=false)
+     * @var \DateTime
      */
     private $date_created;
 
     /**
      * @ORM\Column(type="datetime", nullable=false)
+     * @var \DateTime
      */
     public $date_updated;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
+     * @var DateTime
      */
     private $date_purchased;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
+     * @var \DateTime
      */
     private $date_cancelled;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
+     * @var \DateTime
      */
     private $date_returned;
 
     /**
-     * @ORM\Column(type="integer", nullable=false)
+     * @ORM\Column(type="integer", nullable=false, options={"default":0})
+     * @var int
      */
     private $count_items;
 
     /**
-     * @ORM\Column(type="decimal", length=10, nullable=false)
+     * @ORM\Column(type="decimal", length=10, nullable=false, options={"default":0})
+     * @var float
      */
     private $subtotal;
     /**
-     * @ORM\Column(type="decimal", length=10, nullable=false)
+     * @ORM\Column(type="decimal", length=10, nullable=true)
+     * @var float
      */
     private $installment_fee;
 
     /**
-     * @ORM\Column(type="decimal", length=7, nullable=false)
+     * @ORM\Column(type="decimal", length=7, nullable=false, options={"default":0})
+     * @var float
      */
     private $total_amount;
 
     /**
-     * @ORM\Column(type="decimal", nullable=false)
+     * @ORM\Column(type="decimal", nullable=false, options={"default":0})
+     * @var float
      */
     private $total_shipment;
 
     /**
-     * @ORM\Column(type="decimal", length=10, nullable=false)
+     * @ORM\Column(type="text", nullable=false)
+     * @var string
+     */
+    private $billing_information;
+
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     * @var string
+     */
+    private $shipping_information;
+
+    /**
+     * @ORM\Column(type="decimal", length=10, nullable=false, options={"default":","})
+     * @var float
      */
     private $total_tax;
 
     /**
-     * @ORM\Column(type="decimal", length=10, nullable=false)
+     * @ORM\Column(type="decimal", length=10, nullable=false, options={"default":0})
+     * @var float
      */
     private $total_discount;
 
     /**
-     * @ORM\Column(type="text", nullable=false)
-     */
-    private $billing;
-
-    /**
      * @ORM\Column(type="text", nullable=true)
-     */
-    private $shipping;
-
-    /**
-     * @ORM\Column(type="text", nullable=true)
+     * @var string
      */
     private $instructions;
 
     /**
-     * @ORM\Column(type="string", length=1, nullable=false)
+     * @ORM\Column(type="string", length=1, nullable=false, options={"default":"o"})
+     * @var string
      */
     private $flag;
 
     /**
      * @ORM\Column(type="integer", unique=true, length=20, nullable=false)
+     * @var string
      */
     private $order_number;
 
     /**
+     * @ORM\Column(type="text", nullable=true)
+     * @var string
+     */
+    private $content;
+
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     * @var string
+     */
+    private $transaction_info;
+
+    /**
      * @ORM\ManyToOne(targetEntity="BiberLtd\Bundle\MemberManagementBundle\Entity\Member")
-     * @ORM\JoinColumn(name="purchaser", referencedColumnName="id", nullable=false, onDelete="CASCADE")
+     * @ORM\JoinColumn(name="purchaser", referencedColumnName="id", nullable=false, onDelete="RESTRICT")
+     * @var \BiberLtd\Bundle\MemberManagementBundle\Entity\Member
      */
     private $purchaser;
 
     /**
-     * @ORM\ManyToOne(targetEntity="BiberLtd\Bundle\ShoppingCartBundle\Entity\ShoppingOrderStatus")
-     * @ORM\JoinColumn(name="status", referencedColumnName="id", nullable=false)
+     * 
+     * @ORM\Column(type="string", length=1, nullable=false)
+     * @var string
      */
     private $status;
 
     /**
-     * @ORM\ManyToOne(targetEntity="BiberLtd\Bundle\ShoppingCartBundle\Entity\ShoppingCart")
-     * @ORM\JoinColumn(name="cart", referencedColumnName="id", nullable=false, onDelete="CASCADE")
-     */
-    private $cart;
-
-
-    /******************************************************************
-     * PUBLIC SET AND GET FUNCTIONS                                   *
-     ******************************************************************/
-
-    /**
-     * @name            getId()
-     *  				Gets $id property.
-     * .
-     * @author          Murat Ünal
-     * @since			1.0.0
-     * @version         1.0.0
-     *
-     * @return          string          $this->id
+     * @return mixed
      */
     public function getId(){
         return $this->id;
     }
 
     /**
-     * @name            setOrderNumber ()
-     *                  Sets the order_number property.
-     *                  Updates the data only if stored value and value to be set are different.
+     * @param string $order_number
      *
-     * @author          Can Berkol
-     *
-     * @since           1.0.3
-     * @version         1.0.3
-     *
-     * @use             $this->setModified()
-     *
-     * @param           mixed                   $order_number
-     *
-     * @return          object                  $this
+     * @return $this
      */
-    public function setOrderNumber($order_number) {
+    public function setOrderNumber(\string $order_number) {
         if($this->setModified('order_number', $order_number)->isModified()) {
             $this->order_number = $order_number;
         }
@@ -191,76 +188,18 @@ class ShoppingOrder extends CoreEntity
     }
 
     /**
-     * @name            getOrderNumber ()
-     *                  Returns the value of order_number property.
-     *
-     * @author          Can Berkol
-     *
-     * @since           1.0.3
-     * @version         1.0.3
-     *
-     * @return          mixed           $this->order_number
+     * @return string
      */
     public function getOrderNumber() {
         return $this->order_number;
     }
 
     /**
-     * @name                  setBilling ()
-     *                                   Sets the billing property.
-     *                                   Updates the data only if stored value and value to be set are different.
+     * @param int $count_items
      *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @use             $this->setModified()
-     *
-     * @param           mixed $billing
-     *
-     * @return          object                $this
+     * @return $this
      */
-    public function setBilling($billing) {
-        if(!$this->setModified('billing', $billing)->isModified()) {
-            return $this;
-        }
-        $this->billing = $billing;
-        return $this;
-    }
-
-    /**
-     * @name            getBilling ()
-     *                             Returns the value of billing property.
-     *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @return          mixed           $this->billing
-     */
-    public function getBilling() {
-        return $this->billing;
-    }
-
-    /**
-     * @name                  setCountItems()
-     *                                 Sets the count_items property.
-     *                                 Updates the data only if stored value and value to be set are different.
-     *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @use             $this->setModified()
-     *
-     * @param           mixed $count_items
-     *
-     * @return          object                $this
-     */
-    public function setCountItems($count_items) {
+    public function setCountItems(\integer $count_items) {
         if(!$this->setModified('count_items', $count_items)->isModified()) {
             return $this;
         }
@@ -269,37 +208,18 @@ class ShoppingOrder extends CoreEntity
     }
 
     /**
-     * @name            getCountItems()
-     *                           Returns the value of count_items property.
-     *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @return          mixed           $this->count_items
+     * @return int
      */
     public function getCountItems() {
         return $this->count_items;
     }
 
-    /**
-     * @name                  setDateCancelled ()
-     *                                         Sets the date_cancelled property.
-     *                                         Updates the data only if stored value and value to be set are different.
+    /**+
+     * @param \DateTime $date_cancelled
      *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @use             $this->setModified()
-     *
-     * @param           mixed $date_cancelled
-     *
-     * @return          object                $this
+     * @return $this
      */
-    public function setDateCancelled($date_cancelled) {
+    public function setDateCancelled(\DateTime $date_cancelled) {
         if(!$this->setModified('date_cancelled', $date_cancelled)->isModified()) {
             return $this;
         }
@@ -308,37 +228,18 @@ class ShoppingOrder extends CoreEntity
     }
 
     /**
-     * @name            getDateCancelled ()
-     *                                   Returns the value of date_cancelled property.
-     *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @return          mixed           $this->date_cancelled
+     * @return \DateTime
      */
     public function getDateCancelled() {
         return $this->date_cancelled;
     }
 
     /**
-     * @name                  setDateCreated ()
-     *                                       Sets the date_created property.
-     *                                       Updates the data only if stored value and value to be set are different.
+     * @param \DateTime $date_created
      *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @use             $this->setModified()
-     *
-     * @param           mixed $date_created
-     *
-     * @return          object                $this
+     * @return $this
      */
-    public function setDateCreated($date_created) {
+    public function setDateCreated(\DateTime $date_created) {
         if(!$this->setModified('date_created', $date_created)->isModified()) {
             return $this;
         }
@@ -347,37 +248,18 @@ class ShoppingOrder extends CoreEntity
     }
 
     /**
-     * @name            getDateCreated ()
-     *                                 Returns the value of date_created property.
-     *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @return          mixed           $this->date_created
+     * @return \DateTime
      */
     public function getDateCreated() {
         return $this->date_created;
     }
 
     /**
-     * @name                  setDatePurchased ()
-     *                                         Sets the date_purchased property.
-     *                                         Updates the data only if stored value and value to be set are different.
+     * @param \DateTime $date_purchased
      *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @use             $this->setModified()
-     *
-     * @param           mixed $date_purchased
-     *
-     * @return          object                $this
+     * @return $this
      */
-    public function setDatePurchased($date_purchased) {
+    public function setDatePurchased(\DateTime $date_purchased) {
         if(!$this->setModified('date_purchased', $date_purchased)->isModified()) {
             return $this;
         }
@@ -386,37 +268,18 @@ class ShoppingOrder extends CoreEntity
     }
 
     /**
-     * @name            getDatePurchased ()
-     *                                   Returns the value of date_purchased property.
-     *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @return          mixed           $this->date_purchased
+     * @return \BiberLtd\Bundle\PhpOrientBundle\Odm\Types\DateTime
      */
     public function getDatePurchased() {
         return $this->date_purchased;
     }
 
     /**
-     * @name                  setDateReturned ()
-     *                                        Sets the date_returned property.
-     *                                        Updates the data only if stored value and value to be set are different.
+     * @param \DateTime $date_returned
      *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @use             $this->setModified()
-     *
-     * @param           mixed $date_returned
-     *
-     * @return          object                $this
+     * @return $this
      */
-    public function setDateReturned($date_returned) {
+    public function setDateReturned(\DateTime $date_returned) {
         if(!$this->setModified('date_returned', $date_returned)->isModified()) {
             return $this;
         }
@@ -425,37 +288,18 @@ class ShoppingOrder extends CoreEntity
     }
 
     /**
-     * @name            getDateReturned ()
-     *                                  Returns the value of date_returned property.
-     *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @return          mixed           $this->date_returned
+     * @return \DateTime
      */
     public function getDateReturned() {
         return $this->date_returned;
     }
 
     /**
-     * @name                  setFlag ()
-     *                                Sets the flag property.
-     *                                Updates the data only if stored value and value to be set are different.
+     * @param string $flag
      *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @use             $this->setModified()
-     *
-     * @param           mixed $flag
-     *
-     * @return          object                $this
+     * @return $this
      */
-    public function setFlag($flag) {
+    public function setFlag(\string $flag) {
         if(!$this->setModified('flag', $flag)->isModified()) {
             return $this;
         }
@@ -464,29 +308,14 @@ class ShoppingOrder extends CoreEntity
     }
 
     /**
-     * @name            getFlag ()
-     *                          Returns the value of flag property.
-     *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @return          mixed           $this->flag
+     * @return string
      */
     public function getFlag() {
         return $this->flag;
     }
 
     /**
-     * @name        getInstallmentFee ()
-     *
-     * @author      Said İmamoğlu
-     *
-     * @since       1.0.4
-     * @version     1.0.4
-     *
-     * @return      mixed
+     * @return float
      */
     public function getInstallmentFee()
     {
@@ -494,18 +323,11 @@ class ShoppingOrder extends CoreEntity
     }
 
     /**
-     * @name        setInstallmentFee ()
+     * @param float $installment_fee
      *
-     * @author      Said İmamoğlu
-     *
-     * @since       1.0.4
-     * @version     1.0.4
-     *
-     * @param       mixed $installment_fee
-     *
-     * @return      $this
+     * @return $this
      */
-    public function setInstallmentFee($installment_fee)
+    public function setInstallmentFee(\float $installment_fee)
     {
         if (!$this->setModified('installment_fee', $installment_fee)->isModified()) {
             return $this;
@@ -515,22 +337,11 @@ class ShoppingOrder extends CoreEntity
     }
 
     /**
-     * @name                  set İnstructions()
-     *                            Sets the instructions property.
-     *                            Updates the data only if stored value and value to be set are different.
+     * @param string $instructions
      *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @use             $this->setModified()
-     *
-     * @param           mixed $instructions
-     *
-     * @return          object                $this
+     * @return $this
      */
-    public function setInstructions($instructions) {
+    public function setInstructions(\string $instructions) {
         if(!$this->setModified('instructions', $instructions)->isModified()) {
             return $this;
         }
@@ -539,37 +350,18 @@ class ShoppingOrder extends CoreEntity
     }
 
     /**
-     * @name            get İnstructions()
-     *                      Returns the value of instructions property.
-     *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @return          mixed           $this->instructions
+     * @return string
      */
     public function getInstructions() {
         return $this->instructions;
     }
 
     /**
-     * @name           setPurchaser()
-     *                 Sets the member property.
-     *                 Updates the data only if stored value and value to be set are different.
+     * @param \BiberLtd\Bundle\MemberManagementBundle\Entity\Member $member
      *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @use             $this->setModified()
-     *
-     * @param           mixed $member
-     *
-     * @return          object                $this
+     * @return $this
      */
-    public function setPurchaser($member) {
+    public function setPurchaser(\BiberLtd\Bundle\MemberManagementBundle\Entity\Member $member) {
         if(!$this->setModified('purchaser', $member)->isModified()) {
             return $this;
         }
@@ -578,115 +370,18 @@ class ShoppingOrder extends CoreEntity
     }
 
     /**
-     * @name            getMember ()
-     *                  Returns the value of member property.
-     *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @return          mixed           $this->member
+     * @return \BiberLtd\Bundle\MemberManagementBundle\Entity\Member
      */
     public function getPurchaser() {
         return $this->purchaser;
     }
 
     /**
-     * @name                  setShipping ()
-     *                                    Sets the shipping property.
-     *                                    Updates the data only if stored value and value to be set are different.
+     * @param string $status
      *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @use             $this->setModified()
-     *
-     * @param           mixed $shipping
-     *
-     * @return          object                $this
+     * @return $this
      */
-    public function setShipping($shipping) {
-        if(!$this->setModified('shipping', $shipping)->isModified()) {
-            return $this;
-        }
-        $this->shipping = $shipping;
-        return $this;
-    }
-
-    /**
-     * @name            getShipping ()
-     *                              Returns the value of shipping property.
-     *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @return          mixed           $this->shipping
-     */
-    public function getShipping() {
-        return $this->shipping;
-    }
-
-    /**
-     * @name                  setCart ()
-     *                                        Sets the cart property.
-     *                                        Updates the data only if stored value and value to be set are different.
-     *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @use             $this->setModified()
-     *
-     * @param           mixed $cart
-     *
-     * @return          object                $this
-     */
-    public function setCart($cart) {
-        if(!$this->setModified('cart', $cart)->isModified()) {
-            return $this;
-        }
-        $this->cart = $cart;
-        return $this;
-    }
-
-    /**
-     * @name            getCart ()
-     *                                  Returns the value of cart property.
-     *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @return          mixed           $this->cart
-     */
-    public function getCart() {
-        return $this->cart;
-    }
-
-    /**
-     * @name            setShoppingOrderStatus ()
-     *                  Sets the status property.
-     *                  Updates the data only if stored value and value to be set are different.
-     *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @use             $this->setModified()
-     *
-     * @param           mixed $status
-     *
-     * @return          object                $this
-     */
-    public function setStatus($status) {
+    public function setStatus(\string $status) {
         if(!$this->setModified('status', $status)->isModified()) {
             return $this;
         }
@@ -695,37 +390,18 @@ class ShoppingOrder extends CoreEntity
     }
 
     /**
-     * @name            getShoppingOrderStatus ()
-     *                  Returns the value of status property.
-     *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @return          mixed           $this->status
+     * @return string
      */
     public function getStatus() {
         return $this->status;
     }
 
     /**
-     * @name                  setTotalAmount ()
-     *                                       Sets the total_amount property.
-     *                                       Updates the data only if stored value and value to be set are different.
+     * @param float $total_amount
      *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @use             $this->setModified()
-     *
-     * @param           mixed $total_amount
-     *
-     * @return          object                $this
+     * @return $this
      */
-    public function setTotalAmount($total_amount) {
+    public function setTotalAmount(\float $total_amount) {
         if(!$this->setModified('total_amount', $total_amount)->isModified()) {
             return $this;
         }
@@ -734,37 +410,18 @@ class ShoppingOrder extends CoreEntity
     }
 
     /**
-     * @name            getTotalAmount ()
-     *                                 Returns the value of total_amount property.
-     *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @return          mixed           $this->total_amount
+     * @return float
      */
     public function getTotalAmount() {
         return $this->total_amount;
     }
 
     /**
-     * @name                  setSubtotal ()
-     *                                    Sets the subtotal property.
-     *                                    Updates the data only if stored value and value to be set are different.
+     * @param float $subtotal
      *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @use             $this->setModified()
-     *
-     * @param           mixed $subtotal
-     *
-     * @return          object                $this
+     * @return $this
      */
-    public function setSubtotal($subtotal) {
+    public function setSubtotal(\float $subtotal) {
         if($this->setModified('subtotal', $subtotal)->isModified()) {
             $this->subtotal = $subtotal;
         }
@@ -773,37 +430,18 @@ class ShoppingOrder extends CoreEntity
     }
 
     /**
-     * @name            getSubtotal ()
-     *                              Returns the value of subtotal property.
-     *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @return          mixed           $this->subtotal
+     * @return float
      */
     public function getSubtotal() {
         return $this->subtotal;
     }
 
     /**
-     * @name                  setTotalDiscount ()
-     *                                         Sets the total_discount property.
-     *                                         Updates the data only if stored value and value to be set are different.
+     * @param float $total_discount
      *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @use             $this->setModified()
-     *
-     * @param           mixed $total_discount
-     *
-     * @return          object                $this
+     * @return $this
      */
-    public function setTotalDiscount($total_discount) {
+    public function setTotalDiscount(\float $total_discount) {
         if($this->setModified('total_discount', $total_discount)->isModified()) {
             $this->total_discount = $total_discount;
         }
@@ -812,37 +450,18 @@ class ShoppingOrder extends CoreEntity
     }
 
     /**
-     * @name            getTotalDiscount ()
-     *                                   Returns the value of total_discount property.
-     *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @return          mixed           $this->total_discount
+     * @return float
      */
     public function getTotalDiscount() {
         return $this->total_discount;
     }
 
     /**
-     * @name                  setTotalShipment ()
-     *                                         Sets the total_shipment property.
-     *                                         Updates the data only if stored value and value to be set are different.
+     * @param float $total_shipment
      *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @use             $this->setModified()
-     *
-     * @param           mixed $total_shipment
-     *
-     * @return          object                $this
+     * @return $this
      */
-    public function setTotalShipment($total_shipment) {
+    public function setTotalShipment(\float $total_shipment) {
         if($this->setModified('total_shipment', $total_shipment)->isModified()) {
             $this->total_shipment = $total_shipment;
         }
@@ -851,37 +470,18 @@ class ShoppingOrder extends CoreEntity
     }
 
     /**
-     * @name            getTotalShipment ()
-     *                                   Returns the value of total_shipment property.
-     *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @return          mixed           $this->total_shipment
+     * @return float
      */
     public function getTotalShipment() {
         return $this->total_shipment;
     }
 
     /**
-     * @name                  setTotalTax ()
-     *                                    Sets the total_tax property.
-     *                                    Updates the data only if stored value and value to be set are different.
+     * @param float $total_tax
      *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @use             $this->setModified()
-     *
-     * @param           mixed $total_tax
-     *
-     * @return          object                $this
+     * @return $this
      */
-    public function setTotalTax($total_tax) {
+    public function setTotalTax(\float $total_tax) {
         if($this->setModified('total_tax', $total_tax)->isModified()) {
             $this->total_tax = $total_tax;
         }
@@ -890,94 +490,93 @@ class ShoppingOrder extends CoreEntity
     }
 
     /**
-     * @name            getTotalTax ()
-     *                              Returns the value of total_tax property.
-     *
-     * @author          Can Berkol
-     *
-     * @since           1.0.0
-     * @version         1.0.0
-     *
-     * @return          mixed           $this->total_tax
+     * @return float
      */
     public function getTotalTax() {
         return $this->total_tax;
     }
 
+    /**
+     * @return string
+     */
+    public function getBillingInformation(){
+        return $this->billing_information;
+    }
+
+    /**
+     * @param float $billing_information
+     *
+     * @return $this
+     */
+    public function setBillingInformation(\float $billing_information){
+        if(!$this->setModified('billing_information', $billing_information)->isModified()){
+            return $this;
+        }
+        $this->billing_information = $billing_information;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getShippingInformation(){
+        return $this->shipping_information;
+    }
+
+    /**
+     * @param string $shipping_information
+     *
+     * @return $this
+     */
+    public function setShippingInformation(\string $shipping_information){
+        if(!$this->setModified('shipping_information', $shipping_information)->isModified()){
+            return $this;
+        }
+        $this->shipping_information = $shipping_information;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getContent(){
+        return $this->content;
+    }
+
+    /**
+     * @param string $content
+     *
+     * @return $this
+     */
+    public function setContent(\string $content){
+        if(!$this->setModified('content', $content)->isModified()){
+            return $this;
+        }
+        $this->content = $content;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTransactionInfo(){
+        return $this->transaction_info;
+    }
+
+    /**
+     * @param string $transaction_info
+     *
+     * @return $this
+     */
+    public function setTransactionInfo(\string $transaction_info){
+        if(!$this->setModified('transaction_info', $transaction_info)->isModified()){
+            return $this;
+        }
+        $this->transaction_info = $transaction_info;
+
+        return $this;
+    }
 }
-/**
- * Change Log:
- * *************************************
- * v1.0.4                      Can Berkol
- * 27.02.2015
- * **************************************
- * A getInstallmentFee()
- * A setInstallmentFee()
- * *************************************
- * v1.0.3                      Can Berkol
- * 01.07.2014
- * **************************************
- * A getOrderNumber()
- * A setOrderNumber()
- *
- * *************************************
- * v1.0.2                      Can Berkol
- * 14.04.2014
- * **************************************
- * A getSubtotal()
- * A getTotalDiscount()
- * A getTotalShipment()
- * A getTotalTax()
- * A setSubTotal()
- * A setTotalDiscount()
- * A setTotalShipment()
- * A setTotalTax()
- *
- * *************************************
- * v1.0.1                      Murat Ünal
- * 11.10.2013
- * **************************************
- * D get_payment_transactions()
- * D set_payment_transactions()
- * D getShoppingOrderItems()
- * D setShoppingOrderItems()
- * **************************************
- * v1.0.0                      Murat Ünal
- * 23.09.2013
- * **************************************
- * A getBilling()
- * A getCountItems()
- * A getDateCancelled()
- * A getDateCreated()
- * A get_date_purchased()
- * A getDateReturned()
- * A getDateUpdated()
- * A getFlag()
- * A getId()
- * A getInstructions()
- * A getMember()
- * A get_payment_transactions()
- * A getShipping()
- * A getCart()
- * A getShoppingOrderStatus()
- * A getShoppingOrderItems()
- * A getTotalAmount()
- *
- * A setBilling()
- * A setCountItems()
- * A setDateCancelled()
- * A setDateCreated()
- * A set_date_purchased()
- * A setDateReturned()
- * A setDateUpdated()
- * A setFlag()
- * A setInstructions()
- * A setMember()
- * A set_payment_transactions()
- * A setShipping()
- * A setCart()
- * A setShoppingOrderStatus()
- * A setShoppingOrderItems()
- * A setTotalAmount()
- *
- */
