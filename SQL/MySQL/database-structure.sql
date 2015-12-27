@@ -1,10 +1,11 @@
 /**
  * @author		Can Berkol
+ * @author		Said İmamoğlu
  *
  * @copyright   Biber Ltd. (http://www.biberltd.com) (C) 2015
  * @license     GPLv3
  *
- * @date        27.12.2015
+ * @date        23.12.2015
  */
 SET FOREIGN_KEY_CHECKS=0;
 
@@ -111,7 +112,6 @@ CREATE TABLE `shopping_order` (
   `instructions` longtext COLLATE utf8_turkish_ci COMMENT 'Extra instructions.',
   `flag` char(1) COLLATE utf8_turkish_ci NOT NULL DEFAULT 'o' COMMENT 'o:open;r:returned;c:completed',
   `status` char(1) COLLATE utf8_turkish_ci NOT NULL COMMENT 't:cart,p:purchased,c:cancelled,r:in preperation,s:shipped,r:returned,d:completed',
-  `cart` int(10) unsigned NOT NULL COMMENT 'Cart that order is initiated from.',
   `purchaser` int(10) unsigned NOT NULL COMMENT 'Member who made the purchase',
   `subtotal` decimal(7,2) DEFAULT NULL,
   `total_shipment` decimal(7,2) DEFAULT NULL,
