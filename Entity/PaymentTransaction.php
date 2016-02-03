@@ -98,7 +98,7 @@ class PaymentTransaction extends CoreEntity
      *
      * @return $this
      */
-    public function setAmount(\float $amount) {
+    public function setAmount(float $amount) {
         if(!$this->setModified('amount', $amount)->isModified()) {
             return $this;
         }
@@ -157,7 +157,7 @@ class PaymentTransaction extends CoreEntity
      *
      * @return $this
      */
-    public function setResponse(\string $response) {
+    public function setResponse(string $response) {
         if(!$this->setModified('response', $response)->isModified()) {
             return $this;
         }
@@ -216,7 +216,7 @@ class PaymentTransaction extends CoreEntity
      *
      * @return $this
      */
-    public function setStatus(\string $status) {
+    public function setStatus(string $status) {
         if(!$this->setModified('status', $status)->isModified()) {
             return $this;
         }
@@ -233,7 +233,7 @@ class PaymentTransaction extends CoreEntity
 
     /**
      * */
-    public function setTransactionId(\string $transaction_id) {
+    public function setTransactionId(string $transaction_id) {
         if(!$this->setModified('transaction_id', $transaction_id)->isModified()) {
             return $this;
         }

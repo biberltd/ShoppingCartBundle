@@ -73,7 +73,7 @@ class CouponLocalization extends CoreEntity
      *
      * @return $this
      */
-    public function setDescription(\string $description) {
+    public function setDescription(string $description) {
         if(!$this->setModified('description', $description)->isModified()) {
             return $this;
         }
@@ -113,7 +113,7 @@ class CouponLocalization extends CoreEntity
      *
      * @return $this
      */
-    public function setName(\string $name) {
+    public function setName(string $name) {
         if(!$this->setModified('name', $name)->isModified()) {
             return $this;
         }

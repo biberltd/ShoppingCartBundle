@@ -138,7 +138,7 @@ class Coupon extends CoreLocalizableEntity {
      *
      * @return $this
      */
-    public function setCode(\string $code) {
+    public function setCode(string $code) {
         if (!$this->setModified('code', $code)->isModified()) {
             return $this;
         }
@@ -198,7 +198,7 @@ class Coupon extends CoreLocalizableEntity {
      *
      * @return $this
      */
-    public function setDiscount(\float $discount) {
+    public function setDiscount(float $discount) {
         if (!$this->setModified('discount', $discount)->isModified()) {
             return $this;
         }
@@ -218,7 +218,7 @@ class Coupon extends CoreLocalizableEntity {
      *
      * @return $this
      */
-    public function setLimitDiscount(\float $limit_discount) {
+    public function setLimitDiscount(float $limit_discount) {
         if (!$this->setModified('limit_discount', $limit_discount)->isModified()) {
             return $this;
         }
@@ -236,7 +236,7 @@ class Coupon extends CoreLocalizableEntity {
     /**
      *     object                $this
      */
-    public function setLimitOrderTotal(\float $limit_order_total) {
+    public function setLimitOrderTotal(float $limit_order_total) {
         if (!$this->setModified('limit_order_total', $limit_order_total)->isModified()) {
             return $this;
         }
@@ -256,7 +256,7 @@ class Coupon extends CoreLocalizableEntity {
      *
      * @return $this
      */
-    public function setLimitRedeem(\integer $limit_redeem) {
+    public function setLimitRedeem(int $limit_redeem) {
         if (!$this->setModified('limit_redeem', $limit_redeem)->isModified()) {
             return $this;
         }
@@ -276,7 +276,7 @@ class Coupon extends CoreLocalizableEntity {
      *
      * @return $this
      */
-    public function setValidity(\string $validity) {
+    public function setValidity(string $validity) {
         if (!$this->setModified('validity', $validity)->isModified()) {
             return $this;
         }
@@ -316,7 +316,7 @@ class Coupon extends CoreLocalizableEntity {
      *
      * @return $this
      */
-    public function setType(\string $type) {
+    public function setType(string $type) {
         if (!$this->setModified('type', $type)->isModified()) {
             return $this;
         }
@@ -336,7 +336,7 @@ class Coupon extends CoreLocalizableEntity {
      *
      * @return $this
      */
-    public function setTypeUsage(\string $type_usage) {
+    public function setTypeUsage(string $type_usage) {
         if (!$this->setModified('type_usage', $type_usage)->isModified()) {
             return $this;
         }
@@ -356,7 +356,7 @@ class Coupon extends CoreLocalizableEntity {
      *
      * @return $this
      */
-    public function setTotalDiscountRedeemed(\float $total_discount_redeemed) {
+    public function setTotalDiscountRedeemed(float $total_discount_redeemed) {
         if ($this->setModified('total_discount_redeemed', $total_discount_redeemed)->isModified()) {
             $this->total_discount_redeemed = $total_discount_redeemed;
         }
@@ -376,7 +376,7 @@ class Coupon extends CoreLocalizableEntity {
      *
      * @return $this
      */
-    public function setTotalOrderAmount(\float $total_order_amount) {
+    public function setTotalOrderAmount(float $total_order_amount) {
         if ($this->setModified('total_order_amount', $total_order_amount)->isModified()) {
             $this->total_order_amount = floatval($total_order_amount);
         }
@@ -396,7 +396,7 @@ class Coupon extends CoreLocalizableEntity {
      *
      * @return $this
      */
-    public function setCountRedeemed(\integer $count_redeemed) {
+    public function setCountRedeemed(int $count_redeemed) {
         if ($this->setModified('count_redeemed', $count_redeemed)->isModified()) {
             $this->count_redeemed = $count_redeemed;
         }

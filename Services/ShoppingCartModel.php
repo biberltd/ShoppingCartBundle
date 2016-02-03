@@ -35,7 +35,7 @@ class ShoppingCartModel extends CoreModel {
      * @param string $db_connection
      * @param string $orm
      */
-    public function __construct($kernel, \string $db_connection = 'default', \string $orm = 'doctrine') {
+    public function __construct($kernel, string $db_connection = 'default', string $orm = 'doctrine') {
         parent::__construct($kernel, $db_connection, $orm);
 
         /**
@@ -68,7 +68,7 @@ class ShoppingCartModel extends CoreModel {
 	 *
 	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
 	 */
-	public function countOrdersWithFlag(\string $flag, array $filter = null, array $sortOrder = null, array $limit = null){
+	public function countOrdersWithFlag(string $flag, array $filter = null, array $sortOrder = null, array $limit = null){
 		$filter[] = array(
 			'glue' => 'and',
 			'condition' => array(
@@ -147,7 +147,7 @@ class ShoppingCartModel extends CoreModel {
 	 *
 	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse|mixed
 	 */
-	public function countOrdersOfMemberWithFlag($member, \string $flag, array $filter = null, array $sortOrder = null, array $limit = null){
+	public function countOrdersOfMemberWithFlag($member, string $flag, array $filter = null, array $sortOrder = null, array $limit = null){
 		/**
 		 * @var \BiberLtd\Bundle\MemberManagementBundle\Services\MemberManagementModel $mModel
 		 */
@@ -242,7 +242,7 @@ class ShoppingCartModel extends CoreModel {
 	 */
 	public function deletePaymentTransactions(array $collection)
 	{
-		$timeStamp = time();
+		$timeStamp = microtime(true);
 		if (!is_array($collection)) {
 			return $this->createException('InvalidParameterValueException', 'Invalid parameter value. Parameter must be an array collection', 'E:S:001');
 		}
@@ -260,10 +260,10 @@ class ShoppingCartModel extends CoreModel {
 			}
 		}
 		if ($countDeleted < 0) {
-			return new ModelResponse(null, 0, 0, null, true, 'E:E:001', 'Unable to delete all or some of the selected entries.', $timeStamp, time());
+			return new ModelResponse(null, 0, 0, null, true, 'E:E:001', 'Unable to delete all or some of the selected entries.', $timeStamp, microtime(true));
 		}
 		$this->em->flush();
-		return new ModelResponse(null, 0, 0, null, false, 'S:D:001', 'Selected entries have been successfully removed from database.', $timeStamp, time());
+		return new ModelResponse(null, 0, 0, null, false, 'S:D:001', 'Selected entries have been successfully removed from database.', $timeStamp, microtime(true));
 	}
 
 	/**
@@ -282,7 +282,7 @@ class ShoppingCartModel extends CoreModel {
 	 */
 	public function deleteShoppingOrders(array $collection)
 	{
-		$timeStamp = time();
+		$timeStamp = microtime(true);
 		if (!is_array($collection)) {
 			return $this->createException('InvalidParameterValueException', 'Invalid parameter value. Parameter must be an array collection', 'E:S:001');
 		}
@@ -300,10 +300,10 @@ class ShoppingCartModel extends CoreModel {
 			}
 		}
 		if ($countDeleted < 0) {
-			return new ModelResponse(null, 0, 0, null, true, 'E:E:001', 'Unable to delete all or some of the selected entries.', $timeStamp, time());
+			return new ModelResponse(null, 0, 0, null, true, 'E:E:001', 'Unable to delete all or some of the selected entries.', $timeStamp, microtime(true));
 		}
 		$this->em->flush();
-		return new ModelResponse(null, 0, 0, null, false, 'S:D:001', 'Selected entries have been successfully removed from database.', $timeStamp, time());
+		return new ModelResponse(null, 0, 0, null, false, 'S:D:001', 'Selected entries have been successfully removed from database.', $timeStamp, microtime(true));
 	}
 
 	/**
@@ -321,7 +321,7 @@ class ShoppingCartModel extends CoreModel {
 	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
 	 */
     public function deleteShoppingOrderItems(array $collection) {
-	    $timeStamp = time();
+	    $timeStamp = microtime(true);
 	    if (!is_array($collection)) {
 		    return $this->createException('InvalidParameterValueException', 'Invalid parameter value. Parameter must be an array collection', 'E:S:001');
 	    }
@@ -339,10 +339,10 @@ class ShoppingCartModel extends CoreModel {
 		    }
 	    }
 	    if ($countDeleted < 0) {
-		    return new ModelResponse(null, 0, 0, null, true, 'E:E:001', 'Unable to delete all or some of the selected entries.', $timeStamp, time());
+		    return new ModelResponse(null, 0, 0, null, true, 'E:E:001', 'Unable to delete all or some of the selected entries.', $timeStamp, microtime(true));
 	    }
 	    $this->em->flush();
-	    return new ModelResponse(null, 0, 0, null, false, 'S:D:001', 'Selected entries have been successfully removed from database.', $timeStamp, time());
+	    return new ModelResponse(null, 0, 0, null, false, 'S:D:001', 'Selected entries have been successfully removed from database.', $timeStamp, microtime(true));
     }
 
 	/**
@@ -351,7 +351,7 @@ class ShoppingCartModel extends CoreModel {
 	 *
 	 * @return bool
 	 */
-	public function doesPaymentTransationExist($transaction, \bool $bypass = false)
+	public function doesPaymentTransationExist($transaction, bool $bypass = false)
 	{
 		$response = $this->getPaymentTransaction($transaction);
 		$exist = true;
@@ -371,7 +371,7 @@ class ShoppingCartModel extends CoreModel {
 	 *
 	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse|bool
 	 */
-	public function doesShoppingOrderExist($order, \bool $bypass = false)
+	public function doesShoppingOrderExist($order, bool $bypass = false)
 	{
 		$response = $this->getShoppingOrder($order);
 		$exist = true;
@@ -391,7 +391,7 @@ class ShoppingCartModel extends CoreModel {
 	 *
 	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse|bool
 	 */
-	public function doesShoppingOrderItemExist($item, \bool $bypass = false)
+	public function doesShoppingOrderItemExist($item, bool $bypass = false)
 	{
 		$response = $this->getShoppingOrderItem($item);
 		$exist = true;
@@ -412,9 +412,9 @@ class ShoppingCartModel extends CoreModel {
 	 */
 	public function  getPaymentTransaction($transaction)
 	{
-		$timeStamp = time();
+		$timeStamp = microtime(true);
 		if ($transaction instanceof BundleEntity\PaymentTransaction) {
-			return new ModelResponse($transaction, 1, 0, null, false, 'S:D:002', 'Entries successfully fetched from database.', $timeStamp, time());
+			return new ModelResponse($transaction, 1, 0, null, false, 'S:D:002', 'Entries successfully fetched from database.', $timeStamp, microtime(true));
 		}
 		$result = null;
 		switch ($transaction) {
@@ -423,9 +423,9 @@ class ShoppingCartModel extends CoreModel {
 				break;
 		}
 		if (is_null($result)) {
-			return new ModelResponse($result, 0, 0, null, true, 'E:D:002', 'Unable to find request entry in database.', $timeStamp, time());
+			return new ModelResponse($result, 0, 0, null, true, 'E:D:002', 'Unable to find request entry in database.', $timeStamp, microtime(true));
 		}
-		return new ModelResponse($result, 1, 0, null, false, 'S:D:002', 'Entries successfully fetched from database.', $timeStamp, time());
+		return new ModelResponse($result, 1, 0, null, false, 'S:D:002', 'Entries successfully fetched from database.', $timeStamp, microtime(true));
 	}
 
 	/**
@@ -434,9 +434,9 @@ class ShoppingCartModel extends CoreModel {
 	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
 	 */
     public function getShoppingOrder($order) {
-	    $timeStamp = time();
+	    $timeStamp = microtime(true);
 	    if ($order instanceof BundleEntity\ShoppingOrder) {
-		    return new ModelResponse($order, 1, 0, null, false, 'S:D:002', 'Entries successfully fetched from database.', $timeStamp, time());
+		    return new ModelResponse($order, 1, 0, null, false, 'S:D:002', 'Entries successfully fetched from database.', $timeStamp, microtime(true));
 	    }
 	    $result = null;
 	    switch ($order) {
@@ -448,9 +448,9 @@ class ShoppingCartModel extends CoreModel {
 			    break;
 	    }
 	    if (is_null($result)) {
-		    return new ModelResponse($result, 0, 0, null, true, 'E:D:002', 'Unable to find request entry in database.', $timeStamp, time());
+		    return new ModelResponse($result, 0, 0, null, true, 'E:D:002', 'Unable to find request entry in database.', $timeStamp, microtime(true));
 	    }
-	    return new ModelResponse($result, 1, 0, null, false, 'S:D:002', 'Entries successfully fetched from database.', $timeStamp, time());
+	    return new ModelResponse($result, 1, 0, null, false, 'S:D:002', 'Entries successfully fetched from database.', $timeStamp, microtime(true));
     }
 
 	/**
@@ -459,9 +459,9 @@ class ShoppingCartModel extends CoreModel {
 	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
 	 */
     public function getShoppingOrderItem($item) {
-	    $timeStamp = time();
+	    $timeStamp = microtime(true);
 	    if ($item instanceof BundleEntity\ShoppingOrderItem) {
-		    return new ModelResponse($item, 1, 0, null, false, 'S:D:002', 'Entries successfully fetched from database.', $timeStamp, time());
+		    return new ModelResponse($item, 1, 0, null, false, 'S:D:002', 'Entries successfully fetched from database.', $timeStamp, microtime(true));
 	    }
 	    $result = null;
 	    switch ($item) {
@@ -470,9 +470,9 @@ class ShoppingCartModel extends CoreModel {
 			    break;
 	    }
 	    if (is_null($result)) {
-		    return new ModelResponse($result, 0, 0, null, true, 'E:D:002', 'Unable to find request entry in database.', $timeStamp, time());
+		    return new ModelResponse($result, 0, 0, null, true, 'E:D:002', 'Unable to find request entry in database.', $timeStamp, microtime(true));
 	    }
-	    return new ModelResponse($result, 1, 0, null, false, 'S:D:002', 'Entries successfully fetched from database.', $timeStamp, time());
+	    return new ModelResponse($result, 1, 0, null, false, 'S:D:002', 'Entries successfully fetched from database.', $timeStamp, microtime(true));
     }
 
 	/**
@@ -491,12 +491,12 @@ class ShoppingCartModel extends CoreModel {
 	 */
 	public function insertPaymentTransactions(array $collection)
 	{
-		$timeStamp = time();
+		$timeStamp = microtime(true);
 		if (!is_array($collection)) {
 			return $this->createException('InvalidParameterValueException', 'Invalid parameter value. Parameter must be an array collection', 'E:S:001');
 		}
 		$countInserts = 0;
-		$insertedItems = array();
+		$insertedItems = [];
 		$now = new \DateTime('now', new \DateTimeZone($this->kernel->getContainer()->getParameter('app_timezone')));
 		foreach ($collection as $data) {
 			if ($data instanceof BundleEntity\PaymentTransaction) {
@@ -570,9 +570,9 @@ class ShoppingCartModel extends CoreModel {
 		}
 		if ($countInserts > 0) {
 			$this->em->flush();
-			return new ModelResponse($insertedItems, $countInserts, 0, null, false, 'S:D:003', 'Selected entries have been successfully inserted into database.', $timeStamp, time());
+			return new ModelResponse($insertedItems, $countInserts, 0, null, false, 'S:D:003', 'Selected entries have been successfully inserted into database.', $timeStamp, microtime(true));
 		}
-		return new ModelResponse(null, 0, 0, null, true, 'E:D:003', 'One or more entities cannot be inserted into database.', $timeStamp, time());
+		return new ModelResponse(null, 0, 0, null, true, 'E:D:003', 'One or more entities cannot be inserted into database.', $timeStamp, microtime(true));
 	}
 
 	/**
@@ -591,12 +591,12 @@ class ShoppingCartModel extends CoreModel {
 	 */
 	public function insertShoppingOrders(array $collection)
 	{
-		$timeStamp = time();
+		$timeStamp = microtime(true);
 		if (!is_array($collection)) {
 			return $this->createException('InvalidParameterValueException', 'Invalid parameter value. Parameter must be an array collection', 'E:S:001');
 		}
 		$countInserts = 0;
-		$insertedItems = array();
+		$insertedItems = [];
 		$now = new \DateTime('now', new \DateTimeZone($this->kernel->getContainer()->getParameter('app_timezone')));
 		foreach ($collection as $data) {
 			if ($data instanceof BundleEntity\ShoppingOrder) {
@@ -637,9 +637,9 @@ class ShoppingCartModel extends CoreModel {
 		}
 		if ($countInserts > 0) {
 			$this->em->flush();
-			return new ModelResponse($insertedItems, $countInserts, 0, null, false, 'S:D:003', 'Selected entries have been successfully inserted into database.', $timeStamp, time());
+			return new ModelResponse($insertedItems, $countInserts, 0, null, false, 'S:D:003', 'Selected entries have been successfully inserted into database.', $timeStamp, microtime(true));
 		}
-		return new ModelResponse(null, 0, 0, null, true, 'E:D:003', 'One or more entities cannot be inserted into database.', $timeStamp, time());
+		return new ModelResponse(null, 0, 0, null, true, 'E:D:003', 'One or more entities cannot be inserted into database.', $timeStamp, microtime(true));
 	}
 
 	/**
@@ -658,12 +658,12 @@ class ShoppingCartModel extends CoreModel {
 	 */
 	public function insertShoppingOrderItems(array $collection)
 	{
-		$timeStamp = time();
+		$timeStamp = microtime(true);
 		if (!is_array($collection)) {
 			return $this->createException('InvalidParameterValueException', 'Invalid parameter value. Parameter must be an array collection', 'E:S:001');
 		}
 		$countInserts = 0;
-		$insertedItems = array();
+		$insertedItems = [];
 		$now = new \DateTime('now', new \DateTimeZone($this->kernel->getContainer()->getParameter('app_timezone')));
 		foreach ($collection as $data) {
 			if ($data instanceof BundleEntity\ShoppingOrderItem) {
@@ -712,9 +712,9 @@ class ShoppingCartModel extends CoreModel {
 		}
 		if ($countInserts > 0) {
 			$this->em->flush();
-			return new ModelResponse($insertedItems, $countInserts, 0, null, false, 'S:D:003', 'Selected entries have been successfully inserted into database.', $timeStamp, time());
+			return new ModelResponse($insertedItems, $countInserts, 0, null, false, 'S:D:003', 'Selected entries have been successfully inserted into database.', $timeStamp, microtime(true));
 		}
-		return new ModelResponse(null, 0, 0, null, true, 'E:D:003', 'One or more entities cannot be inserted into database.', $timeStamp, time());
+		return new ModelResponse(null, 0, 0, null, true, 'E:D:003', 'One or more entities cannot be inserted into database.', $timeStamp, microtime(true));
 	}
 
 	/**
@@ -767,7 +767,7 @@ class ShoppingCartModel extends CoreModel {
 	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
 	 */
 	public function listPaymentTransactions(array $filter = null, array $sortOrder = null, array $limit = null) {
-		$timeStamp = time();
+		$timeStamp = microtime(true);
 		if (!is_array($sortOrder) && !is_null($sortOrder)) {
 			return $this->createException('InvalidSortOrderException', '$sortOrder must be an array with key => value pairs where value can only be "asc" or "desc".', 'E:S:002');
 		}
@@ -805,9 +805,9 @@ class ShoppingCartModel extends CoreModel {
 
 		$totalRows = count($result);
 		if ($totalRows < 1) {
-			return new ModelResponse(null, 0, 0, null, true, 'E:D:002', 'No entries found in database that matches to your criterion.', $timeStamp, time());
+			return new ModelResponse(null, 0, 0, null, true, 'E:D:002', 'No entries found in database that matches to your criterion.', $timeStamp, microtime(true));
 		}
-		return new ModelResponse($result, $totalRows, 0, null, false, 'S:D:002', 'Entries successfully fetched from database.', $timeStamp, time());
+		return new ModelResponse($result, $totalRows, 0, null, false, 'S:D:002', 'Entries successfully fetched from database.', $timeStamp, microtime(true));
 	}
 
 	/**
@@ -964,7 +964,7 @@ class ShoppingCartModel extends CoreModel {
 	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
 	 */
 	public function listShoppingOrderItems(array $filter = null, array $sortOrder = null, array $limit = null) {
-		$timeStamp = time();
+		$timeStamp = microtime(true);
 		if (!is_array($sortOrder) && !is_null($sortOrder)) {
 			return $this->createException('InvalidSortOrderException', '$sortOrder must be an array with key => value pairs where value can only be "asc" or "desc".', 'E:S:002');
 		}
@@ -1008,9 +1008,9 @@ class ShoppingCartModel extends CoreModel {
 
 		$totalRows = count($result);
 		if ($totalRows < 1) {
-			return new ModelResponse(null, 0, 0, null, true, 'E:D:002', 'No entries found in database that matches to your criterion.', $timeStamp, time());
+			return new ModelResponse(null, 0, 0, null, true, 'E:D:002', 'No entries found in database that matches to your criterion.', $timeStamp, microtime(true));
 		}
-		return new ModelResponse($result, $totalRows, 0, null, false, 'S:D:002', 'Entries successfully fetched from database.', $timeStamp, time());
+		return new ModelResponse($result, $totalRows, 0, null, false, 'S:D:002', 'Entries successfully fetched from database.', $timeStamp, microtime(true));
 	}
 
     /**
@@ -1021,7 +1021,7 @@ class ShoppingCartModel extends CoreModel {
      * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
      */
     public function listShoppingOrders(array $filter = null, array $sortOrder = null, array $limit = null) {
-        $timeStamp = time();
+        $timeStamp = microtime(true);
         if (!is_array($sortOrder) && !is_null($sortOrder)) {
             return $this->createException('InvalidSortOrderException', '$sortOrder must be an array with key => value pairs where value can only be "asc" or "desc".', 'E:S:002');
         }
@@ -1072,9 +1072,9 @@ class ShoppingCartModel extends CoreModel {
 
         $totalRows = count($result);
         if ($totalRows < 1) {
-            return new ModelResponse(null, 0, 0, null, true, 'E:D:002', 'No entries found in database that matches to your criterion.', $timeStamp, time());
+            return new ModelResponse(null, 0, 0, null, true, 'E:D:002', 'No entries found in database that matches to your criterion.', $timeStamp, microtime(true));
         }
-        return new ModelResponse($result, $totalRows, 0, null, false, 'S:D:002', 'Entries successfully fetched from database.', $timeStamp, time());
+        return new ModelResponse($result, $totalRows, 0, null, false, 'S:D:002', 'Entries successfully fetched from database.', $timeStamp, microtime(true));
     }
 
 	/**
@@ -1120,7 +1120,7 @@ class ShoppingCartModel extends CoreModel {
 	 *
 	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
 	 */
-    public function listShoppingOrdersWithFlag(\string $flag, array $filter = null, array $sortorder = null, array $limit = null) {
+    public function listShoppingOrdersWithFlag(string $flag, array $filter = null, array $sortorder = null, array $limit = null) {
         $column = $this->entity['so']['alias'] . '.flag';
         $condition = array('column' => $column, 'comparison' => '=', 'value' => $flag);
         $filter[] = array(
@@ -1151,9 +1151,9 @@ class ShoppingCartModel extends CoreModel {
 	 */
 	public function updatePaymentTransactions(array $collection)
 	{
-		$timeStamp = time();
+		$timeStamp = microtime(true);
 		$countUpdates = 0;
-		$updatedItems = array();
+		$updatedItems = [];
 		foreach ($collection as $data) {
 			if ($data instanceof BundleEntity\PaymentTransaction) {
 				$entity = $data;
@@ -1236,9 +1236,9 @@ class ShoppingCartModel extends CoreModel {
 		}
 		if ($countUpdates > 0) {
 			$this->em->flush();
-			return new ModelResponse($updatedItems, $countUpdates, 0, null, false, 'S:D:004', 'Selected entries have been successfully updated within database.', $timeStamp, time());
+			return new ModelResponse($updatedItems, $countUpdates, 0, null, false, 'S:D:004', 'Selected entries have been successfully updated within database.', $timeStamp, microtime(true));
 		}
-		return new ModelResponse(null, 0, 0, null, true, 'E:D:004', 'One or more entities cannot be updated within database.', $timeStamp, time());
+		return new ModelResponse(null, 0, 0, null, true, 'E:D:004', 'One or more entities cannot be updated within database.', $timeStamp, microtime(true));
 	}
 
 	/**
@@ -1266,9 +1266,9 @@ class ShoppingCartModel extends CoreModel {
 	 */
 	public function updateShoppingOrderItems(array $collection)
 	{
-		$timeStamp = time();
+		$timeStamp = microtime(true);
 		$countUpdates = 0;
-		$updatedItems = array();
+		$updatedItems = [];
 		$now = new \DateTime('now', new \DateTimeZone($this->kernel->getContainer()->getParameter('app_timezone')));
 		foreach ($collection as $data) {
 			if ($data instanceof BundleEntity\PaymentTransaction) {
@@ -1327,9 +1327,9 @@ class ShoppingCartModel extends CoreModel {
 		}
 		if ($countUpdates > 0) {
 			$this->em->flush();
-			return new ModelResponse($updatedItems, $countUpdates, 0, null, false, 'S:D:004', 'Selected entries have been successfully updated within database.', $timeStamp, time());
+			return new ModelResponse($updatedItems, $countUpdates, 0, null, false, 'S:D:004', 'Selected entries have been successfully updated within database.', $timeStamp, microtime(true));
 		}
-		return new ModelResponse(null, 0, 0, null, true, 'E:D:004', 'One or more entities cannot be updated within database.', $timeStamp, time());
+		return new ModelResponse(null, 0, 0, null, true, 'E:D:004', 'One or more entities cannot be updated within database.', $timeStamp, microtime(true));
 	}
 
 	/**
@@ -1339,9 +1339,9 @@ class ShoppingCartModel extends CoreModel {
 	 */
 	public function updateShoppingOrders(array $collection)
 	{
-		$timeStamp = time();
+		$timeStamp = microtime(true);
 		$countUpdates = 0;
-		$updatedItems = array();
+		$updatedItems = [];
 		$now = new \DateTime('now', new \DateTimeZone($this->kernel->getContainer()->getParameter('app_timezone')));
 		foreach ($collection as $data) {
 			if ($data instanceof BundleEntity\PaymentTransaction) {
@@ -1392,9 +1392,9 @@ class ShoppingCartModel extends CoreModel {
 		}
 		if ($countUpdates > 0) {
 			$this->em->flush();
-			return new ModelResponse($updatedItems, $countUpdates, 0, null, false, 'S:D:004', 'Selected entries have been successfully updated within database.', $timeStamp, time());
+			return new ModelResponse($updatedItems, $countUpdates, 0, null, false, 'S:D:004', 'Selected entries have been successfully updated within database.', $timeStamp, microtime(true));
 		}
-		return new ModelResponse(null, 0, 0, null, true, 'E:D:004', 'One or more entities cannot be updated within database.', $timeStamp, time());
+		return new ModelResponse(null, 0, 0, null, true, 'E:D:004', 'One or more entities cannot be updated within database.', $timeStamp, microtime(true));
 	}
 
 	/**
@@ -1413,7 +1413,7 @@ class ShoppingCartModel extends CoreModel {
 	 */
 	public function deleteCoupons(array $collection)
 	{
-		$timeStamp = time();
+		$timeStamp = microtime(true);
 		if (!is_array($collection)) {
 			return $this->createException('InvalidParameterValueException', 'Invalid parameter value. Parameter must be an array collection', 'E:S:001');
 		}
@@ -1431,10 +1431,10 @@ class ShoppingCartModel extends CoreModel {
 			}
 		}
 		if ($countDeleted < 0) {
-			return new ModelResponse(null, 0, 0, null, true, 'E:E:001', 'Unable to delete all or some of the selected entries.', $timeStamp, time());
+			return new ModelResponse(null, 0, 0, null, true, 'E:E:001', 'Unable to delete all or some of the selected entries.', $timeStamp, microtime(true));
 		}
 		$this->em->flush();
-		return new ModelResponse(null, 0, 0, null, false, 'S:D:001', 'Selected entries have been successfully removed from database.', $timeStamp, time());
+		return new ModelResponse(null, 0, 0, null, false, 'S:D:001', 'Selected entries have been successfully removed from database.', $timeStamp, microtime(true));
 	}
 
 	/**
@@ -1446,7 +1446,7 @@ class ShoppingCartModel extends CoreModel {
 	 */
 	public function listCoupons(array  $filter = null, array $sortOrder = null,array  $limit = null)
 	{
-		$timeStamp = time();
+		$timeStamp = microtime(true);
 		if (!is_array($sortOrder) && !is_null($sortOrder)) {
 			return $this->createException('InvalidSortOrderException', '$sortOrder must be an array with key => value pairs where value can only be "asc" or "desc".', 'E:S:002');
 		}
@@ -1496,7 +1496,7 @@ class ShoppingCartModel extends CoreModel {
 
 		$result = $q->getResult();
 
-		$entities = array();
+		$entities = [];
 		foreach ($result as $entry) {
 			$id = $entry->getCoupon()->getId();
 			if (!isset($unique[$id])) {
@@ -1506,9 +1506,9 @@ class ShoppingCartModel extends CoreModel {
 		}
 		$totalRows = count($entities);
 		if ($totalRows < 1) {
-			return new ModelResponse(null, 0, 0, null, true, 'E:D:002', 'No entries found in database that matches to your criterion.', $timeStamp, time());
+			return new ModelResponse(null, 0, 0, null, true, 'E:D:002', 'No entries found in database that matches to your criterion.', $timeStamp, microtime(true));
 		}
-		return new ModelResponse($entities, $totalRows, 0, null, false, 'S:D:002', 'Entries successfully fetched from database.', $timeStamp, time());
+		return new ModelResponse($entities, $totalRows, 0, null, false, 'S:D:002', 'Entries successfully fetched from database.', $timeStamp, microtime(true));
 	}
 
 	/**
@@ -1517,9 +1517,9 @@ class ShoppingCartModel extends CoreModel {
 	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
 	 */
 	public function getCoupon($coupon) {
-		$timeStamp = time();
+		$timeStamp = microtime(true);
 		if ($coupon instanceof BundleEntity\Coupon) {
-			return new ModelResponse($coupon, 1, 0, null, false, 'S:D:002', 'Entries successfully fetched from database.', $timeStamp, time());
+			return new ModelResponse($coupon, 1, 0, null, false, 'S:D:002', 'Entries successfully fetched from database.', $timeStamp, microtime(true));
 		}
 		$result = null;
 		switch ($coupon) {
@@ -1531,9 +1531,9 @@ class ShoppingCartModel extends CoreModel {
 				break;
 		}
 		if (is_null($result)) {
-			return new ModelResponse($result, 0, 0, null, true, 'E:D:002', 'Unable to find request entry in database.', $timeStamp, time());
+			return new ModelResponse($result, 0, 0, null, true, 'E:D:002', 'Unable to find request entry in database.', $timeStamp, microtime(true));
 		}
-		return new ModelResponse($result, 1, 0, null, false, 'S:D:002', 'Entries successfully fetched from database.', $timeStamp, time());
+		return new ModelResponse($result, 1, 0, null, false, 'S:D:002', 'Entries successfully fetched from database.', $timeStamp, microtime(true));
 	}
 
 	/**
@@ -1542,7 +1542,7 @@ class ShoppingCartModel extends CoreModel {
 	 *
 	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse|bool
 	 */
-	public function doesCouponExist($coupon, \bool $bypass = false)
+	public function doesCouponExist($coupon, bool $bypass = false)
 	{
 		$response = $this->getCoupon($coupon);
 		$exist = true;
@@ -1572,14 +1572,14 @@ class ShoppingCartModel extends CoreModel {
 	 */
 	public function insertCoupons(array $collection)
 	{
-		$timeStamp = time();
+		$timeStamp = microtime(true);
 		if (!is_array($collection)) {
 			return $this->createException('InvalidParameterValueException', 'Invalid parameter value. Parameter must be an array collection', 'E:S:001');
 		}
 		$countInserts = 0;
 		$countLocalizations = 0;
-		$insertedItems = array();
-		$localizations = array();
+		$insertedItems = [];
+		$localizations = [];
 		$now = new \DateTime('now', new \DateTimeZone($this->kernel->getContainer()->getParameter('app_timezone')));
 		foreach ($collection as $data) {
 			if ($data instanceof BundleEntity\Coupon) {
@@ -1632,9 +1632,9 @@ class ShoppingCartModel extends CoreModel {
 		}
 		if ($countInserts > 0) {
 			$this->em->flush();
-			return new ModelResponse($insertedItems, $countInserts, 0, null, false, 'S:D:003', 'Selected entries have been successfully inserted into database.', $timeStamp, time());
+			return new ModelResponse($insertedItems, $countInserts, 0, null, false, 'S:D:003', 'Selected entries have been successfully inserted into database.', $timeStamp, microtime(true));
 		}
-		return new ModelResponse(null, 0, 0, null, true, 'E:D:003', 'One or more entities cannot be inserted into database.', $timeStamp, time());
+		return new ModelResponse(null, 0, 0, null, true, 'E:D:003', 'One or more entities cannot be inserted into database.', $timeStamp, microtime(true));
 	}
 
 	/**
@@ -1644,12 +1644,12 @@ class ShoppingCartModel extends CoreModel {
 	 */
 	public function insertCouponLocalizations(array $collection)
 	{
-		$timeStamp = time();
+		$timeStamp = microtime(true);
 		if (!is_array($collection)) {
 			return $this->createException('InvalidParameterValueException', 'Invalid parameter value. Parameter must be an array collection', 'E:S:001');
 		}
 		$countInserts = 0;
-		$insertedItems = array();
+		$insertedItems = [];
 		foreach ($collection as $data) {
 			if ($data instanceof BundleEntity\CouponLocalization) {
 				$entity = $data;
@@ -1687,9 +1687,9 @@ class ShoppingCartModel extends CoreModel {
 		}
 		if ($countInserts > 0) {
 			$this->em->flush();
-			return new ModelResponse($insertedItems, $countInserts, 0, null, false, 'S:D:003', 'Selected entries have been successfully inserted into database.', $timeStamp, time());
+			return new ModelResponse($insertedItems, $countInserts, 0, null, false, 'S:D:003', 'Selected entries have been successfully inserted into database.', $timeStamp, microtime(true));
 		}
-		return new ModelResponse(null, 0, 0, null, true, 'E:D:003', 'One or more entities cannot be inserted into database.', $timeStamp, time());
+		return new ModelResponse(null, 0, 0, null, true, 'E:D:003', 'One or more entities cannot be inserted into database.', $timeStamp, microtime(true));
 	}
 
 	/**
@@ -1708,13 +1708,13 @@ class ShoppingCartModel extends CoreModel {
 	 */
 	public function updateCoupons(array $collection)
 	{
-		$timeStamp = time();
+		$timeStamp = microtime(true);
 		if (!is_array($collection)) {
 			return $this->createException('InvalidParameterValueException', 'Invalid parameter value. Parameter must be an array collection', 'E:S:001');
 		}
 		$countUpdates = 0;
-		$updatedItems = array();
-		$localizations = array();
+		$updatedItems = [];
+		$localizations = [];
 		foreach ($collection as $data) {
 			if ($data instanceof BundleEntity\Coupon) {
 				$entity = $data;
@@ -1787,9 +1787,9 @@ class ShoppingCartModel extends CoreModel {
 		}
 		if ($countUpdates > 0) {
 			$this->em->flush();
-			return new ModelResponse($updatedItems, $countUpdates, 0, null, false, 'S:D:004', 'Selected entries have been successfully updated within database.', $timeStamp, time());
+			return new ModelResponse($updatedItems, $countUpdates, 0, null, false, 'S:D:004', 'Selected entries have been successfully updated within database.', $timeStamp, microtime(true));
 		}
-		return new ModelResponse(null, 0, 0, null, true, 'E:D:004', 'One or more entities cannot be updated within database.', $timeStamp, time());
+		return new ModelResponse(null, 0, 0, null, true, 'E:D:004', 'One or more entities cannot be updated within database.', $timeStamp, microtime(true));
 	}
 
 	/**
@@ -1800,7 +1800,7 @@ class ShoppingCartModel extends CoreModel {
 	 *
 	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
 	 */
-    public function listPurchasedOrders(\bool $returned = false, \bool $cancelled = false, array $sortOrder = null, array$limit = null) {
+    public function listPurchasedOrders(bool $returned = false, bool $cancelled = false, array $sortOrder = null, array$limit = null) {
 	    $filter = [];
 	    if ($returned) {
             $column = $this->entity['so']['alias'] . '.date_returned';
@@ -1852,7 +1852,7 @@ class ShoppingCartModel extends CoreModel {
 	 *
 	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
 	 */
-    public function listPurchasedOrdersBetween(\DateTime $dateStart, \DateTime $dateEnd, \bool $returned = false, \bool $cancelled = false, array $sortOrder = null, array $limit = null) {
+    public function listPurchasedOrdersBetween(\DateTime $dateStart, \DateTime $dateEnd, bool $returned = false, bool $cancelled = false, array $sortOrder = null, array $limit = null) {
         $filter = [];
         if ($returned) {
             $column = $this->entity['so']['alias'] . '.date_returned';
@@ -1947,7 +1947,7 @@ class ShoppingCartModel extends CoreModel {
 		    return $response;
 	    }
 	    $member = $response->result->set;
-	    $filter = array();
+	    $filter = [];
         $column = $this->entity['so']['alias'] . '.purchaser';
         $condition = array('column' => $column, 'comparison' => '=', 'value' => $member->getId());
         $filter[] = array(
@@ -1995,7 +1995,7 @@ class ShoppingCartModel extends CoreModel {
 	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
 	 */
 	public function listRedeemedCoupons(array $filter = null, array $sortOrder = null, array $limit = null) {
-		$timeStamp = time();
+		$timeStamp = microtime(true);
 		if (!is_array($sortOrder) && !is_null($sortOrder)) {
 			return $this->createException('InvalidSortOrderException', '$sortOrder must be an array with key => value pairs where value can only be "asc" or "desc".', 'E:S:002');
 		}
@@ -2030,9 +2030,9 @@ class ShoppingCartModel extends CoreModel {
 
 		$totalRows = count($result);
 		if ($totalRows < 1) {
-			return new ModelResponse(null, 0, 0, null, true, 'E:D:002', 'No entries found in database that matches to your criterion.', $timeStamp, time());
+			return new ModelResponse(null, 0, 0, null, true, 'E:D:002', 'No entries found in database that matches to your criterion.', $timeStamp, microtime(true));
 		}
-		return new ModelResponse($result, $totalRows, 0, null, false, 'S:D:002', 'Entries successfully fetched from database.', $timeStamp, time());
+		return new ModelResponse($result, $totalRows, 0, null, false, 'S:D:002', 'Entries successfully fetched from database.', $timeStamp, microtime(true));
 	}
 
 	/**
@@ -2076,12 +2076,12 @@ class ShoppingCartModel extends CoreModel {
 	 */
 	public function insertRedeemedCoupons(array $collection)
 	{
-		$timeStamp = time();
+		$timeStamp = microtime(true);
 		if (!is_array($collection)) {
 			return $this->createException('InvalidParameterValueException', 'Invalid parameter value. Parameter must be an array collection', 'E:S:001');
 		}
 		$countInserts = 0;
-		$insertedItems = array();
+		$insertedItems = [];
 		$now = new \DateTime('now', new \DateTimeZone($this->kernel->getContainer()->getParameter('app_timezone')));
 		foreach ($collection as $data) {
 			if ($data instanceof BundleEntity\RedeemedCoupon) {
@@ -2135,9 +2135,9 @@ class ShoppingCartModel extends CoreModel {
 		}
 		if ($countInserts > 0) {
 			$this->em->flush();
-			return new ModelResponse($insertedItems, $countInserts, 0, null, false, 'S:D:003', 'Selected entries have been successfully inserted into database.', $timeStamp, time());
+			return new ModelResponse($insertedItems, $countInserts, 0, null, false, 'S:D:003', 'Selected entries have been successfully inserted into database.', $timeStamp, microtime(true));
 		}
-		return new ModelResponse(null, 0, 0, null, true, 'E:D:003', 'One or more entities cannot be inserted into database.', $timeStamp, time());
+		return new ModelResponse(null, 0, 0, null, true, 'E:D:003', 'One or more entities cannot be inserted into database.', $timeStamp, microtime(true));
 	}
 	/**
 	 * @param mixed $coupon
@@ -2155,9 +2155,9 @@ class ShoppingCartModel extends CoreModel {
 	 */
 	public function updateRedeemedCoupons(array $collection)
 	{
-		$timeStamp = time();
+		$timeStamp = microtime(true);
 		$countUpdates = 0;
-		$updatedItems = array();
+		$updatedItems = [];
 		foreach ($collection as $data) {
 			if ($data instanceof BundleEntity\RedeemedCoupon) {
 				$entity = $data;
@@ -2221,9 +2221,9 @@ class ShoppingCartModel extends CoreModel {
 		}
 		if ($countUpdates > 0) {
 			$this->em->flush();
-			return new ModelResponse($updatedItems, $countUpdates, 0, null, false, 'S:D:004', 'Selected entries have been successfully updated within database.', $timeStamp, time());
+			return new ModelResponse($updatedItems, $countUpdates, 0, null, false, 'S:D:004', 'Selected entries have been successfully updated within database.', $timeStamp, microtime(true));
 		}
-		return new ModelResponse(null, 0, 0, null, true, 'E:D:004', 'One or more entities cannot be updated within database.', $timeStamp, time());
+		return new ModelResponse(null, 0, 0, null, true, 'E:D:004', 'One or more entities cannot be updated within database.', $timeStamp, microtime(true));
 	}
 	/**
 	 * @param mixed $coupon
@@ -2232,9 +2232,9 @@ class ShoppingCartModel extends CoreModel {
 	 */
 	public function  getRedeemedCoupon($coupon)
 	{
-		$timeStamp = time();
+		$timeStamp = microtime(true);
 		if ($coupon instanceof BundleEntity\RedeemedCoupon) {
-			return new ModelResponse($coupon, 1, 0, null, false, 'S:D:002', 'Entries successfully fetched from database.', $timeStamp, time());
+			return new ModelResponse($coupon, 1, 0, null, false, 'S:D:002', 'Entries successfully fetched from database.', $timeStamp, microtime(true));
 		}
 		$result = null;
 		switch ($coupon) {
@@ -2243,8 +2243,8 @@ class ShoppingCartModel extends CoreModel {
 				break;
 		}
 		if (is_null($result)) {
-			return new ModelResponse($result, 0, 0, null, true, 'E:D:002', 'Unable to find request entry in database.', $timeStamp, time());
+			return new ModelResponse($result, 0, 0, null, true, 'E:D:002', 'Unable to find request entry in database.', $timeStamp, microtime(true));
 		}
-		return new ModelResponse($result, 1, 0, null, false, 'S:D:002', 'Entries successfully fetched from database.', $timeStamp, time());
+		return new ModelResponse($result, 1, 0, null, false, 'S:D:002', 'Entries successfully fetched from database.', $timeStamp, microtime(true));
 	}
 }

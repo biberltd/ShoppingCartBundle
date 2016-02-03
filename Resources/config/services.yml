@@ -1,4 +1,4 @@
 services:
     shoppingcart.model:
             class:        BiberLtd\Bundle\ShoppingCartBundle\Services\ShoppingCartModel
-            arguments:    [@kernel, "default", "doctrine"]
+            arguments:    ["@kernel", "default", "doctrine"]

@@ -179,7 +179,7 @@ class ShoppingOrder extends CoreEntity
      *
      * @return $this
      */
-    public function setOrderNumber(\string $order_number) {
+    public function setOrderNumber(string $order_number) {
         if($this->setModified('order_number', $order_number)->isModified()) {
             $this->order_number = $order_number;
         }
@@ -199,7 +199,7 @@ class ShoppingOrder extends CoreEntity
      *
      * @return $this
      */
-    public function setCountItems(\integer $count_items) {
+    public function setCountItems(int $count_items) {
         if(!$this->setModified('count_items', $count_items)->isModified()) {
             return $this;
         }
@@ -299,7 +299,7 @@ class ShoppingOrder extends CoreEntity
      *
      * @return $this
      */
-    public function setFlag(\string $flag) {
+    public function setFlag(string $flag) {
         if(!$this->setModified('flag', $flag)->isModified()) {
             return $this;
         }
@@ -327,7 +327,7 @@ class ShoppingOrder extends CoreEntity
      *
      * @return $this
      */
-    public function setInstallmentFee(\float $installment_fee)
+    public function setInstallmentFee(float $installment_fee)
     {
         if (!$this->setModified('installment_fee', $installment_fee)->isModified()) {
             return $this;
@@ -341,7 +341,7 @@ class ShoppingOrder extends CoreEntity
      *
      * @return $this
      */
-    public function setInstructions(\string $instructions) {
+    public function setInstructions(string $instructions) {
         if(!$this->setModified('instructions', $instructions)->isModified()) {
             return $this;
         }
@@ -381,7 +381,7 @@ class ShoppingOrder extends CoreEntity
      *
      * @return $this
      */
-    public function setStatus(\string $status) {
+    public function setStatus(string $status) {
         if(!$this->setModified('status', $status)->isModified()) {
             return $this;
         }
@@ -401,7 +401,7 @@ class ShoppingOrder extends CoreEntity
      *
      * @return $this
      */
-    public function setTotalAmount(\float $total_amount) {
+    public function setTotalAmount(float $total_amount) {
         if(!$this->setModified('total_amount', $total_amount)->isModified()) {
             return $this;
         }
@@ -421,7 +421,7 @@ class ShoppingOrder extends CoreEntity
      *
      * @return $this
      */
-    public function setSubtotal(\float $subtotal) {
+    public function setSubtotal(float $subtotal) {
         if($this->setModified('subtotal', $subtotal)->isModified()) {
             $this->subtotal = $subtotal;
         }
@@ -441,7 +441,7 @@ class ShoppingOrder extends CoreEntity
      *
      * @return $this
      */
-    public function setTotalDiscount(\float $total_discount) {
+    public function setTotalDiscount(float $total_discount) {
         if($this->setModified('total_discount', $total_discount)->isModified()) {
             $this->total_discount = $total_discount;
         }
@@ -461,7 +461,7 @@ class ShoppingOrder extends CoreEntity
      *
      * @return $this
      */
-    public function setTotalShipment(\float $total_shipment) {
+    public function setTotalShipment(float $total_shipment) {
         if($this->setModified('total_shipment', $total_shipment)->isModified()) {
             $this->total_shipment = $total_shipment;
         }
@@ -481,7 +481,7 @@ class ShoppingOrder extends CoreEntity
      *
      * @return $this
      */
-    public function setTotalTax(\float $total_tax) {
+    public function setTotalTax(float $total_tax) {
         if($this->setModified('total_tax', $total_tax)->isModified()) {
             $this->total_tax = $total_tax;
         }
@@ -508,7 +508,7 @@ class ShoppingOrder extends CoreEntity
      *
      * @return $this
      */
-    public function setBillingInformation(\float $billing_information){
+    public function setBillingInformation(float $billing_information){
         if(!$this->setModified('billing_information', $billing_information)->isModified()){
             return $this;
         }
@@ -529,7 +529,7 @@ class ShoppingOrder extends CoreEntity
      *
      * @return $this
      */
-    public function setShippingInformation(\string $shipping_information){
+    public function setShippingInformation(string $shipping_information){
         if(!$this->setModified('shipping_information', $shipping_information)->isModified()){
             return $this;
         }
@@ -550,7 +550,7 @@ class ShoppingOrder extends CoreEntity
      *
      * @return $this
      */
-    public function setContent(\string $content){
+    public function setContent(string $content){
         if(!$this->setModified('content', $content)->isModified()){
             return $this;
         }
@@ -571,7 +571,7 @@ class ShoppingOrder extends CoreEntity
      *
      * @return $this
      */
-    public function setTransactionInfo(\string $transaction_info){
+    public function setTransactionInfo(string $transaction_info){
         if(!$this->setModified('transaction_info', $transaction_info)->isModified()){
             return $this;
         }

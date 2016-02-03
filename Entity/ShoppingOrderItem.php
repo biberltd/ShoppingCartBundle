@@ -150,7 +150,7 @@ class ShoppingOrderItem extends CoreEntity
      *
      * @return $this
      */
-    public function setDiscount(\float $discount) {
+    public function setDiscount(float $discount) {
         if(!$this->setModified('discount', $discount)->isModified()) {
             return $this;
         }
@@ -170,7 +170,7 @@ class ShoppingOrderItem extends CoreEntity
      *
      * @return $this
      */
-    public function setInstructions(\string $instructions) {
+    public function setInstructions(string $instructions) {
         if(!$this->setModified('instructions', $instructions)->isModified()) {
             return $this;
         }
@@ -190,7 +190,7 @@ class ShoppingOrderItem extends CoreEntity
      *
      * @return $this
      */
-    public function setPrice(\float $price) {
+    public function setPrice(float $price) {
         if(!$this->setModified('price', $price)->isModified()) {
             return $this;
         }
@@ -230,7 +230,7 @@ class ShoppingOrderItem extends CoreEntity
      *
      * @return $this
      */
-    public function setQuantity(\integer $quantity) {
+    public function setQuantity(int $quantity) {
         if(!$this->setModified('quantity', $quantity)->isModified()) {
             return $this;
         }
@@ -249,7 +249,7 @@ class ShoppingOrderItem extends CoreEntity
      *
      * @return $this
      */
-    public function setSubtotal(\float $subtotal) {
+    public function setSubtotal(float $subtotal) {
         if(!$this->setModified('subtotal', $subtotal)->isModified()) {
             return $this;
         }
@@ -269,7 +269,7 @@ class ShoppingOrderItem extends CoreEntity
      *
      * @return $this
      */
-    public function setTax(\float $tax) {
+    public function setTax(float $tax) {
         if(!$this->setModified('tax', $tax)->isModified()) {
             return $this;
         }
@@ -289,7 +289,7 @@ class ShoppingOrderItem extends CoreEntity
      *
      * @return $this
      */
-    public function setTotal(\float $total) {
+    public function setTotal(float $total) {
         if(!$this->setModified('total', $total)->isModified()) {
             return $this;
         }
@@ -309,7 +309,7 @@ class ShoppingOrderItem extends CoreEntity
      *
      * @return $this
      */
-    public function setTaxAmount(\float $tax_amount) {
+    public function setTaxAmount(float $tax_amount) {
         if($this->setModified('tax_amount', $tax_amount)->isModified()) {
             $this->tax_amount = $tax_amount;
         }
@@ -329,7 +329,7 @@ class ShoppingOrderItem extends CoreEntity
      *
      * @return $this
      */
-    public function setTotalWithTax(\float $total_with_tax) {
+    public function setTotalWithTax(float $total_with_tax) {
         if($this->setModified('total_with_tax', $total_with_tax)->isModified()) {
             $this->total_with_tax = $total_with_tax;
         }
@@ -349,7 +349,7 @@ class ShoppingOrderItem extends CoreEntity
      *
      * @return $this
      */
-    public function setPackageType(\string $package_type) {
+    public function setPackageType(string $package_type) {
         if($this->setModified('package_type', $package_type)->isModified()) {
             $this->package_type = $package_type;
         }
