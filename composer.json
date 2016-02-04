@@ -25,7 +25,7 @@
 	    "biberltd/payment-gateway-bundle" : "~3.4",
 	    "biberltd/product-management-bundle" : "~3.4",
 	    "biberltd/shipment-gateway-bundle" : "~3.4",
-	    "sylius/omnipay-bundle" : "~0.9r"
+	    "sylius/omnipay-bundle" : "~0.9"
     },
     "autoload": {
         "psr-0": { "BiberLtd\\Bundle\\ShoppingCartBundle": "" }
