@@ -2247,4 +2247,30 @@ class ShoppingCartModel extends CoreModel {
 		}
 		return new ModelResponse($result, 1, 0, null, false, 'S:D:002', 'Entries successfully fetched from database.', $timeStamp, microtime(true));
 	}
+
+	/**
+	 * @param mixed $member
+	 * @param array|null $sortOrder
+	 * @param array|null $limit
+	 *
+	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
+	 */
+	public function listRedeemedCouponsOfMember($member, array $sortOrder = null, array $limit = null) {
+		$timeStamp = microtime(true);
+		$mModel = $mModel = $this->kernel->getContainer()->get('membermanagement.model');
+		$response = $mModel->getMember($member);
+		if($response->error->exist){
+			return $response;
+		}
+		$filter[] = array(
+			'glue' => 'and',
+			'condition' => array(
+				array(
+					'glue' => 'and',
+					'condition' => array('column' => $this->entity['rc']['alias'] . '.member', 'comparison' => '=', 'value' => $member->getId()),
+				)
+			)
+		);
+		return $this->listRedeemedCoupons($filter, $sortOrder, $limit);
+	}
 }
