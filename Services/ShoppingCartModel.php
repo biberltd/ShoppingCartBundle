@@ -44,7 +44,6 @@ class ShoppingCartModel extends CoreModel {
         $this->entity = array(
             'c' => array('name' => 'ShoppingCartBundle:Coupon', 'alias' => 'c'),
             'cl' => array('name' => 'ShoppingCartBundle:CouponLocalization', 'alias' => 'cl'),
-            'pt' => array('name' => 'ShoppingCartBundle:PaymentTransaction', 'alias' => 'pt'),
             'rc' => array('name' => 'ShoppingCartBundle:RedeemedCoupon', 'alias' => 'rc'),
             'so' => array('name' => 'ShoppingCartBundle:ShoppingOrder', 'alias' => 'so'),
             'soi' => array('name' => 'ShoppingCartBundle:ShoppingOrderItem', 'alias' => 'soi'),
@@ -226,45 +225,6 @@ class ShoppingCartModel extends CoreModel {
 	    return $response;
     }
 
-	/**
-	 * @param mixed $data
-	 *
-	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
-	 */
-    public function deletePaymentTransaction($data) {
-        return $this->deletePaymentTransactions(array($data));
-    }
-
-	/**
-	 * @param array $collection
-	 *
-	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
-	 */
-	public function deletePaymentTransactions(array $collection)
-	{
-		$timeStamp = microtime(true);
-		if (!is_array($collection)) {
-			return $this->createException('InvalidParameterValueException', 'Invalid parameter value. Parameter must be an array collection', 'E:S:001');
-		}
-		$countDeleted = 0;
-		foreach ($collection as $entry) {
-			if ($entry instanceof BundleEntity\PaymentTransaction) {
-				$this->em->remove($entry);
-				$countDeleted++;
-			} else {
-				$response = $this->getPaymentTransaction($entry);
-				if (!$response->error->exist) {
-					$this->em->remove($response->result->set);
-					$countDeleted++;
-				}
-			}
-		}
-		if ($countDeleted < 0) {
-			return new ModelResponse(null, 0, 0, null, true, 'E:E:001', 'Unable to delete all or some of the selected entries.', $timeStamp, microtime(true));
-		}
-		$this->em->flush();
-		return new ModelResponse(null, 0, 0, null, false, 'S:D:001', 'Selected entries have been successfully removed from database.', $timeStamp, microtime(true));
-	}
 
 	/**
 	 * @param $order
@@ -346,26 +306,6 @@ class ShoppingCartModel extends CoreModel {
     }
 
 	/**
-	 * @param mixed $transaction
-	 * @param bool $bypass
-	 *
-	 * @return bool
-	 */
-	public function doesPaymentTransationExist($transaction, bool $bypass = false)
-	{
-		$response = $this->getPaymentTransaction($transaction);
-		$exist = true;
-		if ($response->error->exist) {
-			$exist = false;
-			$response->result->set = false;
-		}
-		if ($bypass) {
-			return $exist;
-		}
-		return $response;
-	}
-
-	/**
 	 * @param mixed $order
 	 * @param bool $bypass
 	 *
@@ -403,29 +343,6 @@ class ShoppingCartModel extends CoreModel {
 			return $exist;
 		}
 		return $response;
-	}
-
-	/**
-	 * @param mixed $transaction
-	 *
-	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
-	 */
-	public function  getPaymentTransaction($transaction)
-	{
-		$timeStamp = microtime(true);
-		if ($transaction instanceof BundleEntity\PaymentTransaction) {
-			return new ModelResponse($transaction, 1, 0, null, false, 'S:D:002', 'Entries successfully fetched from database.', $timeStamp, microtime(true));
-		}
-		$result = null;
-		switch ($transaction) {
-			case is_numeric($transaction):
-				$result = $this->em->getRepository($this->entity['pt']['name'])->findOneBy(array('id' => $transaction));
-				break;
-		}
-		if (is_null($result)) {
-			return new ModelResponse($result, 0, 0, null, true, 'E:D:002', 'Unable to find request entry in database.', $timeStamp, microtime(true));
-		}
-		return new ModelResponse($result, 1, 0, null, false, 'S:D:002', 'Entries successfully fetched from database.', $timeStamp, microtime(true));
 	}
 
 	/**
@@ -475,105 +392,6 @@ class ShoppingCartModel extends CoreModel {
 	    return new ModelResponse($result, 1, 0, null, false, 'S:D:002', 'Entries successfully fetched from database.', $timeStamp, microtime(true));
     }
 
-	/**
-	 * @param mixed $transaction
-	 *
-	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
-	 */
-    public function insertPaymentTransaction($transaction) {
-        return $this->insertPaymentTransactions(array($transaction));
-    }
-
-	/**
-	 * @param array $collection
-	 *
-	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
-	 */
-	public function insertPaymentTransactions(array $collection)
-	{
-		$timeStamp = microtime(true);
-		if (!is_array($collection)) {
-			return $this->createException('InvalidParameterValueException', 'Invalid parameter value. Parameter must be an array collection', 'E:S:001');
-		}
-		$countInserts = 0;
-		$insertedItems = [];
-		$now = new \DateTime('now', new \DateTimeZone($this->kernel->getContainer()->getParameter('app_timezone')));
-		foreach ($collection as $data) {
-			if ($data instanceof BundleEntity\PaymentTransaction) {
-				$entity = $data;
-				$this->em->persist($entity);
-				$insertedItems[] = $entity;
-				$countInserts++;
-			} else if (is_object($data)) {
-				$entity = new BundleEntity\PaymentTransaction();
-				if (!property_exists($data, 'date_added')) {
-					$data->date_added = $now;
-				}
-				foreach ($data as $column => $value) {
-					$set = 'set' . $this->translateColumnName($column);
-					switch ($column) {
-						case 'site':
-							/**
-							 * @var \BiberLtd\Bundle\SiteManagementBundle\Services\SiteManagementModel $sModel
-							 */
-							$sModel = $this->kernel->getContainer()->get('sitemanagement.model');
-							$response = $sModel->getSite($value);
-							if ($response->error->exist) {
-								return $response;
-							}
-							$entity->$set($response->result->set);
-							unset($response, $sModel);
-							break;
-						case 'member':
-							/**
-							 * @var \BiberLtd\Bundle\MemberManagementBundle\Services\MemberManagementModel $mModel
-							 */
-							$mModel = $this->kernel->getContainer()->get('membermanagement.model');
-							$response = $mModel->getMember($value);
-							if ($response->error->exist) {
-								return $response;
-							}
-							$entity->$set($response->result->set);
-							unset($response, $mModel);
-							break;
-						case 'gateway':
-							/**
-							 * @var \BiberLtd\Bundle\PaymentGatewayBundle\Services\PaymentGatewayModel $pModel
-							 */
-							$pModel = $this->kernel->getContainer()->get('paymentgateway.model');
-							$response = $pModel->getPaymentGateway($value);
-							if ($response->error->exist) {
-								return $response;
-							}
-							$entity->$set($response->result->set);
-							unset($response, $pModel);
-							break;
-						case 'order':
-						case 'shopping_order':
-							$response = $this->getShoppingOrder($value);
-							if ($response->error->exist) {
-								return $response;
-							}
-							$entity->setShoppingOrder($response->result->set);
-							unset($response, $pModel);
-							break;
-						default:
-							$entity->$set($value);
-							break;
-					}
-				}
-				$this->em->persist($entity);
-				$insertedItems[] = $entity;
-
-				$countInserts++;
-			}
-		}
-		if ($countInserts > 0) {
-			$this->em->flush();
-			return new ModelResponse($insertedItems, $countInserts, 0, null, false, 'S:D:003', 'Selected entries have been successfully inserted into database.', $timeStamp, microtime(true));
-		}
-		return new ModelResponse(null, 0, 0, null, true, 'E:D:003', 'One or more entities cannot be inserted into database.', $timeStamp, microtime(true));
-	}
 
 	/**
 	 * @param mixed $order
@@ -758,117 +576,6 @@ class ShoppingCartModel extends CoreModel {
     public function listOpenShoppingOrders(array $filter = null, array $sortOrder = null, array $limit = null) {
         return $this->listShoppingOrdersWithFlag('o', $filter, $sortOrder, $limit);
     }
-
-	/**
-	 * @param array|null $filter
-	 * @param array|null $sortOrder
-	 * @param array|null $limit
-	 *
-	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
-	 */
-	public function listPaymentTransactions(array $filter = null, array $sortOrder = null, array $limit = null) {
-		$timeStamp = microtime(true);
-		if (!is_array($sortOrder) && !is_null($sortOrder)) {
-			return $this->createException('InvalidSortOrderException', '$sortOrder must be an array with key => value pairs where value can only be "asc" or "desc".', 'E:S:002');
-		}
-		$oStr = $wStr = $gStr = $fStr = '';
-
-		$qStr = 'SELECT ' . $this->entity['so']['alias']
-			. ' FROM ' . $this->entity['so']['name'] . ' ' . $this->entity['so']['alias'];
-
-		if (!is_null($sortOrder)) {
-			foreach ($sortOrder as $column => $direction) {
-				switch ($column) {
-					case 'id':
-					case 'transaction_id':
-					case 'amount':
-					case 'status':
-						$column = $this->entity['pt']['alias'] . '.' . $column;
-						break;
-				}
-				$oStr .= ' ' . $column . ' ' . strtoupper($direction) . ', ';
-			}
-			$oStr = rtrim($oStr, ', ');
-			$oStr = ' ORDER BY ' . $oStr . ' ';
-		}
-
-		if (!is_null($filter)) {
-			$fStr = $this->prepareWhere($filter);
-			$wStr .= ' WHERE ' . $fStr;
-		}
-
-		$qStr .= $wStr . $gStr . $oStr;
-		$q = $this->em->createQuery($qStr);
-		$q = $this->addLimit($q, $limit);
-
-		$result = $q->getResult();
-
-		$totalRows = count($result);
-		if ($totalRows < 1) {
-			return new ModelResponse(null, 0, 0, null, true, 'E:D:002', 'No entries found in database that matches to your criterion.', $timeStamp, microtime(true));
-		}
-		return new ModelResponse($result, $totalRows, 0, null, false, 'S:D:002', 'Entries successfully fetched from database.', $timeStamp, microtime(true));
-	}
-
-	/**
-	 * @param mixed $member
-	 * @param array|null $filter
-	 * @param array|null $sortorder
-	 * @param array|null $limit
-	 *
-	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse|mixed
-	 */
-    public function listPaymentTransactionsOfMember($member, array $filter = null, array $sortorder = null, array $limit = null) {
-	    /**
-	     * @var \BiberLtd\Bundle\MemberManagementBundle\Services\MemberManagementModel $mModel
-	     */
-	    $mModel = $this->kernel->getContainer()->get('membermanagement.model');
-	    $response = $mModel->getMember($member);
-	    if($response->error->exist){
-		    return $response;
-	    }
-	    $member = $response->result->set;
-
-        $column = $this->entity['pt']['alias'] . '.member';
-        $condition = array('column' => $column, 'comparison' => '=', 'value' => $member->getId());
-        $filter[] = array(
-            'glue' => 'and',
-            'condition' => array(
-                array(
-                    'glue' => 'and',
-                    'condition' => $condition,
-                )
-            )
-        );
-    }
-
-	/**
-	 * @param mixed $order
-	 * @param array|null $filter
-	 * @param array|null $sortorder
-	 * @param array|null $limit
-	 *
-	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse|mixed
-	 */
-	public function listPaymentTransactionsOfOrder($order, array $filter = null, array $sortorder = null, array $limit = null) {
-		$response = $this->getShoppingOrder($order);
-		if($response->error->exist){
-			return $response;
-		}
-		$order = $response->result->set;
-
-		$column = $this->entity['pt']['alias'] . '.shopping_order';
-		$condition = array('column' => $column, 'comparison' => '=', 'value' => $order->getId());
-		$filter[] = array(
-			'glue' => 'and',
-			'condition' => array(
-				array(
-					'glue' => 'and',
-					'condition' => $condition,
-				)
-			)
-		);
-	}
 
 	/**
 	 * @param array|null $filter
@@ -1134,112 +841,6 @@ class ShoppingCartModel extends CoreModel {
         );
         return $this->listShoppingOrders($filter, $sortorder, $limit);
     }
-
-	/**
-	 * @param mixed $transaction
-	 *
-	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
-	 */
-    public function updatePaymentTransaction($transaction) {
-        return $this->updatePaymentTransactions(array($transaction));
-    }
-
-	/**
-	 * @param array $collection
-	 *
-	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
-	 */
-	public function updatePaymentTransactions(array $collection)
-	{
-		$timeStamp = microtime(true);
-		$countUpdates = 0;
-		$updatedItems = [];
-		foreach ($collection as $data) {
-			if ($data instanceof BundleEntity\PaymentTransaction) {
-				$entity = $data;
-				$this->em->persist($entity);
-				$updatedItems[] = $entity;
-				$countUpdates++;
-			} else if (is_object($data)) {
-				if (!property_exists($data, 'id') || !is_numeric($data->id)) {
-					return $this->createException('InvalidParameter', 'Each data must contain a valid identifier id, integer', 'err.invalid.parameter.collection');
-				}
-				if (property_exists($data, 'date_added')) {
-					unset($data->date_added);
-				}
-				$response = $this->getPaymentTransaction($data->id);
-				if ($response->error->exist) {
-					return $this->createException('EntityDoesNotExist', 'Brand with id ' . $data->id, 'err.invalid.entity');
-				}
-				$oldEntity = $response->result->set;
-				foreach ($data as $column => $value) {
-					$set = 'set' . $this->translateColumnName($column);
-					switch ($column) {
-						case 'id':
-							break;
-						case 'site':
-							/**
-							 * @var \BiberLtd\Bundle\SiteManagementBundle\Services\SiteManagementModel $sModel
-							 */
-							$sModel = $this->kernel->getContainer()->get('sitemanagement.model');
-							$response = $sModel->getSite($value);
-							if ($response->error->exist) {
-								return $response;
-							}
-							$entity->$set($response->result->set);
-							unset($response, $sModel);
-							break;
-						case 'member':
-							/**
-							 * @var \BiberLtd\Bundle\MemberManagementBundle\Services\MemberManagementModel $mModel
-							 */
-							$mModel = $this->kernel->getContainer()->get('membermanagement.model');
-							$response = $mModel->getMember($value);
-							if ($response->error->exist) {
-								return $response;
-							}
-							$entity->$set($response->result->set);
-							unset($response, $mModel);
-							break;
-						case 'gateway':
-							/**
-							 * @var \BiberLtd\Bundle\PaymentGatewayBundle\Services\PaymentGatewayModel $pModel
-							 */
-							$pModel = $this->kernel->getContainer()->get('membermanagement.model');
-							$response = $pModel->getPaymentGateway($value);
-							if ($response->error->exist) {
-								return $response;
-							}
-							$entity->$set($response->result->set);
-							unset($response, $pModel);
-							break;
-						case 'order':
-						case 'shopping_order':
-							$response = $this->getShoppingOrder($value);
-							if ($response->error->exist) {
-								return $response;
-							}
-							$entity->setShoppingOrder($response->result->set);
-							unset($response, $pModel);
-							break;
-						default:
-							$oldEntity->$set($value);
-							break;
-					}
-					if ($oldEntity->isModified()) {
-						$this->em->persist($oldEntity);
-						$countUpdates++;
-						$updatedItems[] = $oldEntity;
-					}
-				}
-			}
-		}
-		if ($countUpdates > 0) {
-			$this->em->flush();
-			return new ModelResponse($updatedItems, $countUpdates, 0, null, false, 'S:D:004', 'Selected entries have been successfully updated within database.', $timeStamp, microtime(true));
-		}
-		return new ModelResponse(null, 0, 0, null, true, 'E:D:004', 'One or more entities cannot be updated within database.', $timeStamp, microtime(true));
-	}
 
 	/**
 	 * @param $order
@@ -2001,7 +1602,8 @@ class ShoppingCartModel extends CoreModel {
 		}
 		$oStr = $wStr = $gStr = $fStr = '';
 
-		$qStr = 'SELECT ' . $this->entity['rc']['alias']
+		$qStr = 'SELECT ' . $this->
+            entity['rc']['alias']
 			. ' FROM ' . $this->entity['rc']['name'] . ' ' . $this->entity['rc']['alias'];
 
 		if (!is_null($sortOrder)) {
