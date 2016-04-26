@@ -1875,4 +1875,173 @@ class ShoppingCartModel extends CoreModel {
 		);
 		return $this->listRedeemedCoupons($filter, $sortOrder, $limit);
 	}
+
+	/**
+	 * @param \DateTime $date
+	 *  @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
+	 */
+	public function listPurchasedOrdersBefore(\DateTime $date) {
+		return $this->listPurchasedOrdersWithComparison($date,"<");
+	}
+
+	/**
+	 * @param \DateTime $date
+	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
+	 */
+	public function listPurchasedOrdersAfter(\DateTime $date) {
+		return $this->listPurchasedOrdersWithComparison($date,">");
+	}
+
+	/**
+	 * @param \DateTime $date
+	 * @param string $comparison
+	 * @param bool $returned
+	 * @param bool $cancelled
+	 * @param array|null $sortOrder
+	 * @param array|null $limit
+	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
+	 */
+	public function listPurchasedOrdersWithComparison(\DateTime $date, string $comparison, bool $returned = false, bool $cancelled = false, array $sortOrder = null, array $limit = null) {
+		$filter = [];
+		if ($returned) {
+			$column = $this->entity['so']['alias'] . '.date_returned';
+			$condition = array('column' => $column, 'comparison' => '!=', 'value' => null);
+			$filter[] = array(
+				'glue' => 'and',
+				'condition' => array(
+					array(
+						'glue' => 'and',
+						'condition' => $condition,
+					)
+				)
+			);
+		}
+		if ($cancelled) {
+			$column = $this->entity['so']['alias'] . '.date_cancelled';
+			$condition = array('column' => $column, 'comparison' => '!=', 'value' => null);
+			$filter[] = array(
+				'glue' => 'and',
+				'condition' => array(
+					array(
+						'glue' => 'and',
+						'condition' => $condition,
+					)
+				)
+			);
+		}
+		$column = $this->entity['so']['alias'] . '.date_purchased';
+		$condition = array('column' => $column, 'comparison' => $comparison, 'value' => $date);
+		$filter[] = array(
+			'glue' => 'and',
+			'condition' => array(
+				array(
+					'glue' => 'and',
+					'condition' => $condition,
+				)
+			)
+		);
+		return $this->listShoppingOrders($filter, $sortOrder, $limit);
+
+	}
+
+	/**
+	 * @param \DateTime $date
+	 *  @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
+	 */
+	public function listCreatedOrdersBefore(\DateTime $date) {
+		return $this->listCreatedOrdersWithComparison($date,"<");
+	}
+
+	/**
+	 * @param \DateTime $date
+	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
+	 */
+	public function listCreatedOrdersAfter(\DateTime $date) {
+		return $this->listCreatedOrdersWithComparison($date,">");
+	}
+
+	/**
+	 * @param \DateTime $date
+	 * @param string $comparison
+	 * @param array|null $sortOrder
+	 * @param array|null $limit
+	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
+	 */
+	public function listCreatedOrdersWithComparison(\DateTime $date, string $comparison, array $sortOrder = null, array $limit = null) {
+
+		$column = $this->entity['so']['alias'] . '.date_created';
+		$condition = array('column' => $column, 'comparison' => $comparison, 'value' => $date);
+		$filter[] = array(
+			'glue' => 'and',
+			'condition' => array(
+				array(
+					'glue' => 'and',
+					'condition' => $condition,
+				)
+			)
+		);
+		return $this->listShoppingOrders($filter, $sortOrder, $limit);
+
+	}
+
+	/**
+	 * @param float $totalAmount
+	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
+	 */
+	public function listTotalAmountOfOrdersBefore(float $totalAmount) {
+		return $this->listTotalAmountOfOrdersWithComparison($totalAmount,"<");
+	}
+
+	/**
+	 * @param float $totalAmount
+	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
+	 */
+	public function listTotalAmountOfOrdersAfter(float $totalAmount) {
+		return $this->listTotalAmountOfOrdersWithComparison($totalAmount,">");
+	}
+
+	/**
+	 * @param float $totalAmount
+	 * @param string $comparison
+	 * @param array|null $sortOrder
+	 * @param array|null $limit
+	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
+	 */
+	public function listTotalAmountOfOrdersWithComparison(float $totalAmount, string $comparison, array $sortOrder = null, array $limit = null) {
+
+		$column = $this->entity['so']['alias'] . '.total_amount';
+		$condition = array('column' => $column, 'comparison' => $comparison, 'value' => $totalAmount);
+		$filter[] = array(
+			'glue' => 'and',
+			'condition' => array(
+				array(
+					'glue' => 'and',
+					'condition' => $condition,
+				)
+			)
+		);
+		return $this->listShoppingOrders($filter, $sortOrder, $limit);
+
+	}
+
+	/**
+	 * @param string $status
+	 * @param array|null $sortOrder
+	 * @param array|null $limit
+	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
+	 */
+	public function listOrdersOfStatus(string $status, array $sortOrder = null, array $limit = null){
+		$column = $this->entity['so']['alias'] . '.status';
+		$condition = array('column' => $column, 'comparison' => '=', 'value' => $status);
+		$filter[] = array(
+			'glue' => 'and',
+			'condition' => array(
+				array(
+					'glue' => 'and',
+					'condition' => $condition,
+				)
+			)
+		);
+		return $this->listShoppingOrders($filter, $sortOrder, $limit);
+	}
 }
