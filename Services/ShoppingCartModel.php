@@ -1542,8 +1542,9 @@ class ShoppingCartModel extends CoreModel {
 	 *
 	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse|bool
 	 */
-	public function doesCouponExist($coupon, bool $bypass = false)
+	public function doesCouponExist($coupon, bool $bypass = null)
 	{
+		$bypass = $bypass ?? false;
 		$response = $this->getCoupon($coupon);
 		$exist = true;
 		if ($response->error->exist) {
@@ -1800,8 +1801,10 @@ class ShoppingCartModel extends CoreModel {
 	 *
 	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
 	 */
-    public function listPurchasedOrders(bool $returned = false, bool $cancelled = false, array $sortOrder = null, array$limit = null) {
+    public function listPurchasedOrders(bool $returned = null, bool $cancelled = null, array $sortOrder = null, array $limit = null) {
 	    $filter = [];
+		$returned = $returned ?? null;
+		$cancelled = $cancelled ?? null;
 	    if ($returned) {
             $column = $this->entity['so']['alias'] . '.date_returned';
             $condition = array('column' => $column, 'comparison' => '!=', 'value' => null);
@@ -1852,8 +1855,10 @@ class ShoppingCartModel extends CoreModel {
 	 *
 	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
 	 */
-    public function listPurchasedOrdersBetween(\DateTime $dateStart, \DateTime $dateEnd, bool $returned = false, bool $cancelled = false, array $sortOrder = null, array $limit = null) {
+    public function listPurchasedOrdersBetween(\DateTime $dateStart, \DateTime $dateEnd, bool $returned = null, bool $cancelled = null, array $sortOrder = null, array $limit = null) {
         $filter = [];
+		$returned = $returned ?? false;
+		$cancelled = $cancelled ?? false;
         if ($returned) {
             $column = $this->entity['so']['alias'] . '.date_returned';
             $condition = array('column' => $column, 'comparison' => '!=', 'value' => null);
@@ -1937,7 +1942,7 @@ class ShoppingCartModel extends CoreModel {
 	 *
 	 * @return array|\BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
 	 */
-    public function getTotalSalesVolumeOfMember($member, \DateTime $dateStart = false, \DateTime $dateEnd = false, array $sortOrder = null, array $limit = null) {
+    public function getTotalSalesVolumeOfMember($member, \DateTime $dateStart = null, \DateTime $dateEnd = null, array $sortOrder = null, array $limit = null) {
 	    /**
 	     * @var \BiberLtd\Bundle\MemberManagementBundle\Services\MemberManagementModel $mModel
 	     */
@@ -1959,7 +1964,7 @@ class ShoppingCartModel extends CoreModel {
                 )
             )
         );
-        if ($dateEnd != false && $dateStart != false) {
+        if ($dateEnd != null && $dateStart != null) {
             $column = $this->entity['so']['alias'] . '.date_purchased';
             $condition = array('column' => $column, 'comparison' => 'between', 'value' => array($dateStart, $dateEnd));
             $filter[] = array(
