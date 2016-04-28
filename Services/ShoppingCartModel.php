@@ -1105,7 +1105,7 @@ class ShoppingCartModel extends CoreModel {
 			    ),
 			    array(
 				    'glue' => 'and',
-				    'condition' =>  array('column' => $this->entity['so']['alias'] . '.member', 'comparison' => '=', 'value' => $member->getId()),
+				    'condition' =>  array('column' => $this->entity['so']['alias'] . '.purchaser', 'comparison' => '=', 'value' => $member->getId()),
 			    )
 		    )
 	    );
