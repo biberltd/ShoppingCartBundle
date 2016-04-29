@@ -1050,7 +1050,7 @@ class ShoppingCartModel extends CoreModel {
                     case 'total_tax':
                     case 'total_discount':
                     case 'installment_fee':
-                        $column = $this->entity['s']['alias'] . '.' . $column;
+                        $column = $this->entity['so']['alias'] . '.' . $column;
                         break;
                 }
                 $oStr .= ' ' . $column . ' ' . strtoupper($direction) . ', ';
