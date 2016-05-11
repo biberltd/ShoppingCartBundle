@@ -112,7 +112,7 @@ CREATE TABLE `shopping_order` (
   `instructions` longtext COLLATE utf8_turkish_ci COMMENT 'Extra instructions.',
   `flag` char(1) COLLATE utf8_turkish_ci NOT NULL DEFAULT 'o' COMMENT 'o:open;r:returned;c:completed',
   `status` char(1) COLLATE utf8_turkish_ci NOT NULL COMMENT 't:cart,p:purchased,c:cancelled,r:in preperation,s:shipped,r:returned,d:completed',
-  `purchaser` int(10) unsigned NOT NULL COMMENT 'Member who made the purchase',
+  `purchaser` int(10) unsigned COMMENT 'Member who made the purchase',
   `subtotal` decimal(7,2) DEFAULT NULL,
   `total_shipment` decimal(7,2) DEFAULT NULL,
   `total_tax` decimal(7,2) DEFAULT NULL,
@@ -127,7 +127,7 @@ CREATE TABLE `shopping_order` (
   KEY `idxNShoppingOrderDateCancelled` (`date_cancelled`),
   KEY `idxNShoppingOrderDateReturned` (`date_returned`),
   KEY `idxNShoppingOrderStatus` (`status`),
-  KEY `idxFShoppingOrderPurchases` (`purchaser`),
+  KEY `idxFShoppingOrderPurchaser` (`purchaser`),
   CONSTRAINT `idxFShoppingOrderPurchases` FOREIGN KEY (`purchaser`) REFERENCES `member` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_turkish_ci;
 

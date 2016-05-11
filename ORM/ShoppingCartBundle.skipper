@@ -1,14 +1,2243 @@
 <?xml version="1.0"?>
-<skipper version="3.2.4.1256" mvc="Symfony2" orm="Doctrine2" name="ShoppingCartBundle" uuid="e08d300e-6141-425b-a2f3-b8fdb04850f1">
-  <external-module storage-path="../../site-management-bundle/ORM/SiteManagement.module.xml"/>
-  <external-module storage-path="../../multilanguage-support-bundle/ORM/MultiLanguageSupport.module.xml"/>
-  <external-module storage-path="../../file-management-bundle/ORM/FileManagement.module.xml"/>
-  <external-module storage-path="../../member-management-bundle/ORM/MemberManagement.module.xml"/>
-  <external-module storage-path="../../log-bundle/ORM/Log.module.xml"/>
-  <external-module storage-path="../../product-management-bundle/ORM/ProductManagement.module.xml"/>
-  <external-module storage-path="../../stock-management-bundle/ORM/stockmanagement.module.xml"/>
-  <external-module storage-path="../../payment-gateway-bundle/ORM/PaymentGateway.module.xml"/>
-  <external-module storage-path="ShoppingCart.module.xml"/>
+<skipper version="3.2.6.1309" mvc="Symfony2" orm="Doctrine2" name="ShoppingCartBundle" uuid="e08d300e-6141-425b-a2f3-b8fdb04850f1">
+  <module name="\SiteManagementBundle" local-name="SiteManagementBundle" namespace="\BiberLtd\Bundle\SiteManagementBundle\Entity" local-namespace="BiberLtd\Bundle\SiteManagementBundle\Entity" export-format="Doctrine2Php" export-path="../../site-management-bundle/Entity" uuid="860bb986-ef71-4cef-9da2-f560e58c2569">
+    <entity name="\BiberLtd\Bundle\SiteManagementBundle\Entity\DomainAliases" local-name="DomainAliases" namespace="\BiberLtd\Bundle\SiteManagementBundle\Entity" description="Holds a list of alternative domains that the site will be served in." uuid="04602777-d7d4-4b5f-9557-c3a1ba1f9dbb">
+      <field name="domain" description="Alias - domain. i.e. biberltd.com" type="text" required="true" unique="true" primary="true" uuid="766b4e3f-328f-4708-a9ff-d82d177d7e5c"/>
+      <field name="site" description="Site of domain" type="integer" size="10" required="true" primary="true" uuid="defc4d41-db0c-4c89-967f-cd5ebf41f111"/>
+      <orm-attributes>
+        <attribute name="export-file-name">DomainAliases.php</attribute>
+        <attribute name="table">domain_aliases</attribute>
+        <attribute name="options">
+          <attribute name="charset">utf8</attribute>
+          <attribute name="collate">utf8_turkish_ci</attribute>
+          <attribute name="engine">innodb</attribute>
+        </attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\BiberLtd\Bundle\SiteManagementBundle\Entity\DomainAliases" to="\BiberLtd\Bundle\SiteManagementBundle\Entity\Site" caption="idxFSiteOfDomainAlias" owner-alias="domains" inverse-alias="site" many-owner="true" many-inverse="false" parent-required="true" uuid="45c125cd-0ba3-4a9c-973e-92bbcfb91a59">
+      <association-field from="site" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <entity name="\BiberLtd\Bundle\SiteManagementBundle\Entity\Site" local-name="Site" namespace="\BiberLtd\Bundle\SiteManagementBundle\Entity" description="Stores site definitions." uuid="45fa10e6-64bd-4726-82aa-61fd301b1b5f">
+      <field name="id" description="System given id." type="integer" size="10" required="true" unique="true" primary="true" auto-increment="true" uuid="bc017c6b-132e-4cb4-b4d5-fe7363303a48">
+        <orm-attributes>
+          <attribute name="generator">
+            <attribute name="strategy">AUTO</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="title" description="Title of the site." type="string" size="155" required="true" uuid="bbe9a83e-efa3-4224-9269-5fc21dea664c"/>
+      <field name="url_key" description="Url key of the site." type="string" size="255" required="true" unique="true" uuid="61479228-9125-4987-9628-8925d36a186e"/>
+      <field name="description" description="Description of the site." type="string" size="255" uuid="190689a1-cf47-4c18-87df-bb2d2adeda44"/>
+      <field name="default_language" description="Default language of the site." type="smallint" size="5" uuid="6f52232d-6d89-4144-b236-ad7f08e8d343"/>
+      <field name="settings" description="Base64 Encoded and serialized site settings information." type="text" uuid="4a4bef14-73af-4f62-af06-18c26dd1b125"/>
+      <field name="date_added" description="Date when the site is first added." type="datetime" required="true" uuid="5dfe56f7-1eba-4492-9275-1cc2ee106c55"/>
+      <field name="date_updated" description="Date when the site's details last added." type="datetime" required="true" uuid="392dc78f-5653-437b-bd17-e5d56ffc9241"/>
+      <field name="date_removed" description="Date when the entry is removed." type="datetime" uuid="a763526b-555a-40f5-bec2-8d8113da41f2"/>
+      <field name="domain" description="Domain of the site if a domain controller is used." type="text" uuid="bd028fe9-8566-4139-938d-00f7734b08f6"/>
+      <index name="idxUSiteId" description="Site id must be unique." unique="true">
+        <index-field name="id"/>
+      </index>
+      <index name="idxUSiteUrlKey" description="Site url key must be unique." unique="true">
+        <index-field name="url_key"/>
+      </index>
+      <index name="idxNSiteDateAdded">
+        <index-field name="date_added"/>
+      </index>
+      <index name="idxNSiteDateUpdated">
+        <index-field name="date_updated"/>
+      </index>
+      <index name="idxNSiteDateRemoved">
+        <index-field name="date_removed"/>
+      </index>
+      <orm-attributes>
+        <attribute name="options">
+          <attribute name="charset">utf8</attribute>
+          <attribute name="collate">utf8_turkish_ci</attribute>
+          <attribute name="engine">innodb</attribute>
+        </attribute>
+        <attribute name="table">site</attribute>
+        <attribute name="export-file-name">Site.php</attribute>
+      </orm-attributes>
+    </entity>
+    <orm-attributes>
+      <attribute name="namespace">BiberLtd\Bundle\SiteManagementBundle\Entity</attribute>
+      <attribute name="file-suffix">without-suffix</attribute>
+      <attribute name="filename-format">entity-name-only</attribute>
+    </orm-attributes>
+  </module>
+  <module name="\MultiLanguageSupportBundle" local-name="MultiLanguageSupportBundle" namespace="\BiberLtd\Bundle\MultiLanguageSupportBundle\Entity" local-namespace="BiberLtd\Bundle\MultiLanguageSupportBundle\Entity" export-format="Doctrine2Php" export-path="../../multilanguage-support-bundle/Entity" uuid="264804cf-5ddd-4089-aaa2-d7c0f129a5ed">
+    <entity name="\BiberLtd\Bundle\MultiLanguageSupportBundle\Entity\Language" local-name="Language" namespace="\BiberLtd\Bundle\MultiLanguageSupportBundle\Entity" description="Stores language definitions to be used in the site." uuid="7ce99bbb-4d97-4ee5-8703-dfe82e965514">
+      <field name="id" description="System given id." type="integer" size="5" required="true" unique="true" primary="true" auto-increment="true" uuid="93714214-3a52-4799-9c0a-f74e937d83f0">
+        <orm-attributes>
+          <attribute name="generator">
+            <attribute name="strategy">AUTO</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="name" description="Name of language." type="string" size="155" required="true" uuid="4c3297e2-df9f-4d4a-9047-6c650341b243">
+        <orm-attributes>
+          <attribute name="column">`name`</attribute>
+        </orm-attributes>
+      </field>
+      <field name="url_key" description="Url key of language." type="string" size="255" required="true" uuid="48347d90-d011-4088-acaf-cf3a2b80b585"/>
+      <field name="iso_code" description="ISO code of language." type="string" size="7" uuid="c2111922-7d4d-45d9-86c0-8940c5b7da4d"/>
+      <field name="schema" description="ltr:left to right, rtl: right to left, btt: bottom to top; ttb: top to bottom." type="string" size="3" default="ltr" required="true" uuid="3db27c75-e0d7-4193-a66e-38edb7e73723">
+        <orm-attributes>
+          <attribute name="column">`schema`</attribute>
+          <attribute name="options"/>
+        </orm-attributes>
+      </field>
+      <field name="site" description="Site that language belongs to." type="integer" size="10" uuid="0c90b4bb-51b4-466b-b775-0d451ec8b526"/>
+      <field name="status" description="a:active,i:inactive" type="string" size="1" default="a" required="true" uuid="457f41df-c8bc-405e-a2a9-19504225a4f0">
+        <orm-attributes>
+          <attribute name="column">`status`</attribute>
+          <attribute name="options"/>
+        </orm-attributes>
+      </field>
+      <index name="idxULanguageId" unique="true">
+        <index-field name="id"/>
+      </index>
+      <index name="idxULanguageUrlKey" unique="true">
+        <index-field name="url_key"/>
+        <index-field name="site"/>
+      </index>
+      <index name="idxULanguageIsoCode" unique="true">
+        <index-field name="iso_code"/>
+        <index-field name="site"/>
+      </index>
+      <index name="idxNLanguageSchema">
+        <index-field name="schema"/>
+      </index>
+      <orm-attributes>
+        <attribute name="options">
+          <attribute name="charset">utf8</attribute>
+          <attribute name="collate">utf8_turkish_ci</attribute>
+          <attribute name="engine">innodb</attribute>
+        </attribute>
+        <attribute name="table">language</attribute>
+        <attribute name="export-file-name">Language.php</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\BiberLtd\Bundle\MultiLanguageSupportBundle\Entity\Language" to="\BiberLtd\Bundle\SiteManagementBundle\Entity\Site" caption="idxFSiteOfLanguage" owner-alias="" inverse-alias="site" many-owner="true" many-inverse="false" uuid="dcbf1caf-6474-4dfe-90be-7b58aa71c5c7">
+      <association-field from="site" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <entity name="\BiberLtd\Bundle\MultiLanguageSupportBundle\Entity\Translation" local-name="Translation" namespace="\BiberLtd\Bundle\MultiLanguageSupportBundle\Entity" description="Holds site translations for each language." uuid="41bcf7a2-e5e3-42a8-af5a-39de1f0e86ff">
+      <field name="id" description="System given id." type="integer" size="20" required="true" unique="true" primary="true" auto-increment="true" uuid="8ff3c01b-d52b-4b5c-be10-8f79409147f3">
+        <orm-attributes>
+          <attribute name="generator">
+            <attribute name="strategy">AUTO</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="domain" description="Translation domain - required for symfony2." type="string" size="255" uuid="d05419a4-c74a-4cbc-840e-015abf8c4718"/>
+      <field name="key" description="Translation key." type="string" size="255" required="true" uuid="c621ebd3-f562-443d-a94a-3a114b72500c"/>
+      <field name="date_added" description="Date when the translation is added." type="datetime" required="true" uuid="7429e347-02fd-41ab-ad4e-e22e98de713c"/>
+      <field name="date_updated" description="Date when the translation is updated." type="datetime" required="true" uuid="879c9cc9-5930-4b1d-979b-401539dfef7a"/>
+      <field name="date_removed" description="Date when the entry is marked as removed." type="datetime" uuid="714f6168-d980-4b98-a23e-e978f733ecf4"/>
+      <field name="site" description="Site that translation belongs to, if any." type="integer" size="10" uuid="b617238f-a2b9-4917-ab7d-9db095d514e8"/>
+      <index name="idxUTranslationId" unique="true">
+        <index-field name="id"/>
+      </index>
+      <index name="idxUTranslationKey" unique="true">
+        <index-field name="key"/>
+        <index-field name="site"/>
+      </index>
+      <index name="idxNTranslationDateAdded">
+        <index-field name="date_added"/>
+      </index>
+      <index name="idxNTranslationDateUpdated">
+        <index-field name="date_updated"/>
+      </index>
+      <index name="idxNTranslationDateRemoved">
+        <index-field name="date_removed"/>
+      </index>
+      <orm-attributes>
+        <attribute name="options">
+          <attribute name="charset">utf8</attribute>
+          <attribute name="collate">utf8_turkish_ci</attribute>
+          <attribute name="engine">innodb</attribute>
+        </attribute>
+        <attribute name="table">translation</attribute>
+        <attribute name="export-file-name">Translation.php</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\BiberLtd\Bundle\MultiLanguageSupportBundle\Entity\Translation" to="\BiberLtd\Bundle\SiteManagementBundle\Entity\Site" caption="idxFSiteOfTranslation" owner-alias="" inverse-alias="site" many-owner="true" many-inverse="false" uuid="691cd89a-3534-4a4c-bf70-544fa15a4c35">
+      <association-field from="site" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <entity name="\BiberLtd\Bundle\MultiLanguageSupportBundle\Entity\TranslationLocalization" local-name="TranslationLocalization" namespace="\BiberLtd\Bundle\MultiLanguageSupportBundle\Entity" description="Holds localized translation values." uuid="2d0a30b3-246d-47fa-b198-331e87d4a439">
+      <field name="translation" description="Localized translation." type="integer" size="20" required="true" primary="true" uuid="11e947c3-cd20-40aa-b05f-aaf56764ee96"/>
+      <field name="language" description="Localizati&#x131;n language." type="integer" size="5" required="true" primary="true" uuid="9cf7a832-5166-4d19-b011-b8efeabefbd9"/>
+      <field name="phrase" description="Localized value." type="text" required="true" uuid="e27b9354-801e-4560-8d89-5c25d3155026"/>
+      <index name="idxUTranslationLocalization" unique="true">
+        <index-field name="translation"/>
+        <index-field name="language"/>
+      </index>
+      <orm-attributes>
+        <attribute name="options">
+          <attribute name="charset">utf8</attribute>
+          <attribute name="collate">utf8_turkish_ci</attribute>
+          <attribute name="engine">innodb</attribute>
+        </attribute>
+        <attribute name="table">translation_localization</attribute>
+        <attribute name="export-file-name">TranslationLocalization.php</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\BiberLtd\Bundle\MultiLanguageSupportBundle\Entity\TranslationLocalization" to="\BiberLtd\Bundle\MultiLanguageSupportBundle\Entity\Language" caption="idxFTranslationLocalizationLanguage" owner-alias="" inverse-alias="language" many-owner="true" many-inverse="false" parent-required="true" uuid="4a21a97e-810e-4e2d-a330-69d23cf801c7">
+      <association-field from="language" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <association from="\BiberLtd\Bundle\MultiLanguageSupportBundle\Entity\TranslationLocalization" to="\BiberLtd\Bundle\MultiLanguageSupportBundle\Entity\Translation" caption="idxFLocalizedTranslation" owner-alias="localizations" inverse-alias="translation" many-owner="true" many-inverse="false" parent-required="true" uuid="71f15a54-6bc9-4510-84b1-2b2817781440">
+      <association-field from="translation" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <orm-attributes>
+      <attribute name="filename-format">entity-name-only</attribute>
+      <attribute name="file-suffix">without-suffix</attribute>
+      <attribute name="namespace">BiberLtd\Bundle\MultiLanguageSupportBundle\Entity</attribute>
+    </orm-attributes>
+  </module>
+  <module name="\FileManagementBundle" local-name="FileManagementBundle" namespace="\BiberLtd\Bundle\FileManagementBundle\Entity" local-namespace="BiberLtd\Bundle\FileManagementBundle\Entity" export-format="Doctrine2Php" export-path="../../file-management-bundle/Entity" uuid="9d574194-22af-4673-a2ee-bb67ec7d212e">
+    <entity name="\BiberLtd\Bundle\FileManagementBundle\Entity\File" local-name="File" namespace="\BiberLtd\Bundle\FileManagementBundle\Entity" description="Stores information of uploaded files." uuid="edc820a6-e14d-41ad-a986-7cabb15fd53a">
+      <field name="id" description="System given id." type="integer" size="15" required="true" unique="true" primary="true" auto-increment="true" uuid="eb48c822-d519-40b2-846f-f8ee5774cb6c">
+        <orm-attributes>
+          <attribute name="generator">
+            <attribute name="strategy">AUTO</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="name" description="File name." type="string" size="165" required="true" uuid="850075c7-b27a-4ac6-9da5-9d6923873a7a"/>
+      <field name="url_key" description="Url key of file." type="string" size="255" required="true" uuid="4b9aa182-f322-42a8-9435-73bdcf173806"/>
+      <field name="source_original" description="File path of the original file." type="text" required="true" uuid="43b12b82-fd3b-493f-9a59-0d7331ffd637"/>
+      <field name="source_preview" description="File path of the preview file." type="text" uuid="e39cf1fa-8621-4087-877f-baac9711dadd"/>
+      <field name="type" description="i:image,a:audio,v:video,f:flash,d:document,p:package,s:software" type="string" size="1" default="i" required="true" uuid="b5111692-a20a-42e7-a7c1-11ff407e0ffc">
+        <orm-attributes>
+          <attribute name="options"/>
+        </orm-attributes>
+      </field>
+      <field name="width" description="Width of file if exists." type="integer" size="5" uuid="9227ef8c-f9d8-4531-852e-bd41b5344246"/>
+      <field name="height" description="Height of file if exists." type="integer" size="5" uuid="6c300880-1ab5-47db-81b1-914c8adc35eb"/>
+      <field name="size" description="Size of file." type="decimal" size="5" default="0" required="true" unique="true" uuid="288b896d-a3dc-4063-934b-82ba160c4ef0">
+        <orm-attributes>
+          <attribute name="options"/>
+        </orm-attributes>
+      </field>
+      <field name="mime_type" description="MIME type of file." type="string" size="45" required="true" uuid="7084cfd7-11a3-4fe4-9c06-5c6f3f78437e"/>
+      <field name="extension" description="File extension." type="string" size="6" required="true" uuid="db4bca7f-2194-4de9-bbee-2b09c01dee86"/>
+      <field name="site" description="If associated with a site..." type="integer" size="5" uuid="671d6423-c40e-4a20-a608-737032bad9ce"/>
+      <field name="folder" description="Folder where file is located" type="integer" size="10" required="true" uuid="7bc3e47f-9ab1-459d-9e07-30fbb7ab9312"/>
+      <field name="exif" description="If file is image, this field stores exif data." type="text" uuid="077ba7eb-6150-4a7e-9ba9-994a1efb84a6"/>
+      <field name="tags" description="Comma delimited tags." type="text" uuid="e293976f-f993-4281-8021-8723c49d5925"/>
+      <field name="date_added" description="Date when the entry is first added." type="datetime" required="true" uuid="96696d1b-92c6-4107-b24f-9e53ff996acb"/>
+      <field name="date_updated" description="Date when the entry is last updated." type="datetime" required="true" uuid="ef855725-7264-48e0-bfe8-ec3db0ad8058"/>
+      <field name="date_removed" description="Date when the entry is marked as removed." type="datetime" uuid="257827dd-bf5c-4f7b-b9d1-9abcb54cc0d8"/>
+      <index name="idxUFileId" unique="true">
+        <index-field name="id"/>
+      </index>
+      <index name="idxNFileMimeType">
+        <index-field name="mime_type"/>
+      </index>
+      <index name="idxNFileExtension">
+        <index-field name="extension"/>
+      </index>
+      <index name="idxNFileDimension">
+        <index-field name="width"/>
+        <index-field name="height"/>
+      </index>
+      <index name="idxNFileDateAdded">
+        <index-field name="date_added"/>
+      </index>
+      <index name="idxNFileDateUpdated">
+        <index-field name="date_updated"/>
+      </index>
+      <index name="idxNFileDateRemoved">
+        <index-field name="date_removed"/>
+      </index>
+      <orm-attributes>
+        <attribute name="options">
+          <attribute name="charset">utf8</attribute>
+          <attribute name="collate">utf8_turkish_ci</attribute>
+          <attribute name="engine">innodb</attribute>
+        </attribute>
+        <attribute name="table">file</attribute>
+        <attribute name="export-file-name">File.php</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\BiberLtd\Bundle\FileManagementBundle\Entity\File" to="\BiberLtd\Bundle\SiteManagementBundle\Entity\Site" caption="idxFSiteOfFile" owner-alias="" inverse-alias="site" many-owner="true" many-inverse="false" uuid="b210e152-462a-45f8-b840-75b0217b73c5">
+      <association-field from="site" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <association from="\BiberLtd\Bundle\FileManagementBundle\Entity\File" to="\BiberLtd\Bundle\FileManagementBundle\Entity\FileUploadFolder" caption="idxFFolderOfFile" owner-alias="files" inverse-alias="folder" many-owner="true" many-inverse="false" parent-required="true" uuid="e759f273-144f-4e29-817a-0fe9f39c4187">
+      <association-field from="folder" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <entity name="\BiberLtd\Bundle\FileManagementBundle\Entity\FileLocalization" local-name="FileLocalization" namespace="\BiberLtd\Bundle\FileManagementBundle\Entity" description="Holds localized details of file." uuid="e19f9517-5f61-4eeb-ba10-cbc7ba6448e0">
+      <field name="file" description="Localized file." type="integer" size="15" required="true" primary="true" uuid="8bdc8934-0b68-44a2-a118-7a57142a779a"/>
+      <field name="language" description="Localization language." type="integer" size="5" required="true" primary="true" uuid="09cc25bc-6a29-45c5-946c-a3f17fdabb0e"/>
+      <field name="title" description="Localized title." type="string" size="155" required="true" uuid="6175de78-b91d-47c4-ac72-7e312a0275cb"/>
+      <field name="description" description="File description" type="text" uuid="d78d1109-b2bb-4788-9b95-1a0af2f7a951"/>
+      <index name="idxUFileLocalization" unique="true">
+        <index-field name="file"/>
+        <index-field name="language"/>
+      </index>
+      <orm-attributes>
+        <attribute name="export-file-name">FileLocalization.php</attribute>
+        <attribute name="table">file_localization</attribute>
+        <attribute name="options">
+          <attribute name="charset">utf8</attribute>
+          <attribute name="collate">utf8_turkish_ci</attribute>
+          <attribute name="engine">innodb</attribute>
+        </attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\BiberLtd\Bundle\FileManagementBundle\Entity\FileLocalization" to="\BiberLtd\Bundle\FileManagementBundle\Entity\File" caption="idxFLocalizedFile" owner-alias="localizations" inverse-alias="file" many-owner="true" many-inverse="false" parent-required="true" uuid="02e3ef16-39f8-42b5-891d-96224803b169">
+      <association-field from="file" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+        <attribute name="side-inverse">
+          <attribute name="cascade">
+            <attribute name="cascade-persist">true</attribute>
+          </attribute>
+        </attribute>
+        <attribute name="side-owning"/>
+      </orm-attributes>
+    </association>
+    <association from="\BiberLtd\Bundle\FileManagementBundle\Entity\FileLocalization" to="\BiberLtd\Bundle\MultiLanguageSupportBundle\Entity\Language" caption="idxFFileLocalizationLanguage" owner-alias="" inverse-alias="language" many-owner="true" many-inverse="false" parent-required="true" uuid="93fd6dcc-590e-4490-ad0f-03a9b480fa94">
+      <association-field from="language" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+        <attribute name="side-inverse">
+          <attribute name="cascade">
+            <attribute name="cascade-persist">true</attribute>
+          </attribute>
+        </attribute>
+        <attribute name="side-owning"/>
+      </orm-attributes>
+    </association>
+    <entity name="\BiberLtd\Bundle\FileManagementBundle\Entity\FileUploadFolder" local-name="FileUploadFolder" namespace="\BiberLtd\Bundle\FileManagementBundle\Entity" description="Stores definitions of file upload folders and sets upload restrictions." uuid="c04c801c-5047-41eb-9209-dfd6732d5e31">
+      <field name="id" description="System given id." type="integer" size="10" required="true" unique="true" primary="true" auto-increment="true" uuid="70077195-d083-4431-8742-0e911b8c90c7">
+        <orm-attributes>
+          <attribute name="generator">
+            <attribute name="strategy">AUTO</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="name" description="User given folder name." type="string" size="155" required="true" uuid="0ae3bfca-4c08-4260-afe3-c1b1084c9ea2"/>
+      <field name="url_key" description="Url key of upload folder." type="string" size="255" required="true" uuid="fd82d3bb-6a9e-495c-8f34-42e8f2421da1"/>
+      <field name="path_absolute" description="Absolute folder path in system." type="text" required="true" uuid="a9536997-a308-4f9f-8be6-b92e96ad4261"/>
+      <field name="url" description="Full URL of file (if file is online)" type="text" uuid="08c3a603-d995-459b-881b-e82046c9c9d0"/>
+      <field name="type" description="i:internal,e:external" type="string" size="1" default="i" required="true" uuid="8c9896cf-6a44-4573-adb7-cd3df9dd8933">
+        <orm-attributes>
+          <attribute name="options"/>
+        </orm-attributes>
+      </field>
+      <field name="allowed_max_size" description="Maximum size aloowed." type="decimal" size="5" uuid="b7ab033b-a6a4-4f77-90a8-5bbcb2e36367"/>
+      <field name="allowed_min_size" description="Minimum size allowed." type="decimal" size="5" uuid="4de80fa8-95ef-4c17-948d-85da82517631"/>
+      <field name="allowed_max_width" description="Max width allowed in pixels." type="integer" size="5" uuid="052d2b5f-89a7-4cac-b505-e706dda49067"/>
+      <field name="allowed_min_width" description="Min width allowed in pixels." type="integer" size="5" uuid="33743d14-9588-4405-86de-393c76a0a55d"/>
+      <field name="allowed_max_height" description="Max height allowed in pixels." type="integer" size="5" uuid="95ea1081-b86b-4cf5-acf6-995f90576fe5"/>
+      <field name="allowed_min_height" description="Min height allowed in pixels." type="integer" size="5" uuid="18d68715-6b43-4f0a-9904-d852cb650af0"/>
+      <field name="count_files" description="Count of files associated with this folder." type="integer" size="10" default="0" required="true" uuid="521ea023-a142-44b6-81a6-f24ec2973cc4">
+        <orm-attributes>
+          <attribute name="options"/>
+        </orm-attributes>
+      </field>
+      <field name="site" description="Associated site." type="integer" size="10" required="true" uuid="6b41465b-e879-494d-9acc-048d1c000d2c"/>
+      <field name="date_added" description="Date when the entry is first added." type="datetime" required="true" uuid="6cc7dc1e-f00b-417c-b41e-2e7463c44248"/>
+      <field name="date_updated" description="Date when the entry is last updated." type="datetime" required="true" uuid="effcaa8c-5757-4788-bbf2-7faa65994431"/>
+      <field name="date_removed" description="Date when the entry is marked as removed." type="datetime" uuid="cac5838e-209c-4e45-a8c2-d5c75be0ad0d"/>
+      <index name="idxUFileUploadFolderId" unique="true">
+        <index-field name="id"/>
+      </index>
+      <index name="idxUFileUploadFolderUrlKey" unique="true">
+        <index-field name="url_key"/>
+        <index-field name="site"/>
+      </index>
+      <index name="idxNFileUploadFolderDateAdded">
+        <index-field name="date_added"/>
+      </index>
+      <index name="idxNFileUploadFolderDateUpdated">
+        <index-field name="date_updated"/>
+      </index>
+      <index name="idxNFileUploadFolderDateRemoved">
+        <index-field name="date_removed"/>
+      </index>
+      <orm-attributes>
+        <attribute name="options">
+          <attribute name="charset">utf8</attribute>
+          <attribute name="collate">utf8_turkish_ci</attribute>
+          <attribute name="engine">innodb</attribute>
+        </attribute>
+        <attribute name="table">file_upload_folder</attribute>
+        <attribute name="export-file-name">FileUploadFolder.php</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\BiberLtd\Bundle\FileManagementBundle\Entity\FileUploadFolder" to="\BiberLtd\Bundle\SiteManagementBundle\Entity\Site" caption="idxFSiteOfFileUploadFolder" owner-alias="" inverse-alias="site" many-owner="true" many-inverse="false" parent-required="true" uuid="a50bcd82-290b-4009-b270-6e47a63148cc">
+      <association-field from="site" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <orm-attributes>
+      <attribute name="namespace">BiberLtd\Bundle\FileManagementBundle\Entity</attribute>
+      <attribute name="filename-format">entity-name-only</attribute>
+      <attribute name="file-suffix">without-suffix</attribute>
+    </orm-attributes>
+  </module>
+  <module name="\MemberManagementBundle" local-name="MemberManagementBundle" namespace="\BiberLtd\Bundle\MemberManagementBundle\Entity" local-namespace="BiberLtd\Bundle\MemberManagementBundle\Entity" export-format="Doctrine2Php" export-path="../../member-management-bundle/Entity" uuid="d40aa0eb-3691-4818-880c-0a9ad1dd9833">
+    <entity name="\BiberLtd\Bundle\MemberManagementBundle\Entity\FilesOfMember" local-name="FilesOfMember" namespace="\BiberLtd\Bundle\MemberManagementBundle\Entity" description="Associates files with members." uuid="07eeeac7-da1a-48f5-96c1-665a12f5d84f">
+      <field name="file" description="Associated file." type="integer" size="15" required="true" primary="true" uuid="10fe7d79-6b4e-453b-87fb-1184aa09fe78"/>
+      <field name="member" description="Associated member." type="integer" size="10" required="true" primary="true" uuid="85657dc1-baff-4d5f-a466-2774443ee2a1"/>
+      <field name="count_view" description="Total number of views of this file." type="integer" size="10" default="0" required="true" uuid="42a72279-ee1d-4956-ac72-a12747e534ae">
+        <orm-attributes>
+          <attribute name="options"/>
+        </orm-attributes>
+      </field>
+      <index name="idxUFilesOfMember" unique="true">
+        <index-field name="member"/>
+        <index-field name="file"/>
+      </index>
+      <orm-attributes>
+        <attribute name="options">
+          <attribute name="charset">utf8</attribute>
+          <attribute name="engine">innodb</attribute>
+          <attribute name="collate">utf8_turkish_ci</attribute>
+        </attribute>
+        <attribute name="export-file-name">FilesOfMember.php</attribute>
+        <attribute name="table">files_of_member</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\BiberLtd\Bundle\MemberManagementBundle\Entity\FilesOfMember" to="\BiberLtd\Bundle\MemberManagementBundle\Entity\Member" caption="idxFMemberOfFiles" owner-alias="" inverse-alias="member" many-owner="true" many-inverse="false" parent-required="true" uuid="ae4257ec-40ad-4a53-95bc-43688e025441">
+      <association-field from="member" to="id"/>
+      <orm-attributes>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <association from="\BiberLtd\Bundle\MemberManagementBundle\Entity\FilesOfMember" to="\BiberLtd\Bundle\FileManagementBundle\Entity\File" caption="idxFFileOfMember" owner-alias="" inverse-alias="file" many-owner="true" many-inverse="false" parent-required="true" uuid="5d9fbbab-e6e7-446b-b35a-5a92b2665907">
+      <association-field from="file" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <entity name="\BiberLtd\Bundle\MemberManagementBundle\Entity\Member" local-name="Member" namespace="\BiberLtd\Bundle\MemberManagementBundle\Entity" description="Stores member account details." uuid="afaa4cd5-a9f4-4fa8-a0f3-c68989c619fc">
+      <field name="id" description="System given id." type="integer" size="10" required="true" unique="true" primary="true" auto-increment="true" uuid="208ba264-7ded-450f-8908-e8add036ddda">
+        <orm-attributes>
+          <attribute name="generator">
+            <attribute name="strategy">AUTO</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="name_first" description="First name of member." type="string" size="155" uuid="506cff93-a7db-47a5-b4a7-20a517cecfef"/>
+      <field name="name_last" description="Last name of member." type="string" size="155" uuid="96c9095a-6035-42a3-a841-54f5bee1260c"/>
+      <field name="email" description="Email of the account owner." type="string" size="255" required="true" unique="true" uuid="4b050af5-6a77-4f90-8ff7-49a2470bde58"/>
+      <field name="username" description="username of the account owner." type="string" size="155" required="true" unique="true" uuid="9d062d3e-f9bd-4e47-b6fd-9285101acfbe"/>
+      <field name="password" description="Encoded password of the user." type="text" required="true" uuid="c6ea77ec-0930-42b3-86ad-4113b83e6052"/>
+      <field name="date_birth" description="Birth date of the member." type="datetime" uuid="247b4de5-b35d-47c1-98fd-7ea975a37b91"/>
+      <field name="file_avatar" description="If exitsts, path to the avatar of the member." type="text" uuid="26747695-1220-4376-ae00-136e565914ad"/>
+      <field name="date_registration" description="Account registration date." type="datetime" required="true" uuid="99a6b542-01a4-4ae1-942a-018fc38967e7"/>
+      <field name="date_activation" description="Account activation date." type="datetime" required="true" uuid="c03c3bed-1f6c-468b-aa0f-8d63c0a19e17"/>
+      <field name="date_status_changed" description="Date when the account status last changed." type="datetime" required="true" uuid="961fc7b1-5168-4b9a-a8b2-b8002c53194b"/>
+      <field name="status" description="a:active,i:inactive,b:banned,n:never activated" type="string" size="1" default="i" required="true" uuid="3d5f335f-3bee-4b2d-83cd-bb040aad4a94">
+        <orm-attributes>
+          <attribute name="options"/>
+        </orm-attributes>
+      </field>
+      <field name="key_activation" description="Activation key / string." type="text" uuid="33d0e83b-9cb4-4af9-84d1-1c5fdf66793d"/>
+      <field name="language" description="Member's default language." type="integer" size="5" uuid="52b469e8-b488-4e30-b008-7f62a031cfe1"/>
+      <field name="site" description="Primary site that user has registered with." type="integer" size="10" uuid="15cbd727-4a4c-4456-8d3b-4191d068c53a"/>
+      <field name="gender" description="m:male,f:female" type="string" size="1" default="f" uuid="5e6e69d8-a78b-4807-805b-4de16e45414e">
+        <orm-attributes>
+          <attribute name="options"/>
+        </orm-attributes>
+      </field>
+      <field name="date_last_login" description="Date when the user last loggedin." type="datetime" uuid="89974941-8aa3-4153-972c-45b9898a4b41"/>
+      <field name="extra_info" description="Extra user details such as settings etc." type="text" uuid="06d8f3d1-22b2-403d-ac25-60798bbb361f"/>
+      <index name="idxUMemberId" unique="true">
+        <index-field name="id"/>
+      </index>
+      <index name="idxNFullNameOfMember">
+        <index-field name="name_first"/>
+        <index-field name="name_last"/>
+      </index>
+      <index name="idxUMemberUsername" unique="true">
+        <index-field name="username"/>
+        <index-field name="site"/>
+      </index>
+      <index name="idxUMemberEmail" unique="true">
+        <index-field name="email"/>
+        <index-field name="site"/>
+      </index>
+      <index name="idxNMemberDateRegitration">
+        <index-field name="date_registration"/>
+      </index>
+      <index name="idxNMemberDateBirth">
+        <index-field name="date_birth"/>
+      </index>
+      <index name="idxNMemberDateActivation">
+        <index-field name="date_activation"/>
+      </index>
+      <index name="idxNMemberDateStatusChanged">
+        <index-field name="date_status_changed"/>
+      </index>
+      <orm-attributes>
+        <attribute name="options">
+          <attribute name="charset">utf8</attribute>
+          <attribute name="collate">utf8_turkish_ci</attribute>
+          <attribute name="engine">innodb</attribute>
+        </attribute>
+        <attribute name="table">member</attribute>
+        <attribute name="export-file-name">Member.php</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\BiberLtd\Bundle\MemberManagementBundle\Entity\Member" to="\BiberLtd\Bundle\MultiLanguageSupportBundle\Entity\Language" caption="idxFDefaultLanguageOfMember" owner-alias="" inverse-alias="language" many-owner="true" many-inverse="false" uuid="9aa319f9-0057-4338-9baa-01096d251a53">
+      <association-field from="language" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <association from="\BiberLtd\Bundle\MemberManagementBundle\Entity\Member" to="\BiberLtd\Bundle\SiteManagementBundle\Entity\Site" caption="idxFDefaultSiteOfMember" owner-alias="" inverse-alias="site" many-owner="true" many-inverse="false" uuid="98d48d17-f488-4b18-833f-1671af44d614">
+      <association-field from="site" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <entity name="\BiberLtd\Bundle\MemberManagementBundle\Entity\MemberGroup" local-name="MemberGroup" namespace="\BiberLtd\Bundle\MemberManagementBundle\Entity" description="Stores member group definitions." uuid="d731b316-305d-4125-8824-3385eb5120ea">
+      <field name="id" description="System given id." type="integer" size="10" required="true" unique="true" primary="true" auto-increment="true" uuid="f12f3cc9-d7ed-4bce-ba74-12261fed014a">
+        <orm-attributes>
+          <attribute name="generator">
+            <attribute name="strategy">AUTO</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="code" description="Member group code. This is not editable." type="string" size="45" required="true" unique="true" uuid="5065cbbc-8d1e-4008-abc2-d625883939f2"/>
+      <field name="date_added" description="Date when the member group is created." type="datetime" required="true" uuid="9c0c1be6-2582-4b8a-8175-e87a6f5ffe4b"/>
+      <field name="date_updated" description="Date when the member group is last updated." type="datetime" required="true" uuid="37adbd02-e691-4c70-8fb8-b920fcb0fab2"/>
+      <field name="date_removed" description="Date when the entry is marked as removed." type="datetime" uuid="e79073a8-76cf-49c6-b43c-3b5db185bd0e"/>
+      <field name="type" description="r:regular,a:admin,s:support" type="string" size="1" default="r" required="true" uuid="b478f8ff-bbd5-4f54-8a4b-a3d5afc85969">
+        <orm-attributes>
+          <attribute name="options"/>
+        </orm-attributes>
+      </field>
+      <field name="count_members" description="Number of members associated with the group." type="integer" default="0" required="true" uuid="82011d13-ece5-4fda-95d8-71d03b6c13f7">
+        <orm-attributes>
+          <attribute name="options"/>
+        </orm-attributes>
+      </field>
+      <field name="site" description="Site that member group is associated with." type="integer" size="10" uuid="e817226d-d208-42b0-8042-11eab69ef270"/>
+      <index name="idxUMemberGroupId" unique="true">
+        <index-field name="id"/>
+      </index>
+      <index name="idxUMemberGroupCode" unique="true">
+        <index-field name="code"/>
+      </index>
+      <index name="idxNMemberGroupDateAdded">
+        <index-field name="date_added"/>
+      </index>
+      <index name="idxNMemberGroupDateUpdated">
+        <index-field name="date_updated"/>
+      </index>
+      <index name="idxNMemberGroupDateRemoved">
+        <index-field name="date_removed"/>
+      </index>
+      <orm-attributes>
+        <attribute name="options">
+          <attribute name="charset">utf8</attribute>
+          <attribute name="collate">utf8_turkish_ci</attribute>
+          <attribute name="engine">innodb</attribute>
+        </attribute>
+        <attribute name="table">member_group</attribute>
+        <attribute name="export-file-name">MemberGroup.php</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\BiberLtd\Bundle\MemberManagementBundle\Entity\MemberGroup" to="\BiberLtd\Bundle\SiteManagementBundle\Entity\Site" caption="idxFSiteOfMemberGroup" owner-alias="" inverse-alias="site" many-owner="true" many-inverse="false" uuid="5c053399-bdfe-4fd2-b79b-2eebb1c870ef">
+      <association-field from="site" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <entity name="\BiberLtd\Bundle\MemberManagementBundle\Entity\MemberGroupLocalization" local-name="MemberGroupLocalization" namespace="\BiberLtd\Bundle\MemberManagementBundle\Entity" description="Stores localized values of member group entries." uuid="9109d3a6-7a5c-4ab9-8ff7-8b5da86662c6">
+      <field name="member_group" description="Localized member group." type="integer" size="10" required="true" primary="true" uuid="50cea140-df01-48c0-acf5-c4eb21f055ba"/>
+      <field name="language" description="Localization language." type="integer" size="5" required="true" primary="true" uuid="ba9a27ae-211a-4b5b-b339-3e6dd10e8cb0"/>
+      <field name="name" description="Localized name of member group." type="string" size="45" required="true" uuid="fd15aca4-89e3-4898-967b-f0d7cdfc2ef9"/>
+      <field name="url_key" description="Localized url key of member group." type="string" size="55" required="true" uuid="3a9c0e6c-e959-4ae1-ab4a-1648abe633b7"/>
+      <field name="description" description="Localized description of member group." type="text" uuid="cd63de3f-fc90-4f32-b8b9-3a0f25ef6067"/>
+      <index name="idxUMemberGroupLocalization" unique="true">
+        <index-field name="member_group"/>
+        <index-field name="language"/>
+      </index>
+      <index name="idxUMemberGroupLocalizationUrlKey" unique="true">
+        <index-field name="language"/>
+        <index-field name="url_key"/>
+      </index>
+      <orm-attributes>
+        <attribute name="table">member_group_localization</attribute>
+        <attribute name="options">
+          <attribute name="charset">utf8</attribute>
+          <attribute name="collate">utf8_turkish_ci</attribute>
+          <attribute name="engine">innodb</attribute>
+        </attribute>
+        <attribute name="export-file-name">MemberGroupLocalization.php</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\BiberLtd\Bundle\MemberManagementBundle\Entity\MemberGroupLocalization" to="\BiberLtd\Bundle\MemberManagementBundle\Entity\MemberGroup" caption="idxFLocalizedMemberGroup" owner-alias="localizations" inverse-alias="group" many-owner="true" many-inverse="false" parent-required="true" uuid="0132b5a4-c206-4f06-bcf7-08bf61d249f3">
+      <association-field from="member_group" to="id"/>
+      <orm-attributes>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <association from="\BiberLtd\Bundle\MemberManagementBundle\Entity\MemberGroupLocalization" to="\BiberLtd\Bundle\MultiLanguageSupportBundle\Entity\Language" caption="idxFMemberGroupLocalizationLanguage" owner-alias="" inverse-alias="language" many-owner="true" many-inverse="false" parent-required="true" uuid="1bc49ece-cade-4d01-b739-aa1d5fe2d1e9">
+      <association-field from="language" to="id"/>
+      <orm-attributes>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <entity name="\BiberLtd\Bundle\MemberManagementBundle\Entity\MemberLocalization" local-name="MemberLocalization" namespace="\BiberLtd\Bundle\MemberManagementBundle\Entity" description="Stores localized values of member entries." uuid="9df7cd56-6a97-410f-b0fe-2fd5538bd528">
+      <field name="member" description="Localized member." type="integer" size="10" required="true" primary="true" uuid="3e97f3e0-a679-42eb-b6f5-8b66e14d05d5"/>
+      <field name="language" description="Localization laguage." type="integer" size="5" required="true" primary="true" uuid="28ce8907-b175-4c3f-93c4-c8728e174c35"/>
+      <field name="title" description="Localized title of member." type="string" size="255" uuid="4424a1f5-b879-4797-b71d-b90f22a6246c"/>
+      <field name="biography" description="Localized biography of member." type="text" uuid="8e715f50-303c-4ed0-982e-77d62db3bfe8"/>
+      <field name="extra_data" description="Localized extra data - serializaed array - of member." type="text" uuid="42a14804-1cfc-460b-9026-c8a18f39939f"/>
+      <index name="idxUMemberLocalization" unique="true">
+        <index-field name="member"/>
+        <index-field name="language"/>
+      </index>
+      <orm-attributes>
+        <attribute name="table">member_localization</attribute>
+        <attribute name="export-file-name">MemberLocalization.php</attribute>
+        <attribute name="options">
+          <attribute name="engine">innodb</attribute>
+          <attribute name="charset">utf8</attribute>
+          <attribute name="collate">utf8_turkish_ci</attribute>
+        </attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\BiberLtd\Bundle\MemberManagementBundle\Entity\MemberLocalization" to="\BiberLtd\Bundle\MemberManagementBundle\Entity\Member" caption="idxFLocalizedMember" owner-alias="localizations" inverse-alias="member" many-owner="true" many-inverse="false" parent-required="true" uuid="b9e4d241-2e4f-4fbf-a78c-0414234947d6">
+      <association-field from="member" to="id"/>
+      <orm-attributes>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <association from="\BiberLtd\Bundle\MemberManagementBundle\Entity\MemberLocalization" to="\BiberLtd\Bundle\MultiLanguageSupportBundle\Entity\Language" caption="idxFMemberLocalizationLanguage" owner-alias="" inverse-alias="language" many-owner="true" many-inverse="false" parent-required="true" uuid="e615dfba-7f2b-4dac-a61b-519c9538e9f0">
+      <association-field from="language" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <entity name="\BiberLtd\Bundle\MemberManagementBundle\Entity\MembersOfGroup" local-name="MembersOfGroup" namespace="\BiberLtd\Bundle\MemberManagementBundle\Entity" description="Associates members with groups." uuid="a12d9552-e3b0-4189-870d-82bf4cd5b6ed">
+      <field name="member" description="Associated member." type="integer" size="10" required="true" primary="true" uuid="1077ce84-fde9-4b93-811c-5ce669391ffb"/>
+      <field name="member_group" description="Associated member group." type="integer" required="true" primary="true" uuid="f3180ba8-0ec2-4500-a85f-0581d85fa3c5"/>
+      <field name="date_added" description="Date when the member is added to group." type="datetime" required="true" uuid="f38e4038-b02b-4c40-9b7c-63c34ef1f970"/>
+      <field name="date_updated" description="Date when the entry is last updated." type="datetime" required="true" uuid="0c3204d1-0740-4166-828e-3a594f816465"/>
+      <field name="date_removed" description="Date when the entry is last removed." type="datetime" uuid="e50fcc76-476c-4f29-951d-3d2747e28291"/>
+      <index name="idxUMembersOfGroup" unique="true">
+        <index-field name="member"/>
+        <index-field name="member_group"/>
+      </index>
+      <index name="idxNMembersOfGroupDateAdded">
+        <index-field name="date_added"/>
+      </index>
+      <index name="idxNMembersOfGroupDateUpdated">
+        <index-field name="date_updated"/>
+      </index>
+      <index name="idxNMembersOfGroupDateRemoved">
+        <index-field name="date_removed"/>
+      </index>
+      <orm-attributes>
+        <attribute name="options">
+          <attribute name="charset">utf8</attribute>
+          <attribute name="collate">utf8_turkish_ci</attribute>
+          <attribute name="engine">innodb</attribute>
+        </attribute>
+        <attribute name="table">members_of_group</attribute>
+        <attribute name="export-file-name">MembersOfGroup.php</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\BiberLtd\Bundle\MemberManagementBundle\Entity\MembersOfGroup" to="\BiberLtd\Bundle\MemberManagementBundle\Entity\Member" caption="idxFMemberOfGroup" owner-alias="" inverse-alias="member" many-owner="true" many-inverse="false" parent-required="true" uuid="804845fb-f53d-4ae3-923e-e8d8a46ebef1">
+      <association-field from="member" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <association from="\BiberLtd\Bundle\MemberManagementBundle\Entity\MembersOfGroup" to="\BiberLtd\Bundle\MemberManagementBundle\Entity\MemberGroup" caption="idxFGroupOfMember" owner-alias="" inverse-alias="group" many-owner="true" many-inverse="false" parent-required="true" uuid="d120204e-3d7c-47ea-bfe6-c33110876e00">
+      <association-field from="member_group" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <entity name="\BiberLtd\Bundle\MemberManagementBundle\Entity\MembersOfSite" local-name="MembersOfSite" namespace="\BiberLtd\Bundle\MemberManagementBundle\Entity" description="Associates members with sites." uuid="062dc364-3d01-474f-8a28-77bb8b1e21fd">
+      <field name="member" description="Associated member." type="integer" size="10" required="true" primary="true" uuid="e2998ad5-2e62-48ea-af77-50e77dc02ea0"/>
+      <field name="site" description="Associated site." type="integer" size="10" required="true" primary="true" uuid="2f4ef3be-bf71-4a9c-b633-8ba1c6095444"/>
+      <field name="date_added" description="Date when the member is added to site." type="datetime" required="true" uuid="72dcad1e-000d-417e-bc2f-b18ee3a32bb4"/>
+      <field name="date_updated" description="Date when the entry is last updated." type="datetime" required="true" uuid="a4281f12-9e6e-46df-aad1-cb7f90d10cfd"/>
+      <field name="date_removed" description="Date when the entry is marked as removed." type="datetime" uuid="0f78c242-b66b-44dc-991b-d19059ba7383"/>
+      <index name="idxUMembersOfSite" unique="true">
+        <index-field name="member"/>
+        <index-field name="site"/>
+      </index>
+      <index name="idxNMembersOfSiteDateAdded">
+        <index-field name="date_added"/>
+      </index>
+      <index name="idxNMembersOfSiteDateUpdated">
+        <index-field name="date_updated"/>
+      </index>
+      <index name="idxNMembersOfSiteDateRemoved">
+        <index-field name="date_removed"/>
+      </index>
+      <orm-attributes>
+        <attribute name="options">
+          <attribute name="charset">utf8</attribute>
+          <attribute name="collate">utf8_turkish_ci</attribute>
+          <attribute name="engine">innodb</attribute>
+        </attribute>
+        <attribute name="table">members_of_site</attribute>
+        <attribute name="export-file-name">MembersOfSite.php</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\BiberLtd\Bundle\MemberManagementBundle\Entity\MembersOfSite" to="\BiberLtd\Bundle\MemberManagementBundle\Entity\Member" caption="idxFMemberOfSite" owner-alias="" inverse-alias="member" many-owner="true" many-inverse="false" parent-required="true" uuid="b1bb0d0b-841e-42dd-9eb4-9e33e559358b">
+      <association-field from="member" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <association from="\BiberLtd\Bundle\MemberManagementBundle\Entity\MembersOfSite" to="\BiberLtd\Bundle\SiteManagementBundle\Entity\Site" caption="idxFSiteOfMember" owner-alias="" inverse-alias="site" many-owner="true" many-inverse="false" parent-required="true" uuid="d0a6295c-5f68-40e3-bfb4-da2ca6e40fb6">
+      <association-field from="site" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <orm-attributes>
+      <attribute name="namespace">BiberLtd\Core\Bundles\MemberManagementBundle\Entity</attribute>
+      <attribute name="file-suffix">without-suffix</attribute>
+      <attribute name="filename-format">entity-name-only</attribute>
+    </orm-attributes>
+  </module>
+  <module name="\LogBundle" local-name="LogBundle" namespace="\BiberLtd\Bundle\LogBundle\Entity" local-namespace="BiberLtd\Bundle\LogBundle\Entity" export-format="Doctrine2Php" export-path="../../log-bundle/Entity" uuid="4b67ab76-3d9b-4d83-b24b-17ee1ffbfbca">
+    <entity name="\BiberLtd\Bundle\LogBundle\Entity\Action" local-name="Action" namespace="\BiberLtd\Bundle\LogBundle\Entity" description="Stores a list of actions that can be logged in application." uuid="54071aca-26ee-4c5d-ab8e-e776bf4448a0">
+      <field name="id" description="System given id." type="smallint" size="5" required="true" unique="true" primary="true" auto-increment="true" uuid="27f77cb3-49ac-44af-b6e5-79d766ac2830">
+        <orm-attributes>
+          <attribute name="generator">
+            <attribute name="strategy">AUTO</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="code" description="Required for developers. Cannot be changed." type="string" size="45" required="true" unique="true" uuid="217aab51-189d-474e-be50-33a20f3e81f5"/>
+      <field name="date_added" description="Date when the action is first added." type="datetime" required="true" uuid="84e8134b-663e-48e4-a640-eeaa6d9b71c8"/>
+      <field name="date_updated" description="Date when the action is last updated." type="datetime" required="true" uuid="5e876c8c-f319-476a-8fb4-55540e7b0d09"/>
+      <field name="type" description="Type of action: v: visitor, a:admin, u: user" type="string" size="1" default="v" required="true" uuid="9cd18e1d-d63d-4932-aee3-e3d5a84a1b5e">
+        <orm-attributes>
+          <attribute name="options"/>
+        </orm-attributes>
+      </field>
+      <field name="count_logs" description="Number of times that this action is logged." type="integer" size="10" default="0" required="true" uuid="c9bcc355-1ab4-4f36-934c-35968032b2cf">
+        <orm-attributes>
+          <attribute name="options"/>
+        </orm-attributes>
+      </field>
+      <field name="site" description="Site for which the action is defined." type="integer" size="10" uuid="42cb327c-a8ad-492a-9d8a-89d45e6ec687"/>
+      <index name="idx_n_action_date_added">
+        <index-field name="date_added"/>
+      </index>
+      <index name="idx_n_action_type">
+        <index-field name="type"/>
+      </index>
+      <index name="idx_u_action_id" description="Action id must be unique." unique="true">
+        <index-field name="id"/>
+      </index>
+      <index name="idx_n_action_date_updated">
+        <index-field name="date_updated"/>
+      </index>
+      <index name="idx_u_action_code" description="Action codes cannot be changed once created." unique="true">
+        <index-field name="code"/>
+      </index>
+      <orm-attributes>
+        <attribute name="options">
+          <attribute name="charset">utf8</attribute>
+          <attribute name="collate">utf8_turkish_ci</attribute>
+          <attribute name="engine">innodb</attribute>
+          <attribute name="temporary">false</attribute>
+        </attribute>
+        <attribute name="table">action</attribute>
+        <attribute name="export-file-name">Action.php</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\BiberLtd\Bundle\LogBundle\Entity\Action" to="\BiberLtd\Bundle\SiteManagementBundle\Entity\Site" caption="idx_f_action_site" owner-alias="" inverse-alias="site" many-owner="true" many-inverse="false" uuid="44626e77-d5b1-448f-877d-884850b3d005">
+      <association-field from="site" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <entity name="\BiberLtd\Bundle\LogBundle\Entity\ActionLocalization" local-name="ActionLocalization" namespace="\BiberLtd\Bundle\LogBundle\Entity" description="Stores translations of action table." uuid="1dc3e6e7-b57f-4a98-b0e7-93bb33529e3f">
+      <field name="action" description="Action to be localizaed." type="integer" size="5" required="true" primary="true" uuid="8fcec3a5-cc9c-494e-b835-341d15a48d2c"/>
+      <field name="language" description="Language of localization." type="integer" size="5" required="true" primary="true" uuid="ca34ff4b-eb5f-4f67-9c8d-b4767c677463"/>
+      <field name="name" description="Localized name of action." type="string" size="155" required="true" uuid="751dc89c-ce17-473f-92b8-60fa8cfd3cb3"/>
+      <field name="url_key" description="Localized url key of action." type="string" size="255" required="true" uuid="61099258-e591-4edd-9ce6-8bc1b4a5a35c"/>
+      <field name="description" description="Localized description of action, if exists." type="string" size="255" uuid="d275daf7-61db-48a4-8fcd-852fb503d739"/>
+      <index name="idx_u_action_name" description="Localized action name must be unique." unique="true">
+        <index-field name="language"/>
+        <index-field name="name"/>
+      </index>
+      <index name="idx_u_action_url_key" description="Localized action url key must be unique." unique="true">
+        <index-field name="action"/>
+        <index-field name="language"/>
+        <index-field name="url_key"/>
+      </index>
+      <index name="idx_u_action_localization" unique="true">
+        <index-field name="action"/>
+        <index-field name="language"/>
+      </index>
+      <orm-attributes>
+        <attribute name="options">
+          <attribute name="charset">utf8</attribute>
+          <attribute name="collate">utf8_turkish_ci</attribute>
+          <attribute name="engine">innodb</attribute>
+        </attribute>
+        <attribute name="repository-class">action_localization</attribute>
+        <attribute name="export-file-name">ActionLocalization.php</attribute>
+        <attribute name="table">action_localization</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\BiberLtd\Bundle\LogBundle\Entity\ActionLocalization" to="\BiberLtd\Bundle\LogBundle\Entity\Action" caption="idx_f_action_localization_action" owner-alias="localizations" inverse-alias="action" many-owner="true" many-inverse="false" parent-required="true" uuid="213625d5-3a75-4ba1-a4e6-57ecc9748fea">
+      <association-field from="action" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <association from="\BiberLtd\Bundle\LogBundle\Entity\ActionLocalization" to="\BiberLtd\Bundle\MultiLanguageSupportBundle\Entity\Language" caption="idx_f_action_localization_language" owner-alias="" inverse-alias="language" many-owner="true" many-inverse="false" parent-required="true" uuid="2ea2519e-7f6f-4248-824b-fddb19170b3a">
+      <association-field from="language" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <entity name="\BiberLtd\Bundle\LogBundle\Entity\Log" local-name="Log" namespace="\BiberLtd\Bundle\LogBundle\Entity" description="Holds action logs per session." uuid="cabe3f9a-2268-427a-ada1-ac56c2e87ba5">
+      <field name="id" description="System given id." type="integer" size="20" required="true" unique="true" primary="true" auto-increment="true" uuid="8deca208-a0f5-41fb-98cc-296145b89612">
+        <orm-attributes>
+          <attribute name="generator">
+            <attribute name="strategy">AUTO</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="ip_v4" description="Ip v4 address of the visitor." type="string" size="15" uuid="ff098c5f-26df-4a38-aca7-7dc2eb73b1d5"/>
+      <field name="ip_v6" description="Ip v6 address of the visitor." type="string" size="39" uuid="0e5a6ef5-a4d3-433a-ba6a-c688ee8423ea"/>
+      <field name="url" description="Visited URL." type="text" required="true" uuid="3817fa81-2042-47dc-88b3-612fe4239189"/>
+      <field name="agent" description="Client agent string." type="text" uuid="26d01d25-12f5-498c-94a5-f852abe9156c"/>
+      <field name="details" description="Action details. May contain serialized string." type="text" uuid="e0ad84ec-ca1c-434b-b5df-a13eeb5cfc76"/>
+      <field name="date_action" description="Time of action." type="datetime" required="true" uuid="338d55c4-7926-4761-bea3-29c3d2cdd18c"/>
+      <field name="session" description="Session where the action has occured." type="integer" size="20" required="true" uuid="7c14c261-eaa7-4241-8846-3ce42f1eb13e"/>
+      <field name="action" description="Action that is logged." type="smallint" size="5" required="true" uuid="ccfd89f9-fe2d-45b9-9d2b-61560e0fb6a2"/>
+      <field name="site" description="Site of log." type="integer" size="10" uuid="8ba72613-ec2b-4f6d-a693-4e28dd2d59a3"/>
+      <index name="idx_n_log_session_action" description="Actions that occur within a session.">
+        <index-field name="session"/>
+        <index-field name="action"/>
+      </index>
+      <index name="idx_n_log_date_action">
+        <index-field name="date_action"/>
+      </index>
+      <index name="idx_n_log_site_session_action">
+        <index-field name="session"/>
+        <index-field name="action"/>
+        <index-field name="site"/>
+      </index>
+      <orm-attributes>
+        <attribute name="options">
+          <attribute name="charset">utf8</attribute>
+          <attribute name="collate">utf8_turkish_ci</attribute>
+          <attribute name="engine">innodb</attribute>
+        </attribute>
+        <attribute name="table">log</attribute>
+        <attribute name="export-file-name">Log.php</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\BiberLtd\Bundle\LogBundle\Entity\Log" to="\BiberLtd\Bundle\LogBundle\Entity\Action" caption="idx_f_log_action" owner-alias="logs" inverse-alias="action" many-owner="true" many-inverse="false" parent-required="true" uuid="c93d85f6-3e43-43a6-82b2-70e1d5ea808d">
+      <association-field from="action" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <association from="\BiberLtd\Bundle\LogBundle\Entity\Log" to="\BiberLtd\Bundle\LogBundle\Entity\Session" caption="idx_f_log_session" owner-alias="logs" inverse-alias="session" many-owner="true" many-inverse="false" parent-required="true" uuid="1615de97-fa1e-4824-bc2c-47c56935556f">
+      <association-field from="session" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <association from="\BiberLtd\Bundle\LogBundle\Entity\Log" to="\BiberLtd\Bundle\SiteManagementBundle\Entity\Site" caption="idx_f_site_log" owner-alias="" inverse-alias="site" many-owner="true" many-inverse="false" uuid="7d9b96e1-deab-44df-aafa-d0b8c7f9e47d">
+      <association-field from="site" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <entity name="\BiberLtd\Bundle\LogBundle\Entity\Session" local-name="Session" namespace="\BiberLtd\Bundle\LogBundle\Entity" description="Stores guest and logged in user sessions." uuid="d63dbddf-e46d-4e45-9e94-c986c1aecf0f">
+      <field name="id" description="System given id." type="integer" size="20" required="true" unique="true" primary="true" auto-increment="true" uuid="1a98635c-2076-4472-a5d6-15b81906d920">
+        <orm-attributes>
+          <attribute name="generator">
+            <attribute name="strategy">AUTO</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="date_created" description="Date when the session is ceated." type="datetime" required="true" uuid="03b2140a-4685-4657-8d28-61dcea77bae1"/>
+      <field name="date_access" description="Date when the session is last accessed." type="datetime" required="true" uuid="c4b2666f-15e0-45cb-9037-5b8acb2db987"/>
+      <field name="date_login" description="Date when the session is logged in." type="datetime" uuid="c338005c-4e43-4d7e-ad6b-324e0069519e"/>
+      <field name="date_logout" description="Date when the session is logged out." type="datetime" uuid="046d79c6-eff0-4096-8049-4f02db80827b"/>
+      <field name="username" description="If logged in, the username for fast access of logs." type="string" size="155" uuid="3e70ea5c-6809-4873-9dfd-0d7bcd72e9c4"/>
+      <field name="data" description="Session data." type="text" required="true" uuid="85fd6408-92c7-4ce6-a09c-8919cc14c437"/>
+      <field name="session_id" description="Application or server session id." type="text" required="true" uuid="d32c2ce2-4a77-4018-b17b-0dcf883b2835"/>
+      <field name="member" description="If logged in the member." type="integer" size="10" required="true" uuid="9d957514-ae33-40f6-8534-96b4ef759897"/>
+      <field name="site" description="Site of sessiom." type="integer" size="10" uuid="cbea9a00-c9ef-47e0-9cc0-a66127994ed5"/>
+      <index name="idx_n_session_date_created">
+        <index-field name="date_created"/>
+      </index>
+      <index name="idx_n_session_date_access">
+        <index-field name="date_access"/>
+      </index>
+      <index name="idx_n_session_date_login">
+        <index-field name="date_login"/>
+      </index>
+      <index name="idx_n_session_date_logout" description="idx_n_session_date_logout">
+        <index-field name="date_logout"/>
+      </index>
+      <index name="idx_u_session_id" unique="true">
+        <index-field name="id"/>
+      </index>
+      <orm-attributes>
+        <attribute name="options">
+          <attribute name="charset">utf8</attribute>
+          <attribute name="collate">utf8_turkish_ci</attribute>
+          <attribute name="engine">innodb</attribute>
+        </attribute>
+        <attribute name="export-file-name">Session.php</attribute>
+        <attribute name="table">session</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\BiberLtd\Bundle\LogBundle\Entity\Session" to="\BiberLtd\Bundle\SiteManagementBundle\Entity\Site" caption="idx_f_session_site" owner-alias="" inverse-alias="site" many-owner="true" many-inverse="false" uuid="49bd1549-7792-4911-8bf4-1019ddc681be">
+      <association-field from="site" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <association from="\BiberLtd\Bundle\LogBundle\Entity\Session" to="\BiberLtd\Bundle\MemberManagementBundle\Entity\Member" caption="idx_f_session_member" owner-alias="" inverse-alias="member" many-owner="true" many-inverse="false" parent-required="true" uuid="547765bc-9453-4a1f-a44f-9df100d75103">
+      <association-field from="member" to="id"/>
+      <orm-attributes>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <orm-attributes>
+      <attribute name="namespace">BiberLtd\Bundle\LogBundle\Entity</attribute>
+      <attribute name="filename-format">entity-name-only</attribute>
+      <attribute name="file-suffix">without-suffix</attribute>
+    </orm-attributes>
+  </module>
+  <module name="\ProductManagementBundle" local-name="ProductManagementBundle" namespace="\" export-format="Doctrine2Php" export-path="../../product-management-bundle/Entity" uuid="9741bde0-dba7-4022-9b83-7ddfcd40a5c4">
+    <entity name="\ActiveProductLocale" local-name="ActiveProductLocale" namespace="\" description="This table is used to match products with locales. This way user can pick in which locale the products will be visible." uuid="0b71f735-9ad2-4268-9865-c28389d95af2">
+      <field name="product" description="Selected product." type="integer" size="15" required="true" primary="true" uuid="731bb636-e96c-4077-9b19-f534f4b14d8c"/>
+      <field name="locale" description="Language" type="integer" size="5" required="true" primary="true" uuid="a5c63f12-6554-40c3-8bef-c0aa1be4edeb"/>
+      <index name="idxUActiveLocaleOfProduct" unique="true">
+        <index-field name="product"/>
+        <index-field name="locale"/>
+      </index>
+      <orm-attributes>
+        <attribute name="table">active_product_locale</attribute>
+        <attribute name="export-file-name">ActiveProductLocale.php</attribute>
+        <attribute name="options">
+          <attribute name="charset">utf8</attribute>
+          <attribute name="collate">utf8_turkish_ci</attribute>
+          <attribute name="engine">innodb</attribute>
+        </attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\ActiveProductLocale" to="\Product" caption="idxFActiveProductOfLanguage" inverse-alias="product" many-owner="true" many-inverse="false" parent-required="true" uuid="6164e2b3-f5a2-4938-90dc-5023e1ab8d87">
+      <association-field from="product" to="id"/>
+    </association>
+    <association from="\ActiveProductLocale" to="\BiberLtd\Bundle\MultiLanguageSupportBundle\Entity\Language" caption="idxFActiveLanguageOfProduct" inverse-alias="locale" many-owner="true" many-inverse="false" parent-required="true" uuid="30c08aaf-e94b-4f4a-87a4-5f62fe77113b">
+      <association-field from="locale" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <entity name="\ActiveProductCategoryLocale" local-name="ActiveProductCategoryLocale" namespace="\" description="This table associates product categories with locales. This way user can deactivate some product categories in selected languages and activate them in other languages." uuid="5ca3abd3-e423-44e0-be5b-2b26ff7c6dfe">
+      <field name="category" description="Selected product category." type="integer" size="10" required="true" primary="true" uuid="6ca80d97-f6f5-4f46-bd27-a112b7e421cc"/>
+      <field name="locale" description="Selected language." type="integer" size="5" required="true" primary="true" uuid="7f31841d-3751-4f5e-ba87-5230cbd4e4e2"/>
+      <index name="idxUActiveLocaleOfProductCategory" unique="true">
+        <index-field name="category"/>
+        <index-field name="locale"/>
+      </index>
+      <orm-attributes>
+        <attribute name="table">active_product_category_locale</attribute>
+        <attribute name="export-file-name">ActiveProductCategoryLocale.php</attribute>
+        <attribute name="options">
+          <attribute name="charset">utf8</attribute>
+          <attribute name="collate">utf8_turkish_ci</attribute>
+          <attribute name="engine">innodb</attribute>
+        </attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\ActiveProductCategoryLocale" to="\ProductCategory" caption="idxFActiveProductCategoryOfLanguage" inverse-alias="category" many-owner="true" many-inverse="false" parent-required="true" uuid="14af7ccd-120f-476b-bf71-7632fb151220">
+      <association-field from="category" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <association from="\ActiveProductCategoryLocale" to="\BiberLtd\Bundle\MultiLanguageSupportBundle\Entity\Language" caption="idxFActiveLanguageOfProductCategory" inverse-alias="locale" many-owner="true" many-inverse="false" parent-required="true" uuid="aa3357dd-d8f5-456f-ac6d-5ddd8f46fbde">
+      <association-field from="locale" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <entity name="\Brand" local-name="Brand" namespace="\" description="Holds brand definitions" uuid="5a305683-57f2-495d-9e9a-011d3343c137">
+      <field name="id" description="System given id." type="integer" size="10" required="true" unique="true" primary="true" auto-increment="true" uuid="9a8dea35-16ad-4658-897b-d6c1dfdc10b1"/>
+      <field name="name" description="Name of brand." type="string" size="255" required="true" uuid="0fb2a1b0-abbf-49a8-b70b-cc3475eb9f40"/>
+      <field name="logo" description="Path to logo file of brand." type="text" uuid="09e54c64-7475-45ee-9ff6-85133cf4abbb"/>
+      <field name="date_added" description="Date when the brand is first added." type="datetime" required="true" uuid="2872704d-1501-42e4-a11f-32422b6d9517"/>
+      <field name="date_updated" description="Date when the brand is last updated." type="datetime" required="true" uuid="15c307fe-52ff-4412-ac65-823f18d0e8c3"/>
+      <field name="date_removed" description="Date when the brand is removed." type="datetime" uuid="11c5a017-ba64-4cd9-be5a-6d8fc180fb96"/>
+      <index name="idxUBrandId" unique="true">
+        <index-field name="id"/>
+      </index>
+      <index name="idxNBrandDateAdded">
+        <index-field name="date_added"/>
+      </index>
+      <index name="idxNBrandDateUpdated">
+        <index-field name="date_updated"/>
+      </index>
+      <index name="idxNBrandDateRemoved">
+        <index-field name="date_removed"/>
+      </index>
+      <orm-attributes>
+        <attribute name="table">brand</attribute>
+        <attribute name="options">
+          <attribute name="charset">utf8</attribute>
+          <attribute name="collate">utf8_turkish_ci</attribute>
+          <attribute name="engine">innodb</attribute>
+        </attribute>
+        <attribute name="export-file-name">Brand.php</attribute>
+      </orm-attributes>
+    </entity>
+    <entity name="\VolumePricing" local-name="VolumePricing" namespace="\" description="Holds volume pricing definitions." uuid="b1cc9d75-7583-466b-9675-95dd95acbaf9">
+      <field name="id" description="System given id." type="integer" size="15" required="true" unique="true" primary="true" auto-increment="true" uuid="f001335e-0529-4c6b-bcf0-8f8722c20d7f"/>
+      <field name="product" description="Product that pricing information belongs to." type="integer" size="15" required="true" uuid="9335149d-fb31-46a6-b4b7-ea774b8a2c14"/>
+      <field name="quantity_limit" description="Quantity limit." type="integer" size="5" required="true" uuid="2328ac34-a7ac-4f8c-8157-1499ade067a3"/>
+      <field name="limit_direction" description="Limit direction. xm: x or more, xl: x or less." type="string" size="2" default="xm" required="true" uuid="55199346-ba34-44ac-aed4-0fa83d2f540f"/>
+      <field name="date_added" description="Date when information is added." type="datetime" required="true" uuid="b84ea42d-7297-4186-9d6a-ca0890fd8b0e"/>
+      <field name="date_updated" description="Date when information is updated." type="datetime" default="xl" required="true" uuid="faaa20d6-62fb-4a12-88f0-3ce0c7c9054c"/>
+      <field name="price" description="Price." type="decimal" size="8" default="0.00" required="true" uuid="1dc19d69-2a9d-4178-8cde-734b20a8138c"/>
+      <field name="discounted_price" description="Discounted price." type="decimal" size="8" uuid="2e0de060-a2f2-4540-894c-f8e4cf852eb3"/>
+      <field name="date_removed" description="Date when the entry is marked as removed." type="datetime" uuid="73cff8e5-4ad7-436b-9939-5cbd5ae96a71"/>
+      <index name="idxNVolumePricing">
+        <index-field name="product"/>
+        <index-field name="id"/>
+      </index>
+      <index name="idxNVolumePricingDateAdded">
+        <index-field name="date_added"/>
+      </index>
+      <index name="idxNVolumePricingDateUpdated">
+        <index-field name="date_updated"/>
+      </index>
+      <index name="idxUVolumePricingId" unique="true">
+        <index-field name="id"/>
+      </index>
+      <index name="idxNVolumePricingDateRemoved">
+        <index-field name="date_removed"/>
+      </index>
+      <orm-attributes>
+        <attribute name="table">volume_pricing</attribute>
+        <attribute name="options">
+          <attribute name="charset">utf8</attribute>
+          <attribute name="collate">utf8_turkish_ci</attribute>
+          <attribute name="engine">innodb</attribute>
+        </attribute>
+        <attribute name="export-file-name">VolumePricing.php</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\VolumePricing" to="\Product" caption="idxFProductOfVolumePricing" inverse-alias="product" many-owner="true" many-inverse="false" parent-required="true" uuid="7f2dacf7-b140-408d-bd13-4fa5a6d1a44c">
+      <association-field from="product" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <entity name="\Product" local-name="Product" namespace="\" description="Stores product entries." uuid="ed4e2029-a3f4-47c3-8258-b05222394278">
+      <field name="id" description="System given id." type="integer" size="15" required="true" unique="true" primary="true" auto-increment="true" uuid="fbb95d07-3b5f-4c5d-9d7a-fd6add86ae05"/>
+      <field name="quantity" description="Number of items in stock." type="integer" size="5" default="0" required="true" uuid="d397ed1b-1713-4585-ab3d-fcc210903f45"/>
+      <field name="price" description="Item most up-to-date base price." type="decimal" size="6" default="0.00" required="true" uuid="90c3172e-1b3b-46a5-b182-9d74288aa02f"/>
+      <field name="discount_price" description="Item most-up-to-date-discount price." type="decimal" size="6" uuid="a70131c8-f88e-41a9-90e6-76ef4570fb32"/>
+      <field name="count_view" description="Number of times that product is seen." type="integer" size="10" default="0" required="true" uuid="992c3b59-49d4-4d1f-8977-dc5b8b98655e"/>
+      <field name="count_like" description="Number of times that product is liked." type="integer" size="10" default="0" required="true" uuid="dd6419a5-45fc-42c3-9d74-20d4a43aea1b"/>
+      <field name="sku" description="Stock keeping unit or a unique identifier." type="string" size="155" required="true" uuid="0a781011-36c3-4d51-9008-5c8750b940fd"/>
+      <field name="sort_order" description="Custom sort order." type="integer" default="0" required="true" uuid="3e04fdbd-4daf-4366-8dc4-a8474c7fde81"/>
+      <field name="date_added" description="Date when the product is added." type="datetime" required="true" uuid="183ef22c-3612-483c-8ff0-0203b6a79aaf"/>
+      <field name="date_updated" description="Date when the product is last updated." type="datetime" required="true" uuid="760381a9-04f2-4f6a-8aa9-cd795fdab643"/>
+      <field name="date_removed" description="Date when the product is deleted." type="datetime" uuid="5764f9d8-971d-42b4-9a65-8d30a81af221"/>
+      <field name="status" description="a:active;i:inactive;p:pre-order;o:out of stock;v:visible;h:hidden" type="string" size="1" default="a" required="true" uuid="3fdd14b6-7fce-459c-842d-34558b38c415"/>
+      <field name="type" description="t:tangible;i:intangible" type="string" size="1" default="t" required="true" uuid="e7e4e579-9db1-4c2d-a1f8-8dd3c7f46026"/>
+      <field name="is_customizable" description="y:yes;n:no" type="string" size="1" default="n" required="true" uuid="e40cc306-5368-49c0-84f4-c3c8df08bb06"/>
+      <field name="site" description="Primary site that product has been originated from." type="integer" size="10" uuid="4fae015c-a1cc-4407-bb7b-3b424bfd644e"/>
+      <field name="preview_file" description="Preview file of the image." type="integer" size="15" uuid="98b87b84-3591-4f65-810c-a1f113834464"/>
+      <field name="brand" description="Product brand if it exists." type="integer" size="10" uuid="3f8a3990-5353-4a14-8a84-61b9c8a71a86"/>
+      <field name="supplier" description="Supplier of product if exists." type="integer" size="10" uuid="63f9dee1-5188-435e-9959-b16d0b187544"/>
+      <field name="extra_info" description="Json encoded extra details." type="text" uuid="2ebb3962-ba61-46a7-a73d-c8fd96e7b445"/>
+      <index name="idxUProductId" unique="true">
+        <index-field name="id"/>
+      </index>
+      <index name="idxUProductSku" unique="true">
+        <index-field name="sku"/>
+        <index-field name="site"/>
+      </index>
+      <index name="idxNProductDateAdded">
+        <index-field name="date_added"/>
+      </index>
+      <index name="idxNProductDateUpdated">
+        <index-field name="date_updated"/>
+      </index>
+      <index name="idxNProductDateRemoved">
+        <index-field name="date_removed"/>
+      </index>
+      <index name="idxNProductsOfBrand">
+        <index-field name="id"/>
+        <index-field name="brand"/>
+      </index>
+      <orm-attributes>
+        <attribute name="options">
+          <attribute name="charset">utf8</attribute>
+          <attribute name="collate">utf8_turkish_ci</attribute>
+          <attribute name="engine">innodb</attribute>
+        </attribute>
+        <attribute name="table">product</attribute>
+        <attribute name="export-file-name">Product.php</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\Product" to="\BiberLtd\Bundle\SiteManagementBundle\Entity\Site" caption="idxFSiteOfProduct" inverse-alias="site" many-owner="true" many-inverse="false" uuid="e4252e7a-8190-4bbb-a9a3-4c751d015dc3">
+      <association-field from="site" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <association from="\Product" to="\BiberLtd\Bundle\FileManagementBundle\Entity\File" caption="idxFPreviewFileOfProduct" inverse-alias="preview_file" many-owner="true" many-inverse="false" uuid="41a3d993-2696-4ce9-a68b-2a2546b61166">
+      <association-field from="preview_file" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <association from="\Product" to="\Brand" caption="idxFBrandOfProduct" owner-alias="products" inverse-alias="brand" many-owner="true" many-inverse="false" uuid="e5582ebd-a1fb-44b2-b45d-edd45512cf0f">
+      <association-field from="brand" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <association from="\Product" to="\BiberLtd\Bundle\StockManagementBundle\Entity\Supplier" caption="idx_f_product_supplier" inverse-alias="supplier" many-owner="true" many-inverse="false" uuid="3534aca0-24b7-42e2-8fae-bee6d480eafb">
+      <association-field from="supplier" to="id"/>
+    </association>
+    <entity name="\ProductLocalization" local-name="ProductLocalization" namespace="\" description="Hols localization for each product." uuid="398bafb3-54d0-4c80-b26c-398e9a15f46d">
+      <field name="product" description="Localized product." type="integer" size="15" required="true" primary="true" uuid="2f2c2584-53ab-417a-b413-4d9423a997b5"/>
+      <field name="language" description="Localization language." type="integer" size="5" required="true" primary="true" uuid="ae088787-2b78-4dec-98d9-f921e4d7c4c3"/>
+      <field name="name" description="Localized name of product." type="string" size="155" required="true" uuid="40ab4024-e239-4cb2-a0f3-06a47bbf75ea"/>
+      <field name="url_key" description="Url slug." type="string" size="255" uuid="c907fe0b-c120-489b-b6c7-b04dfd812c06"/>
+      <field name="description" description="Short description of product." type="text" uuid="fdb04dbc-927e-4d57-a4b4-dc51bb9323c8"/>
+      <field name="meta_keywords" description="Meta keywords for the product." type="string" size="155" uuid="873fa034-c79f-465d-8b47-ce5a464d37ce"/>
+      <field name="meta_description" description="Meta description for the product." type="string" size="155" uuid="80262f8a-69b8-4ee1-9e37-3f09a9baedc8"/>
+      <index name="idxUProductLocalization" unique="true">
+        <index-field name="product"/>
+        <index-field name="language"/>
+      </index>
+      <index name="idxUProductUrlKey">
+        <index-field name="product"/>
+        <index-field name="language"/>
+        <index-field name="url_key"/>
+      </index>
+      <orm-attributes>
+        <attribute name="options">
+          <attribute name="charset">utf8</attribute>
+          <attribute name="collate">utf8_turkish_ci</attribute>
+          <attribute name="engine">innodb</attribute>
+        </attribute>
+        <attribute name="table">product_localization</attribute>
+        <attribute name="export-file-name">ProductLocalization.php</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\ProductLocalization" to="\Product" caption="idxFLocalizedProduct" owner-alias="localizations" inverse-alias="product" many-owner="true" many-inverse="false" parent-required="true" uuid="cd249b46-dc20-4984-9105-8f1fa3b4dedf">
+      <association-field from="product" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+        <attribute name="side-inverse">
+          <attribute name="cascade">
+            <attribute name="cascade-persist">true</attribute>
+          </attribute>
+        </attribute>
+        <attribute name="side-owning">
+          <attribute name="cascade">
+            <attribute name="cascade-persist">true</attribute>
+          </attribute>
+        </attribute>
+      </orm-attributes>
+    </association>
+    <association from="\ProductLocalization" to="\BiberLtd\Bundle\MultiLanguageSupportBundle\Entity\Language" caption="idxFProductLocalizationLanguage" inverse-alias="language" many-owner="true" many-inverse="false" parent-required="true" uuid="7ce2c176-5fc7-4c80-84e1-7bb3305de122">
+      <association-field from="language" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <entity name="\ProductsOfSite" local-name="ProductsOfSite" namespace="\" description="Associates products with sites." uuid="54bdf829-a601-4c54-97b8-3ccbeb915fac">
+      <field name="product" description="Product which resides in site." type="integer" size="15" required="true" primary="true" uuid="75999664-c852-4d43-a742-ea4556bf07a9"/>
+      <field name="site" description="Site that owns the product." type="integer" size="10" required="true" primary="true" uuid="38dd4c65-232b-4cc7-9819-3e7a5dbc4894"/>
+      <field name="date_added" description="Date when the product is added to site." type="datetime" required="true" uuid="dbb90c72-3106-4c24-b2c8-1fe52d44cdee"/>
+      <field name="count_view" description="Number of times that product is seen within site." type="integer" size="10" default="0" required="true" uuid="e9bd4cd5-bf57-4b24-89c6-91a283758d9a"/>
+      <field name="count_like" description="Number of times that product is liked within the site." type="integer" size="10" default="0" required="true" uuid="56dccfea-0105-41c9-81dc-e48df41bec93"/>
+      <index name="idxUProductsOfSite" unique="true">
+        <index-field name="product"/>
+        <index-field name="site"/>
+      </index>
+      <index name="idxNProductsOfSiteDateAdded">
+        <index-field name="date_added"/>
+      </index>
+      <orm-attributes>
+        <attribute name="options">
+          <attribute name="charset">utf8</attribute>
+          <attribute name="collate">utf8_turkish_ci</attribute>
+          <attribute name="engine">innodb</attribute>
+        </attribute>
+        <attribute name="table">products_of_site</attribute>
+        <attribute name="export-file-name">ProductsOfSite.php</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\ProductsOfSite" to="\Product" caption="idxFProductOfSite" inverse-alias="product" many-owner="true" many-inverse="false" parent-required="true" uuid="2e4250bb-0af2-49a9-bb56-90ff793474be">
+      <association-field from="product" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <association from="\ProductsOfSite" to="\BiberLtd\Bundle\SiteManagementBundle\Entity\Site" caption="idxFSiteOfProduct" inverse-alias="site" many-owner="true" many-inverse="false" parent-required="true" uuid="5e9d566d-86ce-46ec-acec-b61d968fb34e">
+      <association-field from="site" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <entity name="\ProductCategory" local-name="ProductCategory" namespace="\" description="Stores product category definitions." uuid="ab52fd8c-bbaa-4acd-bf2b-ddf58080803e">
+      <field name="id" description="System given id." type="integer" size="10" required="true" unique="true" primary="true" auto-increment="true" uuid="7622a311-9c7d-4daf-b243-50629f3b989e"/>
+      <field name="level" description="t:top;b:bottom;m:middle" type="string" size="1" default="t" required="true" uuid="146ed0fe-06e1-4297-b416-ab50c13a44c7"/>
+      <field name="count_children" description="Number of children categories." type="integer" size="10" default="0" required="true" uuid="569d8a54-de19-4a84-a119-e3b199f6f10a"/>
+      <field name="date_added" description="Date when the category is added." type="datetime" required="true" uuid="2c487eca-ed41-4b5c-b9cd-435a8367df76"/>
+      <field name="date_updated" description="Date when the category is last updated." type="datetime" uuid="5c171611-684f-4a97-b5dc-1e60c03fb7f8"/>
+      <field name="date_removed" description="Date when the entry is marked as removed." type="datetime" uuid="f358fb1d-8de4-49fb-8ba4-3f7e3b0a6d5b"/>
+      <field name="parent" description="Parent catgory." type="integer" size="10" uuid="5ef774a7-92d3-4edc-9eec-9b8ff0de82a0"/>
+      <field name="site" description="Site in which the category is defined." type="integer" size="10" uuid="96f72547-c4c4-46dc-adfc-894c32c3bb10"/>
+      <field name="preview_image" description="Preview image of category if exists." type="integer" size="15" required="true" uuid="79835db4-15cd-4c4d-9a95-6c1f1ea795bc"/>
+      <field name="is_featured" description="y:yes,n:no" type="string" size="1" default="n" required="true" uuid="f17386c9-101d-40da-8b74-399a9171b98a"/>
+      <field name="sort_order" description="Custom sort order." type="integer" default="1" uuid="7151dda8-e41d-42f7-bf5f-27a84cc63c2e"/>
+      <index name="idxUProductCategoryId" unique="true">
+        <index-field name="id"/>
+      </index>
+      <index name="idxNProductCategoryDateAdded">
+        <index-field name="date_added"/>
+      </index>
+      <index name="idxNProductCategoryDateUpdated">
+        <index-field name="date_updated"/>
+      </index>
+      <index name="idxNProductCategoryDateRemoved">
+        <index-field name="date_removed"/>
+      </index>
+      <orm-attributes>
+        <attribute name="options">
+          <attribute name="charset">utf8</attribute>
+          <attribute name="collate">utf8_turkish_ci</attribute>
+          <attribute name="engine">innodb</attribute>
+        </attribute>
+        <attribute name="table">product_category</attribute>
+        <attribute name="export-file-name">ProductCategory.php</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\ProductCategory" to="\ProductCategory" caption="idxFParentOfProductCategory" owner-alias="product_categories" inverse-alias="parent" many-owner="true" many-inverse="false" uuid="c14f5878-4dee-4629-a7eb-85530f7eac9d">
+      <association-field from="parent" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">RESTRICT</attribute>
+      </orm-attributes>
+    </association>
+    <association from="\ProductCategory" to="\BiberLtd\Bundle\SiteManagementBundle\Entity\Site" caption="idxFSiteOfProductCategory" inverse-alias="site" many-owner="true" many-inverse="false" uuid="8900df27-8d92-4a35-99f3-837cef9ae4f7">
+      <association-field from="site" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <association from="\ProductCategory" to="\BiberLtd\Bundle\FileManagementBundle\Entity\File" caption="idxFPreviewFileOfProductCategory" inverse-alias="preview_image" many-owner="true" many-inverse="false" parent-required="true" uuid="3b152a02-3044-4b53-ade0-2b1670e9ecc3">
+      <association-field from="preview_image" to="id"/>
+      <orm-attributes>
+        <attribute name="side-owning">
+          <attribute name="cascade">
+            <attribute name="cascade-persist">true</attribute>
+          </attribute>
+        </attribute>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <entity name="\ProductCategoryLocalization" local-name="ProductCategoryLocalization" namespace="\" description="Holds product category localization values." uuid="d5752aa3-5dc2-43c1-a65d-b8c8beb1bc25">
+      <field name="language" description="Localization language." type="integer" size="5" required="true" primary="true" uuid="7f76e36d-7edb-4531-977a-4057d5baa9b0"/>
+      <field name="category" description="Localized product category." type="integer" size="10" required="true" primary="true" uuid="54d31d99-57f1-4a44-98e8-42a353e20e71"/>
+      <field name="name" description="Localized category name." type="string" size="45" uuid="01f134e3-6245-4a60-938c-8f4da869d8cc"/>
+      <field name="url_key" description="Localized url key of category." type="string" size="155" required="true" uuid="21aba8f8-e9ba-44af-88e1-2f8eb7f5c8c9"/>
+      <field name="description" description="Localized description." type="string" size="255" uuid="aa3b13b9-259a-4942-98a2-37b27d56aa3c"/>
+      <field name="meta_keywords" description="Localized meta keywords." type="string" size="155" uuid="f5213016-80e6-468c-8714-856e5484a079"/>
+      <field name="meta_description" description="Localized meta description." type="string" size="255" uuid="81ebc39e-a5b4-4ba5-abda-e432dd92882e"/>
+      <index name="idxUProductCategoryLocalization" unique="true">
+        <index-field name="language"/>
+        <index-field name="category"/>
+      </index>
+      <index name="idxUProductCategoryUrlKey" unique="true">
+        <index-field name="language"/>
+        <index-field name="url_key"/>
+        <index-field name="category"/>
+      </index>
+      <orm-attributes>
+        <attribute name="options">
+          <attribute name="charset">utf8</attribute>
+          <attribute name="collate">utf8-turkish-ci</attribute>
+          <attribute name="engine">innodb</attribute>
+        </attribute>
+        <attribute name="table">product_category_localization</attribute>
+        <attribute name="export-file-name">ProductCategoryLocalization.php</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\ProductCategoryLocalization" to="\ProductCategory" caption="idxFLocalizedProductCategory" owner-alias="localizations" inverse-alias="category" many-owner="true" many-inverse="false" parent-required="true" uuid="1f496e54-ba0c-472d-a55f-db00287e9014">
+      <association-field from="category" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+        <attribute name="side-inverse">
+          <attribute name="cascade">
+            <attribute name="cascade-persist">false</attribute>
+            <attribute name="cascade-remove">false</attribute>
+          </attribute>
+        </attribute>
+        <attribute name="side-owning">
+          <attribute name="cascade">
+            <attribute name="cascade-persist">true</attribute>
+          </attribute>
+        </attribute>
+      </orm-attributes>
+    </association>
+    <association from="\ProductCategoryLocalization" to="\BiberLtd\Bundle\MultiLanguageSupportBundle\Entity\Language" caption="idxFProductCategoryLocalizationLanguage" inverse-alias="language" many-owner="true" many-inverse="false" parent-required="true" uuid="90fa7d86-109a-4dee-8f53-eb1712691b6f">
+      <association-field from="language" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <entity name="\CategoriesOfProduct" local-name="CategoriesOfProduct" namespace="\" description="Associates categories with product." uuid="ff58bc59-4964-4488-92c9-914bc835a050">
+      <field name="product" description="Product that is associated with category." type="integer" size="15" required="true" primary="true" uuid="aaa4200a-a3a8-4c05-a2e8-b9395d1a343b"/>
+      <field name="category" description="Category that product is associated with." type="integer" size="10" primary="true" uuid="c82ca7ab-f392-44d2-b71e-ffa4cb1196d1"/>
+      <field name="sort_order" description="Custom sort order." type="integer" size="10" default="0" required="true" uuid="6b1bd0f8-a58c-45e8-a40e-8e1054488eae"/>
+      <field name="date_added" description="Date when the product is associated with category." type="datetime" required="true" uuid="d6d5edd7-3c48-4f3a-a677-ba3f288ceb26"/>
+      <index name="idxUCategoriesOfProduct" unique="true">
+        <index-field name="product"/>
+        <index-field name="category"/>
+      </index>
+      <index name="idxNCategoriesOfProductDateAdded">
+        <index-field name="date_added"/>
+      </index>
+      <orm-attributes>
+        <attribute name="options">
+          <attribute name="charset">utf8</attribute>
+          <attribute name="collate">utf8_turkish_ci</attribute>
+          <attribute name="engine">innodb</attribute>
+        </attribute>
+        <attribute name="table">categories_of_product</attribute>
+        <attribute name="export-file-name">CategoriesOfProduct.php</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\CategoriesOfProduct" to="\ProductCategory" caption="idxFCategoryOfProduct" inverse-alias="category" many-owner="true" many-inverse="false" uuid="cd03db2c-7b7b-4448-9a6d-05afdd69d069">
+      <association-field from="category" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <association from="\CategoriesOfProduct" to="\Product" caption="idxFProductOfCategory" inverse-alias="product" many-owner="true" many-inverse="false" parent-required="true" uuid="238a4721-3792-4a5b-b65e-81b2d9eba953">
+      <association-field from="product" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <entity name="\ProductAttribute" local-name="ProductAttribute" namespace="\" description="Stores product attribute definitions." uuid="be02716a-911d-4e0e-8e00-5c89d2dbb0de">
+      <field name="id" description="System given id." type="integer" size="10" required="true" unique="true" primary="true" auto-increment="true" uuid="5adb5405-cfb5-4664-8f11-47ad25ed08fd"/>
+      <field name="sort_order" description="Custom sort order." type="integer" size="10" default="0" required="true" uuid="e4812345-e946-419f-91e1-224630a1f09c"/>
+      <field name="date_added" description="Date when the attribute is added." type="datetime" required="true" uuid="6c6b0581-d872-4b19-b6cd-905146f101ac"/>
+      <field name="date_updated" description="Date when the entry is last updated." type="datetime" required="true" uuid="76022460-9643-487e-b2ae-d89d331d0d35"/>
+      <field name="date_removed" description="Date when the entry is marked as removed." type="datetime" uuid="56be1441-4d74-435a-9738-062b5aa0660d"/>
+      <field name="site" description="Site where attribute is registered to." type="integer" size="10" uuid="f69985e6-474d-480f-9698-68956c977c89"/>
+      <index name="idxUProductAttributeId" unique="true">
+        <index-field name="id"/>
+      </index>
+      <index name="idxNProductAttributeDateAdded">
+        <index-field name="date_added"/>
+      </index>
+      <index name="idxNProductAttributeDateUpdated">
+        <index-field name="date_updated"/>
+      </index>
+      <index name="idxNProductAttributeDateRemoved">
+        <index-field name="date_removed"/>
+      </index>
+      <orm-attributes>
+        <attribute name="options">
+          <attribute name="charset">utf8</attribute>
+          <attribute name="collate">utf8_turkish_ci</attribute>
+          <attribute name="engine">innodb</attribute>
+        </attribute>
+        <attribute name="table">product_attribute</attribute>
+        <attribute name="export-file-name">ProductAttribute.php</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\ProductAttribute" to="\BiberLtd\Bundle\SiteManagementBundle\Entity\Site" caption="idxFSiteOfProductAttribute" inverse-alias="site" many-owner="true" many-inverse="false" uuid="fbb3c492-f148-4658-89df-2ee3d75761d0">
+      <association-field from="site" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <entity name="\ProductAttributeLocalization" local-name="ProductAttributeLocalization" namespace="\" description="Stores product attribute's localized definitions." uuid="ab4d46b1-9b5b-4ce2-9e65-898e5bcf4073">
+      <field name="attribute" description="Localized attribute." type="integer" size="10" primary="true" uuid="4756b5ba-084d-40f4-a96d-404951e0cf03"/>
+      <field name="language" description="Localization language." type="integer" size="5" primary="true" uuid="447b267e-9c3d-472c-a776-f963d4840e47"/>
+      <field name="name" description="Localized name of product attribute." type="string" size="155" required="true" uuid="02426073-8204-4fe5-b902-f8505cedeaec"/>
+      <field name="url_key" description="Localized url key of product attribute." type="string" size="255" required="true" uuid="b00ceea3-911d-4739-b09c-162fe2014355"/>
+      <index name="idxUProductAttributeLocalization" unique="true">
+        <index-field name="attribute"/>
+        <index-field name="language"/>
+      </index>
+      <index name="idxUProductAttributeUrlKey">
+        <index-field name="attribute"/>
+        <index-field name="language"/>
+        <index-field name="url_key"/>
+      </index>
+      <orm-attributes>
+        <attribute name="table">product_attribute_localization</attribute>
+        <attribute name="options">
+          <attribute name="charset">utf8</attribute>
+          <attribute name="collate">utf8_turkish_Ci</attribute>
+          <attribute name="engine">innodb</attribute>
+        </attribute>
+        <attribute name="export-file-name">ProductAttributeLocalization.php</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\ProductAttributeLocalization" to="\BiberLtd\Bundle\MultiLanguageSupportBundle\Entity\Language" caption="idxProductAttributeLocalizationLanguage" inverse-alias="language" many-owner="true" many-inverse="false" uuid="e3c61ead-3ee4-4349-8be9-ae96cbf3eb3a">
+      <association-field from="language" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <association from="\ProductAttributeLocalization" to="\ProductAttribute" caption="idxFLocalizedProductAttribute" owner-alias="localizations" inverse-alias="attribute" many-owner="true" many-inverse="false" uuid="0193716e-9fc7-4858-a23c-15c14d9270ce">
+      <association-field from="attribute" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <entity name="\AttributesOfProduct" local-name="AttributesOfProduct" namespace="\" description="Associates attributes with products." uuid="f94f0dff-737d-40da-bdae-9cc36c5db82a">
+      <field name="product" description="Associated product." type="integer" size="15" primary="true" uuid="b78d0409-7b66-491d-acb4-662dd70c90f5"/>
+      <field name="attribute" description="Product attribute." type="integer" size="10" primary="true" uuid="07b3fdf8-f50d-4a6e-8bc3-b35964ba5dcf"/>
+      <field name="sort_order" description="Custom sort order." type="integer" size="10" default="0" required="true" uuid="a3ba019f-a27f-4a52-a606-2b2834cf1f3b"/>
+      <field name="date_added" description="Date when the attribute is first associated with product." type="datetime" required="true" uuid="28529f3d-e80e-47ff-a53f-843bb5904d54"/>
+      <field name="price_factor" description="If attribute changes price, by what percentage or amount?" type="decimal" size="5" uuid="7b5de8d1-a7ca-4da0-afe0-643b390fbd9a"/>
+      <field name="price_factor_type" description="a:amount,p:percentage" type="string" size="1" default="a" uuid="ffed21ca-63b5-42b6-a725-54f24198139b"/>
+      <index name="idx_u_attributes_of_product" unique="true">
+        <index-field name="product"/>
+        <index-field name="attribute"/>
+      </index>
+      <orm-attributes>
+        <attribute name="options">
+          <attribute name="charset">utf8</attribute>
+          <attribute name="collate">utf8_turkish_ci</attribute>
+          <attribute name="engine">innodb</attribute>
+        </attribute>
+        <attribute name="table">attributes_of_product</attribute>
+        <attribute name="export-file-name">AttributesOfProduct.php</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\AttributesOfProduct" to="\ProductAttribute" caption="idx_f_attributes_of_product_attribute" inverse-alias="attribute" many-owner="true" many-inverse="false" uuid="e167335a-3e8d-4bd4-8fd9-1c391b514969">
+      <association-field from="attribute" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <association from="\AttributesOfProduct" to="\Product" caption="idx_f_attributes_of_product_product" inverse-alias="product" many-owner="true" many-inverse="false" uuid="1f0350dc-9c72-48ba-abce-f8eaef6689dc">
+      <association-field from="product" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <entity name="\ProductAttributeValues" local-name="ProductAttributeValues" namespace="\" description="Stores individual values of product attributes and their localizations." uuid="e923dbd1-47ee-440d-b826-abf97f12cc74">
+      <field name="id" description="System given id." type="integer" size="10" required="true" unique="true" primary="true" auto-increment="true" uuid="f6f83f84-da34-47ca-bf48-ddf5025f092d"/>
+      <field name="attribute" description="Attribute to which the value belongs." type="integer" size="10" uuid="31ff5efd-8dbe-4aa9-aa9d-3e975000a74d"/>
+      <field name="language" description="Localization language." type="integer" size="5" uuid="1573878d-a37e-4b94-8e10-590ccdd86109"/>
+      <field name="product" description="Product that attribute belongs to." type="integer" size="15" uuid="784ee0e9-a900-4afb-900b-ddf0a958e000"/>
+      <field name="sort_order" description="Custom sort order." type="integer" size="10" default="0" required="true" uuid="ce4a87cf-1280-44c9-a85e-9e9b0e4898bb"/>
+      <field name="value" description="Attribute value of product." type="text" required="true" uuid="be354112-453d-4d5c-9e25-9dc29613f48f"/>
+      <index name="idxUProductAttributeValuesId" unique="true">
+        <index-field name="id"/>
+      </index>
+      <index name="idxUProductAttributeValues" unique="true">
+        <index-field name="attribute"/>
+        <index-field name="language"/>
+        <index-field name="product"/>
+      </index>
+      <orm-attributes>
+        <attribute name="options">
+          <attribute name="charset">utf8</attribute>
+          <attribute name="collate">utf8_turkish_ci</attribute>
+          <attribute name="engine">innodb</attribute>
+        </attribute>
+        <attribute name="table">product_attribute_values</attribute>
+        <attribute name="export-file-name">ProductAttributeValues.php</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\ProductAttributeValues" to="\Product" caption="idxProductOfAttributeValue" inverse-alias="product" many-owner="true" many-inverse="false" uuid="33e6dd4a-056c-4513-ad3a-f9a2632ffa57">
+      <association-field from="product" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <association from="\ProductAttributeValues" to="\ProductAttribute" caption="idxAttributeOfAttributeValue" inverse-alias="attribute" many-owner="true" many-inverse="false" uuid="00219d56-949c-48cd-a37a-2f379cab16ec">
+      <association-field from="attribute" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <association from="\ProductAttributeValues" to="\BiberLtd\Bundle\MultiLanguageSupportBundle\Entity\Language" caption="idxLanguageOfAttributeValue" inverse-alias="language" many-owner="true" many-inverse="false" uuid="470e3e96-7a47-422c-b4a7-4cdef7b62939">
+      <association-field from="language" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <entity name="\AttributesOfProductCategory" local-name="AttributesOfProductCategory" namespace="\" description="Associates product categories with attributes." uuid="b7508859-399b-4f7f-877e-60541c9194d4">
+      <field name="attribute" description="Associated attribute." type="integer" size="10" primary="true" uuid="07056ca7-4052-4b3a-bf75-47288d05fee1"/>
+      <field name="category" description="Associated product category." type="integer" size="10" primary="true" uuid="923ac6fd-db6b-48f5-9c36-75d58ee26dc6"/>
+      <field name="sort_order" description="Custom sort order" type="integer" size="10" default="1" required="true" uuid="1a3b9c16-d818-4db5-aa54-9b214132d6e4"/>
+      <field name="date_added" description="Date when attribute is associated to product category." type="datetime" required="true" uuid="59542872-d372-4714-9ad2-5ed88026eeb3"/>
+      <index name="idxUAttributesOfProductCategory" unique="true">
+        <index-field name="attribute"/>
+        <index-field name="category"/>
+      </index>
+      <index name="idxNAttributesOfProductCategoryDateAdded">
+        <index-field name="date_added"/>
+      </index>
+      <orm-attributes>
+        <attribute name="options">
+          <attribute name="charset">utf8</attribute>
+          <attribute name="collate">utf8_turkish_ci</attribute>
+          <attribute name="engine">innodb</attribute>
+        </attribute>
+        <attribute name="table">attributes_of_product_category</attribute>
+        <attribute name="export-file-name">AttributesOfProductCategory.php</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\AttributesOfProductCategory" to="\ProductAttribute" caption="idxFCategoryOfProductAttribute" inverse-alias="attribute" many-owner="true" many-inverse="false" uuid="840c7489-cc34-4e4b-898b-01b810449cd7">
+      <association-field from="attribute" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <association from="\AttributesOfProductCategory" to="\ProductCategory" caption="idxFAttributeOfProductCategory" inverse-alias="category" many-owner="true" many-inverse="false" uuid="e2c72d09-406c-495e-8e08-e9040c7710f3">
+      <association-field from="category" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <entity name="\FilesOfProduct" local-name="FilesOfProduct" namespace="\" description="Associates files with products." uuid="88915b8c-14d5-42f1-a4e4-5d2a31ff96e3">
+      <field name="file" description="Associated file." type="integer" size="15" primary="true" uuid="cc68f9a8-5c48-4a87-8cf8-f0a69f7f07a1"/>
+      <field name="product" description="Associated product." type="integer" size="15" primary="true" uuid="f9347a7d-de2c-44e1-9c49-9018f561f963"/>
+      <field name="sort_order" description="Custom sort order." type="integer" size="10" default="1" required="true" uuid="ddf16b71-6795-4af4-acf0-cae8c8c553b4"/>
+      <field name="date_added" description="Date when file is added to the product." type="datetime" required="true" uuid="b010c299-4708-4cf8-8fa0-67545665a833"/>
+      <field name="type" description="To easily categorize media by type. v:video;i:image;a:audio;:e:embed" type="string" size="1" default="i" required="true" uuid="59b73353-7e58-497b-ba04-e7476ad173f3"/>
+      <index name="idxUFilesOfProduct" unique="true">
+        <index-field name="file"/>
+        <index-field name="product"/>
+      </index>
+      <index name="idxUFilesOfProductDateAdded">
+        <index-field name="date_added"/>
+      </index>
+      <orm-attributes>
+        <attribute name="options">
+          <attribute name="charset">utf8</attribute>
+          <attribute name="collate">utf8_turkish_ci</attribute>
+          <attribute name="engine">innodb</attribute>
+        </attribute>
+        <attribute name="table">files_of_product</attribute>
+        <attribute name="export-file-name">FilesOfProduct.php</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\FilesOfProduct" to="\BiberLtd\Bundle\FileManagementBundle\Entity\File" caption="idxFFileOfProduct" inverse-alias="file" many-owner="true" many-inverse="false" uuid="a4613ba6-5969-4a2b-af9e-bc9132f1c1cf">
+      <association-field from="file" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+        <attribute name="side-owning">
+          <attribute name="cascade">
+            <attribute name="cascade-persist">true</attribute>
+          </attribute>
+        </attribute>
+      </orm-attributes>
+    </association>
+    <association from="\FilesOfProduct" to="\Product" caption="idxFProductOfFile" inverse-alias="product" many-owner="true" many-inverse="false" uuid="5f16c0a9-34a7-43d5-84ac-afb2ca4ee191">
+      <association-field from="product" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+        <attribute name="side-owning">
+          <attribute name="cascade">
+            <attribute name="cascade-persist">true</attribute>
+          </attribute>
+        </attribute>
+      </orm-attributes>
+    </association>
+    <entity name="\RelatedProduct" local-name="RelatedProduct" namespace="\" description="Matches related products." uuid="fd9a924e-dc7c-44be-a74e-510e80042650">
+      <field name="product" type="integer" size="15" required="true" primary="true" uuid="1dcd4df3-bb16-4aeb-939a-ea99d7ee1edb"/>
+      <field name="related_product" type="integer" size="15" required="true" primary="true" uuid="fc470c97-3a1f-47ff-9332-b2bc6016a495"/>
+      <index name="idxURelatedProduct" unique="true">
+        <index-field name="product"/>
+        <index-field name="related_product"/>
+      </index>
+      <orm-attributes>
+        <attribute name="export-file-name">RelatedProduct.php</attribute>
+        <attribute name="table">related_product</attribute>
+        <attribute name="options">
+          <attribute name="charset">utf8</attribute>
+          <attribute name="engine">innodb</attribute>
+          <attribute name="collate">utf8_turkish_ci</attribute>
+        </attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\RelatedProduct" to="\Product" caption="idxFOwnerProduct" inverse-alias="product" many-owner="true" many-inverse="false" parent-required="true" uuid="c8028be7-5ae1-4cec-876f-f2ede71ad79f">
+      <association-field from="product" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <association from="\RelatedProduct" to="\Product" caption="idxFRelatedProduct" inverse-alias="related_product" many-owner="true" many-inverse="false" parent-required="true" uuid="0eb05669-2c51-49dc-9baf-88edaf1a74ba">
+      <association-field from="related_product" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <entity name="\ProductUrlKeyHistory" local-name="ProductUrlKeyHistory" namespace="\" description="Tracks url key changes of product for SEO purposes." uuid="68869a37-9734-4e32-8230-3420a1590c7a">
+      <field name="url_key" description="Old url key of product." type="string" size="255" required="true" uuid="7b955a93-6e22-425b-813f-30c81fb41746"/>
+      <field name="date_added" description="Date when the entry is first added." type="datetime" required="true" uuid="741e9308-5ec7-447f-a685-c7aca930bf39"/>
+      <field name="date_updated" description="Date when the entry is last updated." type="datetime" required="true" uuid="ab82d184-2d4f-48ce-89ce-87b354782809"/>
+      <field name="date_removed" description="Date when the entry is marked as removed." type="datetime" uuid="e7a40da1-3177-4e6f-bb77-e8ff8aee0512"/>
+      <field name="product" type="integer" size="15" required="true" uuid="ac0d2868-a1d5-4f53-96f2-541cd175e13d"/>
+      <index name="idxUProductUrlKey">
+        <index-field name="url_key"/>
+        <index-field name="date_added"/>
+        <index-field name="product"/>
+      </index>
+      <orm-attributes>
+        <attribute name="table">product_url_key_history</attribute>
+        <attribute name="export-file-name">ProductUrlKeyHistory.php</attribute>
+        <attribute name="options">
+          <attribute name="charset">utf8</attribute>
+          <attribute name="collate">utf8_turkish_ci</attribute>
+          <attribute name="engine">innodb</attribute>
+        </attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\ProductUrlKeyHistory" to="\Product" caption="idxFProductOfUrlKey" inverse-alias="product" many-owner="true" many-inverse="false" parent-required="true" uuid="c1b65194-633a-4b05-8045-532b4b8d4847">
+      <association-field from="product" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <orm-attributes>
+      <attribute name="namespace">BiberLtd\Core\Bundles\ProductManagementBundle\Entity</attribute>
+      <attribute name="file-suffix">without-suffix</attribute>
+      <attribute name="filename-format">entity-name-only</attribute>
+    </orm-attributes>
+  </module>
+  <module name="\StockManagementBundle" local-name="StockManagementBundle" namespace="\BiberLtd\Bundle\StockManagementBundle\Entity" local-namespace="BiberLtd\Bundle\StockManagementBundle\Entity" export-format="Doctrine2Php" export-path="../../stock-management-bundle/Entity" uuid="0f2a830e-feb4-4358-ba55-1084e3b5ea9e">
+    <entity name="\BiberLtd\Bundle\StockManagementBundle\Entity\Stock" local-name="Stock" namespace="\BiberLtd\Bundle\StockManagementBundle\Entity" description="Keeps track of stocks." uuid="7fa98806-4f29-472b-ad43-2853b2648925">
+      <field name="id" description="System given id." type="integer" size="20" required="true" unique="true" primary="true" auto-increment="true" uuid="e57b861f-8e5f-4786-93f8-98260857fbf9">
+        <orm-attributes>
+          <attribute name="generator">
+            <attribute name="strategy">AUTO</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="product" description="Product that stock belongs to." type="integer" size="15" required="true" uuid="4f83b3fd-26dc-4bf9-844c-a2a303af6a04"/>
+      <field name="sku" description="SKU." type="string" size="155" required="true" uuid="d15e28e5-595a-4cff-a64c-38e910674fec"/>
+      <field name="supplier_sku" description="Supplier sku number." type="string" size="155" uuid="c7f4f423-4ced-493e-9398-6857a8e30e68"/>
+      <field name="quantity" description="Quantity at hand." type="integer" size="10" default="0" required="true" uuid="a627bdc0-d119-4a53-afa8-fa917b8993ce">
+        <orm-attributes>
+          <attribute name="options"/>
+        </orm-attributes>
+      </field>
+      <field name="date_added" description="Date when the stock is added." type="datetime" required="true" uuid="1b7c6e26-17d9-4d85-aafc-6fb12654178c"/>
+      <field name="date_updated" description="Date when the stock is updated." type="datetime" required="true" uuid="a77bb4c7-c135-48fa-8d5e-8c89d3582259"/>
+      <field name="date_removed" description="Date when the stock is removed." type="datetime" uuid="88d44229-5de1-463f-8e6f-c188e84f9b4e"/>
+      <field name="supplier" description="Supplier of stock." type="integer" size="10" uuid="6f2e3164-43d6-433e-a27e-1032e9f1569e"/>
+      <field name="price" description="Most up to date price of stock." type="decimal" size="8" default="0" uuid="004a9579-a1c5-4c94-8efd-6b41f0577744">
+        <orm-attributes>
+          <attribute name="options"/>
+        </orm-attributes>
+      </field>
+      <field name="discount_price" description="Most up to date discounted prices of stock." type="decimal" size="8" default="0" uuid="a71023b8-b63e-48c3-b4c5-5dc5cb04212a">
+        <orm-attributes>
+          <attribute name="options"/>
+        </orm-attributes>
+      </field>
+      <field name="sort_order" description="Sort order." type="integer" default="0" required="true" unsigned="true" uuid="68dcc277-d9e1-4878-b3e6-e2be8389f9d7">
+        <orm-attributes>
+          <attribute name="options"/>
+        </orm-attributes>
+      </field>
+      <index name="idxUStockId" unique="true">
+        <index-field name="id"/>
+      </index>
+      <index name="idxUStockSku" unique="true">
+        <index-field name="product"/>
+        <index-field name="sku"/>
+      </index>
+      <index name="idxNStockDateAdded">
+        <index-field name="date_added"/>
+      </index>
+      <index name="idxNStockDateUpdated">
+        <index-field name="date_updated"/>
+      </index>
+      <index name="idxNStockDateRemoved">
+        <index-field name="date_removed"/>
+      </index>
+      <orm-attributes>
+        <attribute name="table">stock</attribute>
+        <attribute name="export-file-name">Stock.php</attribute>
+        <attribute name="options">
+          <attribute name="charset">utf8</attribute>
+          <attribute name="collate">utf8_turkish_ci</attribute>
+          <attribute name="engine">innodb</attribute>
+        </attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\BiberLtd\Bundle\StockManagementBundle\Entity\Stock" to="\Product" caption="idxFProductOfStock" inverse-alias="product" many-owner="true" many-inverse="false" parent-required="true" uuid="64887e68-ab89-45ed-bbbc-d9802a523c2d">
+      <association-field from="product" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <association from="\BiberLtd\Bundle\StockManagementBundle\Entity\Stock" to="\BiberLtd\Bundle\StockManagementBundle\Entity\Supplier" caption="idxFSupplierOfStock" owner-alias="" inverse-alias="supplier" many-owner="true" many-inverse="false" uuid="aecef59f-8109-4c52-91d8-858df9f2cd1e">
+      <association-field from="supplier" to="id"/>
+      <orm-attributes>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <entity name="\BiberLtd\Bundle\StockManagementBundle\Entity\StockAttributeValue" local-name="StockAttributeValue" namespace="\BiberLtd\Bundle\StockManagementBundle\Entity" description="Associates product attributes with stocks and corresponding values." uuid="bf4deae3-debc-46b8-b08f-a8a17ca0f1e1">
+      <field name="id" type="integer" size="10" default="System defined id." required="true" unique="true" primary="true" unsigned="true" auto-increment="true" uuid="70352738-8c8e-4dec-92e0-71378c4a8012">
+        <orm-attributes>
+          <attribute name="options"/>
+          <attribute name="generator">
+            <attribute name="strategy">AUTO</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="value" type="string" default="Value of stock attribute" required="true" uuid="1913d883-37f9-43a2-883a-29c93721a94e">
+        <orm-attributes>
+          <attribute name="options"/>
+        </orm-attributes>
+      </field>
+      <field name="sort_order" type="integer" default="Custom sort order." required="true" unsigned="true" uuid="4cec2bb2-5ee1-4cbd-bf01-0c1ffd33fbc2">
+        <orm-attributes>
+          <attribute name="options"/>
+        </orm-attributes>
+      </field>
+      <field name="language" type="integer" size="5" unique="true" uuid="d3343c53-facd-4c75-ab65-51b752285ce4"/>
+      <field name="attribute" type="integer" size="10" unique="true" uuid="18afbe73-c0b7-473b-bca6-fa42b4bd10a1"/>
+      <field name="stock" type="integer" size="20" unique="true" uuid="41aeba0f-e017-4057-a60d-90509d7a36db"/>
+      <index name="idxUStockAttributeValueId" unique="true">
+        <index-field name="id"/>
+      </index>
+      <orm-attributes>
+        <attribute name="export-file-name">StockAttributeValue.php</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\BiberLtd\Bundle\StockManagementBundle\Entity\StockAttributeValue" to="\BiberLtd\Bundle\MultiLanguageSupportBundle\Entity\Language" caption="idxFLanguageOfStockAttributeValue" owner-alias="" inverse-alias="language" many-owner="false" many-inverse="false" uuid="ff2216de-61d6-4b22-940e-9bc8f7199f8a">
+      <association-field from="language" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <association from="\BiberLtd\Bundle\StockManagementBundle\Entity\StockAttributeValue" to="\ProductAttribute" caption="idxFAttributeOfStockAttributeValue" inverse-alias="attribute" many-owner="false" many-inverse="false" uuid="faa35a36-c3d4-4ac8-b41e-c673f8d33fc1">
+      <association-field from="attribute" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <association from="\BiberLtd\Bundle\StockManagementBundle\Entity\StockAttributeValue" to="\BiberLtd\Bundle\StockManagementBundle\Entity\Stock" caption="idxFStockOfStockAttributeValue" owner-alias="" inverse-alias="stock" many-owner="false" many-inverse="false" uuid="5e1df0ed-e712-4bc2-983a-89dac01fc328">
+      <association-field from="stock" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+        <attribute name="side-owning"/>
+        <attribute name="side-inverse"/>
+      </orm-attributes>
+    </association>
+    <entity name="\BiberLtd\Bundle\StockManagementBundle\Entity\Supplier" local-name="Supplier" namespace="\BiberLtd\Bundle\StockManagementBundle\Entity" description="Stores supplier information." uuid="0587d7e0-3c09-4415-b829-08e6e02da6fb">
+      <field name="id" description="System given id." type="integer" size="10" enum-values=" " required="true" unique="true" primary="true" auto-increment="true" uuid="1078f313-558f-4f17-8d7c-13869c8d2ef4">
+        <orm-attributes>
+          <attribute name="generator">
+            <attribute name="strategy">AUTO</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="name" description="Name of supplier." type="string" size="155" required="true" uuid="011a2f10-abe9-42e0-b76e-a025f95afbf8"/>
+      <field name="description" description="Description of supplier." type="string" size="255" uuid="30bda892-6641-4a41-84de-3c6ffa3c5d71"/>
+      <field name="url_key" description="Url key of supplier." type="string" size="255" required="true" uuid="dac623b6-453a-4098-837c-3dac0d3e41d1"/>
+      <index name="idx_u_supplier_id" unique="true">
+        <index-field name="id"/>
+      </index>
+      <orm-attributes>
+        <attribute name="table">supplier</attribute>
+        <attribute name="export-file-name">Supplier.php</attribute>
+        <attribute name="options">
+          <attribute name="charset">utf8</attribute>
+          <attribute name="collate">utf8_turkish_ci</attribute>
+          <attribute name="engine">innodb</attribute>
+        </attribute>
+      </orm-attributes>
+    </entity>
+    <orm-attributes>
+      <attribute name="namespace">BiberLtd\Bundle\StockManagementBundle\Entity</attribute>
+      <attribute name="filename-format">entity-name-only</attribute>
+      <attribute name="file-suffix">without-suffix</attribute>
+    </orm-attributes>
+  </module>
+  <module name="\PaymentGatewayBundle" local-name="PaymentGatewayBundle" namespace="\" uuid="1d850c73-f565-4952-9f5a-0ef0e24c3c6f">
+    <entity name="\PaymentGateway" local-name="PaymentGateway" namespace="\" description="Stores payment gateway definitions." uuid="43ab6b0b-c85b-42cf-8db0-ec811ef8a48a">
+      <field name="id" description="System given id." type="integer" size="10" required="true" unique="true" primary="true" auto-increment="true" uuid="babc4958-6bde-4e1f-b828-17498e674732"/>
+      <field name="date_added" description="Date when the gateway added." type="datetime" required="true" uuid="b1d4e32f-efac-4a2b-b0fa-55c33c928719"/>
+      <field name="settings" description="Gateway settings serialxed and base64 encoded." type="text" required="true" uuid="0db30667-8533-47ba-8c7b-70a13d654045"/>
+      <field name="site" description="Site that gateway belongs to." type="integer" size="10" uuid="be51c732-9d6a-4fae-951d-47050492cd8e"/>
+      <index name="idx_u_payment_gateway_id" unique="true">
+        <index-field name="id"/>
+      </index>
+      <index name="idx_n_payment_gateway_date_added">
+        <index-field name="date_added"/>
+      </index>
+      <orm-attributes>
+        <attribute name="options">
+          <attribute name="charset">utf8</attribute>
+          <attribute name="collate">utf8_turkish_ci</attribute>
+          <attribute name="engine">innodb</attribute>
+        </attribute>
+        <attribute name="table">payment_gateway</attribute>
+        <attribute name="export-file-name">PaymentGateway.php</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\PaymentGateway" to="\BiberLtd\Bundle\SiteManagementBundle\Entity\Site" caption="idx_f_payment_gateway_site" inverse-alias="site" many-owner="true" many-inverse="false" uuid="c742b246-99d9-4f7a-b32d-183c4e37e286">
+      <association-field from="site" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <entity name="\PaymentGatewayLocalization" local-name="PaymentGatewayLocalization" namespace="\" description="Stores localized values of payment gateway definitions." uuid="757d47e8-7d49-43d6-a7d9-e744b24433d2">
+      <field name="gateway" description="Localized payment gateway" type="integer" size="10" required="true" primary="true" uuid="6799fef4-cfed-4360-b9fe-4e19f0182f33"/>
+      <field name="language" description="Localization language." type="integer" size="5" required="true" primary="true" uuid="92dd8a2d-be9b-411a-87a5-a533976eafa7"/>
+      <field name="name" description="Localized gateway name." type="string" size="155" required="true" uuid="795eb90a-3eba-4ebb-81f7-f5a9b8b7fd3e"/>
+      <field name="url_key" description="Localized url key." type="string" size="255" required="true" uuid="3d3f14e8-4b9d-4471-b17d-752388de05f4"/>
+      <field name="description" description="Localized description." type="string" size="255" uuid="65d9b62e-d493-4b81-86c4-6a70d5b4d663"/>
+      <index name="idx_u_payment_gateway_localization">
+        <index-field name="gateway"/>
+        <index-field name="language"/>
+      </index>
+      <index name="idx_u_payment_gateway_localization_url_key" unique="true">
+        <index-field name="language"/>
+        <index-field name="url_key"/>
+      </index>
+      <orm-attributes>
+        <attribute name="options">
+          <attribute name="charset">utf8</attribute>
+          <attribute name="collate">utff8_turkish_ci</attribute>
+          <attribute name="engine">innodb</attribute>
+        </attribute>
+        <attribute name="table">payment_gateway_localization</attribute>
+        <attribute name="export-file-name">PaymentGatewayLocalization.php</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\PaymentGatewayLocalization" to="\PaymentGateway" caption="idx_f_payment_gateway_localization_gateway" owner-alias="localizations" inverse-alias="payment_gateway" many-owner="true" many-inverse="false" parent-required="true" uuid="9b543542-5a60-4d97-9f61-2e8e49675712">
+      <association-field from="gateway" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <association from="\PaymentGatewayLocalization" to="\BiberLtd\Bundle\MultiLanguageSupportBundle\Entity\Language" caption="idx_f_payment_gateway_localization_language" inverse-alias="language" many-owner="true" many-inverse="false" parent-required="true" uuid="bc01b795-15a2-456b-a3fe-48f6850ba6a9">
+      <association-field from="language" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <orm-attributes>
+      <attribute name="namespace">BiberLtd\Bundle\PaymentGatewayBundle\Entity</attribute>
+      <attribute name="filename-format">entity-name-only</attribute>
+      <attribute name="file-suffix">without-suffix</attribute>
+    </orm-attributes>
+  </module>
+  <module name="\ShoppingCartBundle" local-name="ShoppingCartBundle" namespace="\" export-format="Doctrine2Php" export-path="../Entity" uuid="fed54932-c0a9-4d5b-a21d-1fd73242a39a">
+    <region namespace="\" caption="CouponManagementModule" uuid="eb8f051e-df45-4160-b450-52e9fe147f71">
+      <entity name="\Coupon" local-name="Coupon" namespace="\" description="Stores coupon definitions." uuid="078e24d9-5894-4ee7-8a0f-f0707f7f0b7a">
+        <field name="id" description="System given id." type="integer" size="10" required="true" unique="true" primary="true" auto-increment="true" uuid="e407fdae-6e3b-45f4-9379-c0e26e8e4001">
+          <orm-attributes>
+            <attribute name="generator">
+              <attribute name="strategy">AUTO</attribute>
+            </attribute>
+          </orm-attributes>
+        </field>
+        <field name="code" description="Coupon code." type="string" size="155" required="true" unique="true" uuid="33bc6b4a-fad7-406e-904a-95b20688d434"/>
+        <field name="type" description="Type of amount. a:amount;p:percentage" type="string" size="1" default="a" required="true" uuid="bdfd76c9-e90e-4dbb-bb24-3fa60624dd69"/>
+        <field name="discount" description="Discount amount / percentage." type="decimal" size="10" default="0" required="true" unique="true" uuid="9498b299-0fee-4695-8f53-2277bf28f1dd"/>
+        <field name="limit_redeem" description="Number of times this coupon can be redeemed." type="integer" size="10" uuid="265b3e05-4275-4f85-b051-77165afe165f"/>
+        <field name="limit_order_total" description="For this coupon to be redeemed the order must be at least this much." type="decimal" size="10" uuid="242ec098-0513-43a3-934a-4e2b5d91b828"/>
+        <field name="limit_discount" description="If coupon type is percentage this limits the maximimum amount f the promotion." type="decimal" size="10" uuid="9d81793b-8290-4bbc-932b-91c38c25769c"/>
+        <field name="date_published" description="Date when the coupon is published." type="datetime" required="true" uuid="e378c682-d84f-401d-9257-79fdf91a9a18"/>
+        <field name="date_unpublished" description="Date when the coupon is unpublished." type="datetime" uuid="56a9181f-37ef-421c-8854-220b595a3db6"/>
+        <field name="type_usage" description="s:single;m:multiple" type="string" size="1" default="s" required="true" uuid="01895d0f-dfc2-47ce-aa68-6715bfcb8310"/>
+        <field name="site" description="Site that coupon belongs to." type="integer" size="10" uuid="8cf6262a-e94e-4a45-b2f6-7a063907f995"/>
+        <field name="count_redeemed" description="Number of times this coupon is used." type="integer" size="4" default="0" uuid="0a153db4-3f9d-4b22-b0b0-8f8b50cc5fd3"/>
+        <field name="total_order_amount" description="Total amount or orders that this coupon has been used." type="decimal" default="0" uuid="6663dfde-c6a5-4748-bed8-f5b42aa9e431"/>
+        <field name="total_discount_redeemed" description="Total amount that has been so far redeeemed." type="decimal" default="0" uuid="db43c05b-f839-4fa2-99d6-955ba88f9a5d"/>
+        <field name="validity" description="Holds a json that tracks which members, products, member_groups, and product_groups this coupon is entitled for. i.e.: {&quot;members&quot;:[1,2,3,4],&quot;memberGroups&quot;:[32,324,234],&quot;products&quot;:[3324,234,2342,1110],&quot;productCategories&quot;:[234,435345,353,3]}" type="text" default="unlimited" required="true" uuid="c76c7bce-b0e2-46d8-948e-45cfbd14f5b6"/>
+        <index name="idxUCouponId" unique="true">
+          <index-field name="id"/>
+        </index>
+        <index name="idxNCouponDatePublished">
+          <index-field name="date_published"/>
+        </index>
+        <index name="idxNCouponDateUnpublished">
+          <index-field name="date_unpublished"/>
+        </index>
+        <orm-attributes>
+          <attribute name="options">
+            <attribute name="charset">utf8</attribute>
+            <attribute name="collate">utf8_turkish_ci</attribute>
+            <attribute name="engine">innodb</attribute>
+          </attribute>
+          <attribute name="table">coupon</attribute>
+          <attribute name="export-file-name">Coupon.php</attribute>
+        </orm-attributes>
+      </entity>
+      <entity name="\CouponLocalization" local-name="CouponLocalization" namespace="\" description="Stores localized values for each coupon entry." uuid="53f04523-5317-4fe9-8591-654daa32afe3">
+        <field name="coupon" description="Localized coupon." type="integer" size="10" required="true" primary="true" uuid="ea578c9b-0b3e-4094-aa1c-f925a745a6f3"/>
+        <field name="language" description="Localization language." type="integer" size="5" required="true" primary="true" uuid="c49c21ab-c157-4f3e-968b-6b46d50a2005"/>
+        <field name="name" description="Name of coupon." type="string" size="155" required="true" uuid="08c6607b-21fa-4d75-910d-a6e3e8d34af7"/>
+        <field name="description" description="Description of coupon." type="string" size="255" uuid="3b153338-95b8-4fec-a91f-35329221c489"/>
+        <index name="idxUCouponLocalization" unique="true">
+          <index-field name="coupon"/>
+          <index-field name="language"/>
+        </index>
+        <orm-attributes>
+          <attribute name="options">
+            <attribute name="charset">utf8</attribute>
+            <attribute name="collate">utf8_turkish_ci</attribute>
+            <attribute name="engine">innodb</attribute>
+          </attribute>
+          <attribute name="table">coupon_localization</attribute>
+          <attribute name="export-file-name">CouponLocalization.php</attribute>
+        </orm-attributes>
+      </entity>
+      <entity name="\RedeemedCoupon" local-name="RedeemedCoupon" namespace="\" description="Tracks redeemed coupons." uuid="ec6d50f7-374a-415e-8002-312e2df81083">
+        <field name="id" description="System given id." type="integer" size="15" required="true" unique="true" primary="true" auto-increment="true" uuid="f3833f6c-e738-4be1-b60a-a845a6dbce05">
+          <orm-attributes>
+            <attribute name="generator">
+              <attribute name="strategy">AUTO</attribute>
+            </attribute>
+          </orm-attributes>
+        </field>
+        <field name="coupon" description="Coupon that is redeemed." type="integer" size="10" required="true" uuid="f8c481db-1938-4264-9b31-e8043cddefba"/>
+        <field name="member" description="Member who used the coupon." type="integer" size="10" required="true" uuid="e2f2b5e3-cc37-4c58-a51c-f5c3939c47dc"/>
+        <field name="date_redeemed" description="Date when the coupon is redee&#xF6;ed." type="datetime" required="true" uuid="d5da6c67-b7ce-426c-b8b2-9daadec2dbfb"/>
+        <field name="shopping_order" type="integer" size="15" uuid="e41db63b-49a1-4a4d-abf8-02a67141f538"/>
+        <index name="idxURedeemedCouponId" unique="true">
+          <index-field name="id"/>
+        </index>
+        <index name="idxNRedeemedCouponDateRedeemed">
+          <index-field name="date_redeemed"/>
+        </index>
+        <orm-attributes>
+          <attribute name="options">
+            <attribute name="charset">utf8</attribute>
+            <attribute name="collate">utf8_turkish_ci</attribute>
+            <attribute name="engine">innodb</attribute>
+          </attribute>
+          <attribute name="export-file-name">RedeemedCoupon.php</attribute>
+          <attribute name="table">redeemed_coupon</attribute>
+        </orm-attributes>
+      </entity>
+    </region>
+    <association from="\Coupon" to="\BiberLtd\Bundle\SiteManagementBundle\Entity\Site" caption="idxFSiteOfCoupon" inverse-alias="site" many-owner="true" many-inverse="false" uuid="a5cfa14c-8894-4739-87c5-3e3aacfec41b">
+      <association-field from="site" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <association from="\CouponLocalization" to="\Coupon" caption="idxFLocalizedCoupon" owner-alias="localizations" inverse-alias="coupon" many-owner="true" many-inverse="false" parent-required="true" uuid="4ed840d4-9473-44be-a475-2090ee218ab0">
+      <association-field from="coupon" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <association from="\CouponLocalization" to="\BiberLtd\Bundle\MultiLanguageSupportBundle\Entity\Language" caption="idxFCouponLOcalizationLanguage" inverse-alias="language" many-owner="true" many-inverse="false" parent-required="true" uuid="3d39c0b2-e2cf-4872-b306-04507ad8fca0">
+      <association-field from="language" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <association from="\RedeemedCoupon" to="\Coupon" caption="idxFRedeemedCoupon" inverse-alias="coupon" many-owner="true" many-inverse="false" parent-required="true" uuid="11bc475e-2491-4805-9496-fee19060c9db">
+      <association-field from="coupon" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <association from="\RedeemedCoupon" to="\BiberLtd\Bundle\MemberManagementBundle\Entity\Member" caption="idxFCouponRedeemer" inverse-alias="member" many-owner="true" many-inverse="false" parent-required="true" uuid="ab897e8d-9d18-49d9-b09e-926e8d41e1b7">
+      <association-field from="member" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <association from="\RedeemedCoupon" to="\ShoppingOrder" caption="idxFShoppingOrderOfRedeemedCoupon" inverse-alias="shopping_order" many-owner="true" many-inverse="false" uuid="e79a05e0-5cb2-4e37-8020-579d9eedb82e">
+      <association-field from="shopping_order" to="id"/>
+    </association>
+    <region namespace="\" caption="OrderManagementModule" uuid="ecab9892-0004-4f8f-85dd-c7057a5af9b1">
+      <entity name="\ShoppingOrder" local-name="ShoppingOrder" namespace="\" description="Tracks orders." uuid="88f90ebc-9af6-40cf-9cbf-9636c9b7af03">
+        <field name="id" description="System given id." type="integer" size="15" required="true" unique="true" primary="true" auto-increment="true" uuid="965c7f73-bde0-41c0-a3eb-26963d129a60">
+          <orm-attributes>
+            <attribute name="generator">
+              <attribute name="strategy">AUTO</attribute>
+            </attribute>
+          </orm-attributes>
+        </field>
+        <field name="date_created" description="Date when order is created." type="datetime" required="true" uuid="a42eb141-a4de-472d-9206-c7725053b9c4"/>
+        <field name="date_updated" description="Date when order is last updated." type="datetime" required="true" uuid="6846d616-2e69-48b7-ad71-de809354b038"/>
+        <field name="date_purchased" description="Date when the purchase has been completed." type="datetime" uuid="53ba30b7-80d3-48cc-9126-dd6f7e44402e"/>
+        <field name="date_cancelled" description="Date when the order is cancelled." type="datetime" uuid="51e62eab-38ae-4310-971d-7d3ceb640965"/>
+        <field name="date_returned" description="Date when the order is returned by the customer." type="datetime" uuid="819af0d7-6903-4664-8707-14a5fa622dbe"/>
+        <field name="count_items" description="Number of items in order." type="integer" default="0" required="true" uuid="c1332af7-87a8-47ef-bf9b-f0f65e5eb218"/>
+        <field name="subtotal" description="Total except discount, tax and shipment." type="decimal" size="10" default="0" required="true" uuid="80b3bb16-ba16-4c37-a6a9-1d8c0e1e9adb"/>
+        <field name="total_amount" description="Total amount to be paid." type="decimal" size="7" default="0" required="true" uuid="3a807495-2d26-412f-86e4-cbd9a1986281"/>
+        <field name="total_discount" description="Total discount amount." type="decimal" size="10" default="0" required="true" uuid="09349076-2ca9-4dac-9c06-81bd57fa874f"/>
+        <field name="total_tax" description="Total tax to be paid." type="decimal" size="10" default="," required="true" uuid="0ae4ed43-d635-4579-888c-7dfa2bef6c85"/>
+        <field name="total_shipment" description="Total cargo amount to be paid." type="decimal" default="0" required="true" uuid="052811a2-394f-49a1-8d41-bf3007c6978c"/>
+        <field name="billing_information" description="Billing information." type="text" required="true" uuid="3ba0589f-efe9-411a-ac1b-a4425efba806"/>
+        <field name="shipping_information" description="Shipping information." type="text" uuid="1c191a08-3352-49b1-a525-c0ae8c4509e6"/>
+        <field name="instructions" description="Extra instructions." type="text" uuid="bbc8d9c4-2337-489f-b3c5-9d7f7752ce03"/>
+        <field name="flag" description="o:open;r:returned;c:completed" type="string" size="1" default="o" required="true" uuid="4cc6505d-df7a-4633-9908-de367d00b54c"/>
+        <field name="status" description="t:cart,p:purchased,c:cancelled,r:in preperation,s:shipped,r:returned,d:completed" type="string" size="1" required="true" uuid="13c01f65-65b6-413c-8814-069bf6d75463"/>
+        <field name="purchaser" description="Member who made the purchase." type="integer" size="10" uuid="3ea09ec0-167e-4e31-bdfc-52a097bea020"/>
+        <field name="order_number" description="Shopping order number. Recommended using date_created field." type="integer" size="20" required="true" unique="true" uuid="16e0bd4c-a26f-4105-b1c9-3936317c44e6"/>
+        <field name="content" description="Cart content, a json string or a serialized string." type="text" uuid="958f28c2-53dd-4194-b5ca-602f640a9812"/>
+        <field name="transaction_info" description="Serialized or json string that contains transaction details for fast access." type="text" uuid="c63a23ce-5bd8-4ac3-ac27-f5aefe8c5f70"/>
+        <field name="installment_fee" description="If the payment is made in more than 1 installments..." type="decimal" size="10" uuid="c928ee86-f714-4668-9431-be82e57e9a24"/>
+        <index name="idxUShoppingOrderId" unique="true">
+          <index-field name="id"/>
+        </index>
+        <index name="idxNShoppingOrderDateCreated">
+          <index-field name="date_created"/>
+        </index>
+        <index name="idxNShoppingOrderDateUpdated">
+          <index-field name="date_updated"/>
+        </index>
+        <index name="idxNShoppingOrderDatePurchased">
+          <index-field name="date_purchased"/>
+        </index>
+        <index name="idxNShoppingOrderDateCancelled">
+          <index-field name="date_cancelled"/>
+        </index>
+        <index name="idxNShoppingOrderDateReturned">
+          <index-field name="date_returned"/>
+        </index>
+        <index name="idxUShoppingOrderNumber" unique="true">
+          <index-field name="order_number"/>
+        </index>
+        <index name="idxNShoppingOrderStatus">
+          <index-field name="status"/>
+        </index>
+        <orm-attributes>
+          <attribute name="options">
+            <attribute name="charset">utf8</attribute>
+            <attribute name="collate">utf8_turkish_ci</attribute>
+            <attribute name="engine">innodb</attribute>
+          </attribute>
+          <attribute name="export-file-name">ShoppingOrder.php</attribute>
+          <attribute name="table">shopping_order</attribute>
+        </orm-attributes>
+      </entity>
+      <entity name="\ShoppingOrderItem" local-name="ShoppingOrderItem" namespace="\" description="Tracks and associates ordered items with orders." uuid="fd800c53-e49b-49d3-a92a-104ef5195190">
+        <field name="id" description="System given id." type="integer" size="20" required="true" unique="true" primary="true" auto-increment="true" uuid="70820762-930d-41e1-a19b-0b6551b54f9d"/>
+        <field name="product" description="Ordered item." type="integer" size="15" required="true" uuid="38f05d7b-bbcc-40ba-9bb7-17bab7cfcd71"/>
+        <field name="shopping_order" description="Order that owns the item." type="integer" size="15" required="true" uuid="ecb8f792-411c-4557-8f01-97486a184542"/>
+        <field name="quantity" description="Quantity ordered." type="integer" size="6" default="0" required="true" uuid="b6384dd3-69f6-40fa-bbde-ad9ed74c2f2e"/>
+        <field name="price" description="Item price." type="decimal" size="7" default="0" required="true" uuid="144f064e-b7ca-499a-b575-0ae3dc8595f5"/>
+        <field name="subtotal" description="Quantity * price" type="decimal" size="10" default="0" required="true" uuid="3c7bcf65-b2db-495c-8e8a-208c99953961"/>
+        <field name="date_added" description="Date when the item is added to order." type="datetime" required="true" uuid="a1fd2475-6828-43d7-8f1a-e2b69d180262"/>
+        <field name="date_returned" description="Date when the item is returned." type="datetime" uuid="d7bd476b-4049-46cd-bd12-f6d886aca1e0"/>
+        <field name="instructions" description="Extra instructions." type="text" uuid="e7f4207b-d756-48bf-9ddd-d7fcded8de75"/>
+        <field name="tax" description="Tax percentage." type="decimal" size="3" default="0" required="true" uuid="c4861ac2-e9d6-46c7-a55b-de9dbef0ca32"/>
+        <field name="tax_amount" description="Tax amount. (Total With Tax - Total)" type="decimal" size="10" default="0" required="true" uuid="8a32971c-b6de-4e18-9183-b5bfcddc8dd9"/>
+        <field name="discount" description="Discount applied." type="decimal" size="10" default="0" required="true" uuid="f6bb3606-e24e-4f16-b489-b65c9da44245"/>
+        <field name="total" description="(Subtotal - Discount )" type="decimal" size="10" default="0" required="true" uuid="884a0f3d-b060-483f-813d-986014061f6c"/>
+        <field name="total_with_tax" description="(Subtotal - Discount ) * (1 + tax)" type="decimal" size="10" default="0" required="true" uuid="3fb66446-c649-4310-95c4-162003d48a11"/>
+        <field name="package_type" description="p:package,b:box" type="string" size="1" default="p" uuid="ce9fdaba-fafe-4556-9ea6-9c2a362b2781"/>
+        <index name="idxUShoppingOrderItemId" unique="true">
+          <index-field name="id"/>
+        </index>
+        <index name="idxNShopppingOrderDateReturned">
+          <index-field name="date_returned"/>
+        </index>
+        <index name="idxNShopppingOrderDateAdded">
+          <index-field name="date_added"/>
+        </index>
+        <orm-attributes>
+          <attribute name="options">
+            <attribute name="charset">utf8</attribute>
+            <attribute name="collate">utf8_turkish_ci</attribute>
+            <attribute name="engine">innodb</attribute>
+          </attribute>
+          <attribute name="table">shopping_order_item</attribute>
+          <attribute name="export-file-name">ShoppingOrderItem.php</attribute>
+        </orm-attributes>
+      </entity>
+    </region>
+    <association from="\ShoppingOrder" to="\BiberLtd\Bundle\MemberManagementBundle\Entity\Member" caption="idxFShoppingOrderPurchaser" inverse-alias="purchaser" many-owner="true" many-inverse="false" uuid="1eb2310e-185c-4c88-8d1c-02758a9b8b24">
+      <association-field from="purchaser" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">RESTRICT</attribute>
+      </orm-attributes>
+    </association>
+    <association from="\ShoppingOrderItem" to="\ShoppingOrder" caption="idxFOrderOfShoppingItem" inverse-alias="shopping_order" many-owner="true" many-inverse="false" parent-required="true" uuid="2df8ba0c-f25e-4efd-9bf8-4e898029fbab">
+      <association-field from="shopping_order" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <association from="\ShoppingOrderItem" to="\Product" caption="idxFProductOfShoppingOrderItem" inverse-alias="product" many-owner="true" many-inverse="false" parent-required="true" uuid="19cea12e-b46c-406c-ad27-19b21557c238">
+      <association-field from="product" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <region namespace="\" caption="TransactionManagementModule" uuid="a71f3912-abe1-4941-b45a-a9b127753058">
+      <entity name="\PaymentTransaction" local-name="PaymentTransaction" namespace="\" description="Tracks transactions occurred between gateway and web site." uuid="3d3f1b7c-3e70-420c-ab3a-cedc3fd8c8a5">
+        <field name="id" description="System given id." type="integer" size="10" required="true" unique="true" primary="true" auto-increment="true" uuid="6d0bf8e9-b87f-46c6-9516-73b985a427a3">
+          <orm-attributes>
+            <attribute name="generator">
+              <attribute name="strategy">AUTO</attribute>
+            </attribute>
+          </orm-attributes>
+        </field>
+        <field name="transaction_id" description="Gateway returned transaction id." type="string" size="255" required="true" uuid="a1b4ec4e-9b66-4659-9496-1c387fb381ea"/>
+        <field name="shopping_order" description="Order that transaction is fired from." type="integer" size="15" required="true" uuid="7cc7f663-431e-49bf-a73b-4b241df33ac4"/>
+        <field name="gateway" description="Gateway used during the transaction." type="integer" size="10" required="true" uuid="61adaaf1-e25f-4007-a4bc-755e92fd165e"/>
+        <field name="amount" description="Transaction amount." type="decimal" size="7" default="0" required="true" uuid="b4f027da-0a1d-47c5-9247-96cbd5684b6f"/>
+        <field name="status" description="ACK or status codes or messages." type="string" size="155" required="true" uuid="32921386-f5cc-49f0-a989-5d1b7be3429c"/>
+        <field name="response" description="Original response returned from gateway." type="text" required="true" uuid="7fe0bea9-6e30-488a-b0b8-07148d99605b"/>
+        <field name="date_added" description="Date when the transaction is added." type="datetime" required="true" uuid="630e6a0e-9a34-4b7d-a996-51b4674bb151"/>
+        <field name="site" description="Site that transaction belongs to." type="integer" size="10" uuid="25d52b13-f2e2-4ea0-9567-fc3bf8442cdd"/>
+        <field name="member" description="Member that transaction belongs to." type="integer" size="10" required="true" uuid="6517d8f0-5bd0-4cfb-8508-3c7cb2663827"/>
+        <index name="idxUPaymentTransactionId" unique="true">
+          <index-field name="id"/>
+        </index>
+        <index name="idxNPaymentTransactionDateAdded">
+          <index-field name="date_added"/>
+        </index>
+        <orm-attributes>
+          <attribute name="options">
+            <attribute name="charset">utf8</attribute>
+            <attribute name="collate">utf8_turkish_ci</attribute>
+            <attribute name="engine">innodb</attribute>
+          </attribute>
+          <attribute name="table">payment_transaction</attribute>
+          <attribute name="export-file-name">PaymentTransaction.php</attribute>
+        </orm-attributes>
+      </entity>
+    </region>
+    <association from="\PaymentTransaction" to="\BiberLtd\Bundle\SiteManagementBundle\Entity\Site" caption="idxFSiteOfPaymentTransaction" inverse-alias="site" many-owner="true" many-inverse="false" uuid="3f1d6a73-84f7-4080-9f9f-993ce6c70334">
+      <association-field from="site" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <association from="\PaymentTransaction" to="\BiberLtd\Bundle\MemberManagementBundle\Entity\Member" caption="idxFMemberOfPaymentTransaction" inverse-alias="member" many-owner="true" many-inverse="false" parent-required="true" uuid="6640d92e-bfee-457f-be1f-a49a2851f961">
+      <association-field from="member" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <association from="\PaymentTransaction" to="\PaymentGateway" caption="idxFGatewayOfPaymentTransaction" inverse-alias="gateway" many-owner="true" many-inverse="false" parent-required="true" uuid="0856c61f-07e8-4a7e-b542-a5c9ee258a60">
+      <association-field from="gateway" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <association from="\PaymentTransaction" to="\ShoppingOrder" caption="idxFOrderOfPaymentTransaction" inverse-alias="shopping_order" many-owner="true" many-inverse="false" parent-required="true" uuid="689135fa-8203-4942-aae8-f5ca6239cca3">
+      <association-field from="shopping_order" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <orm-attributes>
+      <attribute name="namespace">BiberLtd\Bundle\ShoppingCartBundle\Entity</attribute>
+      <attribute name="filename-format">entity-name-only</attribute>
+      <attribute name="file-suffix">without-suffix</attribute>
+    </orm-attributes>
+  </module>
   <visual-data>
     <association uuid="00219d56-949c-48cd-a37a-2f379cab16ec" color="#969696"/>
     <association uuid="0132b5a4-c206-4f06-bcf7-08bf61d249f3" color="#969696"/>
@@ -45,6 +2274,7 @@
     <association uuid="547765bc-9453-4a1f-a44f-9df100d75103" color="#969696"/>
     <association uuid="5c053399-bdfe-4fd2-b79b-2eebb1c870ef" color="#969696"/>
     <association uuid="5d9fbbab-e6e7-446b-b35a-5a92b2665907" color="#969696"/>
+    <association uuid="5e1df0ed-e712-4bc2-983a-89dac01fc328" color="#969696"/>
     <association uuid="5e9d566d-86ce-46ec-acec-b61d968fb34e" color="#969696"/>
     <association uuid="5f16c0a9-34a7-43d5-84ac-afb2ca4ee191" color="#969696"/>
     <association uuid="6164e2b3-f5a2-4938-90dc-5023e1ab8d87" color="#969696"/>
@@ -93,16 +2323,69 @@
     <association uuid="e615dfba-7f2b-4dac-a61b-519c9538e9f0" color="#969696"/>
     <association uuid="e759f273-144f-4e29-817a-0fe9f39c4187" color="#969696"/>
     <association uuid="e79a05e0-5cb2-4e37-8020-579d9eedb82e" color="#969696"/>
+    <association uuid="faa35a36-c3d4-4ac8-b41e-c673f8d33fc1" color="#969696"/>
     <association uuid="fbb3c492-f148-4658-89df-2ee3d75761d0" color="#969696"/>
-    <module uuid="0f2a830e-feb4-4358-ba55-1084e3b5ea9e" position-x="5817" position-y="50"/>
-    <module uuid="1d850c73-f565-4952-9f5a-0ef0e24c3c6f" position-x="6567" position-y="50"/>
-    <module uuid="264804cf-5ddd-4089-aaa2-d7c0f129a5ed" position-x="640" position-y="106"/>
-    <module uuid="4b67ab76-3d9b-4d83-b24b-17ee1ffbfbca" position-x="3161" position-y="72"/>
-    <module uuid="860bb986-ef71-4cef-9da2-f560e58c2569" position-x="50" position-y="50"/>
-    <module uuid="9741bde0-dba7-4022-9b83-7ddfcd40a5c4" position-x="3905" position-y="57"/>
-    <module uuid="9d574194-22af-4673-a2ee-bb67ec7d212e" position-x="1466" position-y="51"/>
-    <module uuid="d40aa0eb-3691-4818-880c-0a9ad1dd9833" position-x="2261" position-y="99"/>
-    <module uuid="fed54932-c0a9-4d5b-a21d-1fd73242a39a" position-x="7681" position-y="50"/>
-    <project uuid="e08d300e-6141-425b-a2f3-b8fdb04850f1" size-x="0" size-x2="9170" size-y="0" size-y2="1450"/>
+    <association uuid="ff2216de-61d6-4b22-940e-9bc8f7199f8a" color="#969696"/>
+    <entity uuid="04602777-d7d4-4b5f-9557-c3a1ba1f9dbb" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="350" position-y="100" size-x="0" size-x2="20" size-y="0" size-y2="20"/>
+    <entity uuid="0587d7e0-3c09-4415-b829-08e6e02da6fb" bg-color="4294967295" hdr-color="4292006610" position-x="377" position-y="250" size-x="0" size-x2="123" size-y="0" size-y2="73"/>
+    <entity uuid="062dc364-3d01-474f-8a28-77bb8b1e21fd" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="550" position-y="1" size-x="0" size-x2="130" size-y="0" size-y2="87"/>
+    <entity uuid="078e24d9-5894-4ee7-8a0f-f0707f7f0b7a" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="-92" position-y="50" size-x="0" size-x2="170" size-y="0" size-y2="227"/>
+    <entity uuid="07eeeac7-da1a-48f5-96c1-665a12f5d84f" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="450" position-y="401" size-x="0" size-x2="125" size-y="0" size-y2="59"/>
+    <entity uuid="0b71f735-9ad2-4268-9865-c28389d95af2" bg-color="4294967295" hdr-color="4292006610" position-x="1000" position-y="372" size-x="0" size-x2="109" size-y="0" size-y2="45"/>
+    <entity uuid="1dc3e6e7-b57f-4a98-b0e7-93bb33529e3f" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="300" position-y="28" size-x="0" size-x2="123" size-y="0" size-y2="87"/>
+    <entity uuid="2d0a30b3-246d-47fa-b198-331e87d4a439" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="200" position-y="294" size-x="0" size-x2="121" size-y="0" size-y2="59"/>
+    <entity uuid="398bafb3-54d0-4c80-b26c-398e9a15f46d" bg-color="4294967295" hdr-color="4292006610" position-x="450" position-y="50" size-x="0" size-x2="149" size-y="0" size-y2="101"/>
+    <entity uuid="3d3f1b7c-3e70-420c-ab3a-cedc3fd8c8a5" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="64" position-y="50" size-x="0" size-x2="136" size-y="0" size-y2="157"/>
+    <entity uuid="41bcf7a2-e5e3-42a8-af5a-39de1f0e86ff" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="400" position-y="44" size-x="0" size-x2="130" size-y="0" size-y2="115"/>
+    <entity uuid="43ab6b0b-c85b-42cf-8db0-ec811ef8a48a" bg-color="4294967295" hdr-color="4292006610" position-x="83" position-y="50" size-x="0" size-x2="118" size-y="0" size-y2="73"/>
+    <entity uuid="45fa10e6-64bd-4726-82aa-61fd301b1b5f" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="50" position-y="50" size-x="0" size-x2="148" size-y="0" size-y2="157"/>
+    <entity uuid="53f04523-5317-4fe9-8591-654daa32afe3" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="-311" position-y="77" size-x="0" size-x2="123" size-y="0" size-y2="73"/>
+    <entity uuid="54071aca-26ee-4c5d-ab8e-e776bf4448a0" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="300" position-y="378" size-x="0" size-x2="126" size-y="0" size-y2="115"/>
+    <entity uuid="54bdf829-a601-4c54-97b8-3ccbeb915fac" bg-color="4294967295" hdr-color="4292006610" position-x="50" position-y="450" size-x="0" size-x2="125" size-y="0" size-y2="87"/>
+    <entity uuid="5a305683-57f2-495d-9e9a-011d3343c137" bg-color="4294967295" hdr-color="4292006610" position-x="1450" position-y="200" size-x="0" size-x2="130" size-y="0" size-y2="101"/>
+    <entity uuid="5ca3abd3-e423-44e0-be5b-2b26ff7c6dfe" bg-color="4294967295" hdr-color="4292006610" position-x="1124" position-y="439" size-x="0" size-x2="151" size-y="0" size-y2="45"/>
+    <entity uuid="68869a37-9734-4e32-8230-3420a1590c7a" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="300" position-y="43" size-x="0" size-x2="20" size-y="0" size-y2="20"/>
+    <entity uuid="757d47e8-7d49-43d6-a7d9-e744b24433d2" bg-color="4294967295" hdr-color="4292006610" position-x="500" position-y="100" size-x="0" size-x2="145" size-y="0" size-y2="87"/>
+    <entity uuid="7ce99bbb-4d97-4ee5-8703-dfe82e965514" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="100" position-y="94" size-x="0" size-x2="109" size-y="0" size-y2="115"/>
+    <entity uuid="7fa98806-4f29-472b-ad43-2853b2648925" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="100" position-y="50" size-x="0" size-x2="130" size-y="0" size-y2="129"/>
+    <entity uuid="88915b8c-14d5-42f1-a4e4-5d2a31ff96e3" bg-color="4294967295" hdr-color="4292006610" position-x="1450" position-y="50" size-x="0" size-x2="120" size-y="0" size-y2="87"/>
+    <entity uuid="88f90ebc-9af6-40cf-9cbf-9636c9b7af03" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="19" position-y="50" size-x="0" size-x2="140" size-y="0" size-y2="297"/>
+    <entity uuid="9109d3a6-7a5c-4ab9-8ff7-8b5da86662c6" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="50" position-y="401" size-x="0" size-x2="363" size-y="0" size-y2="87"/>
+    <entity uuid="9df7cd56-6a97-410f-b0fe-2fd5538bd528" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="350" position-y="51" size-x="0" size-x2="112" size-y="0" size-y2="87"/>
+    <entity uuid="a12d9552-e3b0-4189-870d-82bf4cd5b6ed" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="500" position-y="151" size-x="0" size-x2="130" size-y="0" size-y2="87"/>
+    <entity uuid="ab4d46b1-9b5b-4ce2-9e65-898e5bcf4073" bg-color="4294967295" hdr-color="4292006610" position-x="750" position-y="200" size-x="0" size-x2="145" size-y="0" size-y2="73"/>
+    <entity uuid="ab52fd8c-bbaa-4acd-bf2b-ddf58080803e" bg-color="4294967295" hdr-color="4292006610" position-x="350" position-y="350" size-x="0" size-x2="138" size-y="0" size-y2="115"/>
+    <entity uuid="afaa4cd5-a9f4-4fa8-a0f3-c68989c619fc" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="50" position-y="1" size-x="0" size-x2="159" size-y="0" size-y2="269"/>
+    <entity uuid="b1cc9d75-7583-466b-9675-95dd95acbaf9" bg-color="4294967295" hdr-color="4292006610" position-x="1350" position-y="350" size-x="0" size-x2="147" size-y="0" size-y2="129"/>
+    <entity uuid="b7508859-399b-4f7f-877e-60541c9194d4" bg-color="4294967295" hdr-color="4292006610" position-x="1250" position-y="150" size-x="0" size-x2="150" size-y="0" size-y2="73"/>
+    <entity uuid="be02716a-911d-4e0e-8e00-5c89d2dbb0de" bg-color="4294967295" hdr-color="4292006610" position-x="551" position-y="521" size-x="0" size-x2="130" size-y="0" size-y2="101"/>
+    <entity uuid="bf4deae3-debc-46b8-b08f-a8a17ca0f1e1" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="377" position-y="50" size-x="0" size-x2="20" size-y="0" size-y2="20"/>
+    <entity uuid="c04c801c-5047-41eb-9209-dfd6732d5e31" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="445" position-y="30" size-x="0" size-x2="156" size-y="0" size-y2="213"/>
+    <entity uuid="cabe3f9a-2268-427a-ada1-ac56c2e87ba5" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="100" position-y="178" size-x="0" size-x2="188" size-y="0" size-y2="157"/>
+    <entity uuid="d5752aa3-5dc2-43c1-a65d-b8c8beb1bc25" bg-color="4294967295" hdr-color="4292006610" position-x="650" position-y="350" size-x="0" size-x2="149" size-y="0" size-y2="115"/>
+    <entity uuid="d63dbddf-e46d-4e45-9e94-c986c1aecf0f" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="400" position-y="171" size-x="0" size-x2="124" size-y="0" size-y2="157"/>
+    <entity uuid="d731b316-305d-4125-8824-3385eb5120ea" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="300" position-y="251" size-x="0" size-x2="130" size-y="0" size-y2="129"/>
+    <entity uuid="e19f9517-5f61-4eeb-ba10-cbc7ba6448e0" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="41" position-y="145" size-x="0" size-x2="20" size-y="0" size-y2="20"/>
+    <entity uuid="e923dbd1-47ee-440d-b826-abf97f12cc74" bg-color="4294967295" hdr-color="4292006610" position-x="1100" position-y="50" size-x="0" size-x2="121" size-y="0" size-y2="101"/>
+    <entity uuid="ec6d50f7-374a-415e-8002-312e2df81083" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="158" position-y="50" size-x="0" size-x2="134" size-y="0" size-y2="87"/>
+    <entity uuid="ed4e2029-a3f4-47c3-8258-b05222394278" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="51" position-y="60" size-x="0" size-x2="137" size-y="0" size-y2="283"/>
+    <entity uuid="edc820a6-e14d-41ad-a986-7cabb15fd53a" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="197" position-y="99" size-x="0" size-x2="130" size-y="0" size-y2="269"/>
+    <entity uuid="f94f0dff-737d-40da-bdae-9cc36c5db82a" bg-color="4294967295" hdr-color="4292006610" position-x="1080" position-y="242" size-x="0" size-x2="142" size-y="0" size-y2="101"/>
+    <entity uuid="fd800c53-e49b-49d3-a92a-104ef5195190" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="300" position-y="50" size-x="0" size-x2="139" size-y="0" size-y2="227"/>
+    <entity uuid="fd9a924e-dc7c-44be-a74e-510e80042650" bg-color="4294967295" hdr-color="4292006610" position-x="1550" position-y="450" size-x="0" size-x2="142" size-y="0" size-y2="45"/>
+    <entity uuid="ff58bc59-4964-4488-92c9-914bc835a050" bg-color="4294967295" hdr-color="4292006610" position-x="800" position-y="50" size-x="0" size-x2="120" size-y="0" size-y2="87"/>
+    <module uuid="0f2a830e-feb4-4358-ba55-1084e3b5ea9e" bg-color="#E8FADF" position-x="5817" position-y="50" size-x="0" size-x2="650" size-y="0" size-y2="443"/>
+    <module uuid="1d850c73-f565-4952-9f5a-0ef0e24c3c6f" bg-color="4278222974" position-x="6567" position-y="50" size-x="0" size-x2="765" size-y="0" size-y2="307"/>
+    <module uuid="264804cf-5ddd-4089-aaa2-d7c0f129a5ed" bg-color="#FDF5F3" position-x="640" position-y="106" size-x="0" size-x2="700" size-y="56" size-y2="417"/>
+    <module uuid="4b67ab76-3d9b-4d83-b24b-17ee1ffbfbca" bg-color="#BDB7B0" position-x="3161" position-y="72" size-x="0" size-x2="644" size-y="22" size-y2="591"/>
+    <module uuid="860bb986-ef71-4cef-9da2-f560e58c2569" bg-color="#7E7975" position-x="50" position-y="50" size-x="0" size-x2="490" size-y="0" size-y2="327"/>
+    <module uuid="9741bde0-dba7-4022-9b83-7ddfcd40a5c4" bg-color="#1DBEFF" position-x="3905" position-y="57" size-x="0" size-x2="1812" size-y="7" size-y2="650"/>
+    <module uuid="9d574194-22af-4673-a2ee-bb67ec7d212e" bg-color="#C70000" position-x="1466" position-y="51" size-x="26" size-x2="695" size-y="1" size-y2="487"/>
+    <module uuid="d40aa0eb-3691-4818-880c-0a9ad1dd9833" bg-color="#C70000" position-x="2261" position-y="99" size-x="0" size-x2="800" size-y="49" size-y2="559"/>
+    <module uuid="fed54932-c0a9-4d5b-a21d-1fd73242a39a" bg-color="#698000" position-x="7681" position-y="50" size-x="331" size-x2="1169" size-y="0" size-y2="1557"/>
+    <project uuid="e08d300e-6141-425b-a2f3-b8fdb04850f1" size-x="0" size-x2="10430" size-y="0" size-y2="1939"/>
+    <region uuid="a71f3912-abe1-4941-b45a-a9b127753058" bg-color="4294834167" position-x="569" position-y="500" size-x="0" size-x2="550" size-y="0" size-y2="300"/>
+    <region uuid="eb8f051e-df45-4160-b450-52e9fe147f71" bg-color="4294179829" position-x="80" position-y="500" size-x="361" size-x2="389" size-y="0" size-y2="350"/>
+    <region uuid="ecab9892-0004-4f8f-85dd-c7057a5af9b1" bg-color="4294505980" position-x="-281" position-y="50" size-x="0" size-x2="550" size-y="0" size-y2="400"/>
   </visual-data>
 </skipper>
