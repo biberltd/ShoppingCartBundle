@@ -2267,6 +2267,7 @@ class ShoppingCartModel extends CoreModel {
 		if($response->error->exist){
 			return $response;
 		}
+		$member = $response->result->set;
 		$filter[] = array(
 			'glue' => 'and',
 			'condition' => array(
