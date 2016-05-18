@@ -504,11 +504,11 @@ class ShoppingOrder extends CoreEntity
     }
 
     /**
-     * @param float $billing_information
+     * @param string $billing_information
      *
      * @return $this
      */
-    public function setBillingInformation(float $billing_information){
+    public function setBillingInformation(string $billing_information){
         if(!$this->setModified('billing_information', $billing_information)->isModified()){
             return $this;
         }
