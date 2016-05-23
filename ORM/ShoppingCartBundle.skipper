@@ -1861,76 +1861,7 @@
       <attribute name="file-suffix">without-suffix</attribute>
     </orm-attributes>
   </module>
-  <module name="\PaymentGatewayBundle" local-name="PaymentGatewayBundle" namespace="\" uuid="1d850c73-f565-4952-9f5a-0ef0e24c3c6f">
-    <entity name="\PaymentGateway" local-name="PaymentGateway" namespace="\" description="Stores payment gateway definitions." uuid="43ab6b0b-c85b-42cf-8db0-ec811ef8a48a">
-      <field name="id" description="System given id." type="integer" size="10" required="true" unique="true" primary="true" auto-increment="true" uuid="babc4958-6bde-4e1f-b828-17498e674732"/>
-      <field name="date_added" description="Date when the gateway added." type="datetime" required="true" uuid="b1d4e32f-efac-4a2b-b0fa-55c33c928719"/>
-      <field name="settings" description="Gateway settings serialxed and base64 encoded." type="text" required="true" uuid="0db30667-8533-47ba-8c7b-70a13d654045"/>
-      <field name="site" description="Site that gateway belongs to." type="integer" size="10" uuid="be51c732-9d6a-4fae-951d-47050492cd8e"/>
-      <index name="idx_u_payment_gateway_id" unique="true">
-        <index-field name="id"/>
-      </index>
-      <index name="idx_n_payment_gateway_date_added">
-        <index-field name="date_added"/>
-      </index>
-      <orm-attributes>
-        <attribute name="options">
-          <attribute name="charset">utf8</attribute>
-          <attribute name="collate">utf8_turkish_ci</attribute>
-          <attribute name="engine">innodb</attribute>
-        </attribute>
-        <attribute name="table">payment_gateway</attribute>
-        <attribute name="export-file-name">PaymentGateway.php</attribute>
-      </orm-attributes>
-    </entity>
-    <association from="\PaymentGateway" to="\BiberLtd\Bundle\SiteManagementBundle\Entity\Site" caption="idx_f_payment_gateway_site" inverse-alias="site" many-owner="true" many-inverse="false" uuid="c742b246-99d9-4f7a-b32d-183c4e37e286">
-      <association-field from="site" to="id"/>
-      <orm-attributes>
-        <attribute name="on-delete">CASCADE</attribute>
-      </orm-attributes>
-    </association>
-    <entity name="\PaymentGatewayLocalization" local-name="PaymentGatewayLocalization" namespace="\" description="Stores localized values of payment gateway definitions." uuid="757d47e8-7d49-43d6-a7d9-e744b24433d2">
-      <field name="gateway" description="Localized payment gateway" type="integer" size="10" required="true" primary="true" uuid="6799fef4-cfed-4360-b9fe-4e19f0182f33"/>
-      <field name="language" description="Localization language." type="integer" size="5" required="true" primary="true" uuid="92dd8a2d-be9b-411a-87a5-a533976eafa7"/>
-      <field name="name" description="Localized gateway name." type="string" size="155" required="true" uuid="795eb90a-3eba-4ebb-81f7-f5a9b8b7fd3e"/>
-      <field name="url_key" description="Localized url key." type="string" size="255" required="true" uuid="3d3f14e8-4b9d-4471-b17d-752388de05f4"/>
-      <field name="description" description="Localized description." type="string" size="255" uuid="65d9b62e-d493-4b81-86c4-6a70d5b4d663"/>
-      <index name="idx_u_payment_gateway_localization">
-        <index-field name="gateway"/>
-        <index-field name="language"/>
-      </index>
-      <index name="idx_u_payment_gateway_localization_url_key" unique="true">
-        <index-field name="language"/>
-        <index-field name="url_key"/>
-      </index>
-      <orm-attributes>
-        <attribute name="options">
-          <attribute name="charset">utf8</attribute>
-          <attribute name="collate">utff8_turkish_ci</attribute>
-          <attribute name="engine">innodb</attribute>
-        </attribute>
-        <attribute name="table">payment_gateway_localization</attribute>
-        <attribute name="export-file-name">PaymentGatewayLocalization.php</attribute>
-      </orm-attributes>
-    </entity>
-    <association from="\PaymentGatewayLocalization" to="\PaymentGateway" caption="idx_f_payment_gateway_localization_gateway" owner-alias="localizations" inverse-alias="payment_gateway" many-owner="true" many-inverse="false" parent-required="true" uuid="9b543542-5a60-4d97-9f61-2e8e49675712">
-      <association-field from="gateway" to="id"/>
-      <orm-attributes>
-        <attribute name="on-delete">CASCADE</attribute>
-      </orm-attributes>
-    </association>
-    <association from="\PaymentGatewayLocalization" to="\BiberLtd\Bundle\MultiLanguageSupportBundle\Entity\Language" caption="idx_f_payment_gateway_localization_language" inverse-alias="language" many-owner="true" many-inverse="false" parent-required="true" uuid="bc01b795-15a2-456b-a3fe-48f6850ba6a9">
-      <association-field from="language" to="id"/>
-      <orm-attributes>
-        <attribute name="on-delete">CASCADE</attribute>
-      </orm-attributes>
-    </association>
-    <orm-attributes>
-      <attribute name="namespace">BiberLtd\Bundle\PaymentGatewayBundle\Entity</attribute>
-      <attribute name="filename-format">entity-name-only</attribute>
-      <attribute name="file-suffix">without-suffix</attribute>
-    </orm-attributes>
-  </module>
+  <external-module storage-path="../../payment-gateway-bundle/ORM/PaymentGateway.module.xml"/>
   <module name="\ShoppingCartBundle" local-name="ShoppingCartBundle" namespace="\" export-format="Doctrine2Php" export-path="../Entity" uuid="fed54932-c0a9-4d5b-a21d-1fd73242a39a">
     <region namespace="\" caption="CouponManagementModule" uuid="eb8f051e-df45-4160-b450-52e9fe147f71">
       <entity name="\Coupon" local-name="Coupon" namespace="\" description="Stores coupon definitions." uuid="078e24d9-5894-4ee7-8a0f-f0707f7f0b7a">
@@ -2085,6 +2016,9 @@
         <field name="content" description="Cart content, a json string or a serialized string." type="text" uuid="958f28c2-53dd-4194-b5ca-602f640a9812"/>
         <field name="transaction_info" description="Serialized or json string that contains transaction details for fast access." type="text" uuid="c63a23ce-5bd8-4ac3-ac27-f5aefe8c5f70"/>
         <field name="installment_fee" description="If the payment is made in more than 1 installments..." type="decimal" size="10" uuid="c928ee86-f714-4668-9431-be82e57e9a24"/>
+        <field name="session_id" description="Session id of cart if exists." type="text" uuid="703088a8-584c-47b5-9ef3-8b957c0eb3b2"/>
+        <field name="ip_v4" description="IP v4 address of shopping cart if exists." type="text" uuid="5e689b7f-fbaf-4d8d-85e5-64adedc36a5f"/>
+        <field name="ip_v6" description="IP v6 address of shopping cart." type="text" uuid="b7a72fc9-4ce6-4a4d-809a-03e915551305"/>
         <index name="idxUShoppingOrderId" unique="true">
           <index-field name="id"/>
         </index>
@@ -2337,7 +2271,6 @@
     <entity uuid="398bafb3-54d0-4c80-b26c-398e9a15f46d" bg-color="4294967295" hdr-color="4292006610" position-x="450" position-y="50" size-x="0" size-x2="149" size-y="0" size-y2="101"/>
     <entity uuid="3d3f1b7c-3e70-420c-ab3a-cedc3fd8c8a5" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="64" position-y="50" size-x="0" size-x2="136" size-y="0" size-y2="157"/>
     <entity uuid="41bcf7a2-e5e3-42a8-af5a-39de1f0e86ff" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="400" position-y="44" size-x="0" size-x2="130" size-y="0" size-y2="115"/>
-    <entity uuid="43ab6b0b-c85b-42cf-8db0-ec811ef8a48a" bg-color="4294967295" hdr-color="4292006610" position-x="83" position-y="50" size-x="0" size-x2="118" size-y="0" size-y2="73"/>
     <entity uuid="45fa10e6-64bd-4726-82aa-61fd301b1b5f" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="50" position-y="50" size-x="0" size-x2="148" size-y="0" size-y2="157"/>
     <entity uuid="53f04523-5317-4fe9-8591-654daa32afe3" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="-311" position-y="77" size-x="0" size-x2="123" size-y="0" size-y2="73"/>
     <entity uuid="54071aca-26ee-4c5d-ab8e-e776bf4448a0" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="300" position-y="378" size-x="0" size-x2="126" size-y="0" size-y2="115"/>
@@ -2345,7 +2278,6 @@
     <entity uuid="5a305683-57f2-495d-9e9a-011d3343c137" bg-color="4294967295" hdr-color="4292006610" position-x="1450" position-y="200" size-x="0" size-x2="130" size-y="0" size-y2="101"/>
     <entity uuid="5ca3abd3-e423-44e0-be5b-2b26ff7c6dfe" bg-color="4294967295" hdr-color="4292006610" position-x="1124" position-y="439" size-x="0" size-x2="151" size-y="0" size-y2="45"/>
     <entity uuid="68869a37-9734-4e32-8230-3420a1590c7a" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="300" position-y="43" size-x="0" size-x2="20" size-y="0" size-y2="20"/>
-    <entity uuid="757d47e8-7d49-43d6-a7d9-e744b24433d2" bg-color="4294967295" hdr-color="4292006610" position-x="500" position-y="100" size-x="0" size-x2="145" size-y="0" size-y2="87"/>
     <entity uuid="7ce99bbb-4d97-4ee5-8703-dfe82e965514" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="100" position-y="94" size-x="0" size-x2="109" size-y="0" size-y2="115"/>
     <entity uuid="7fa98806-4f29-472b-ad43-2853b2648925" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="100" position-y="50" size-x="0" size-x2="130" size-y="0" size-y2="129"/>
     <entity uuid="88915b8c-14d5-42f1-a4e4-5d2a31ff96e3" bg-color="4294967295" hdr-color="4292006610" position-x="1450" position-y="50" size-x="0" size-x2="120" size-y="0" size-y2="87"/>
@@ -2375,7 +2307,7 @@
     <entity uuid="fd9a924e-dc7c-44be-a74e-510e80042650" bg-color="4294967295" hdr-color="4292006610" position-x="1550" position-y="450" size-x="0" size-x2="142" size-y="0" size-y2="45"/>
     <entity uuid="ff58bc59-4964-4488-92c9-914bc835a050" bg-color="4294967295" hdr-color="4292006610" position-x="800" position-y="50" size-x="0" size-x2="120" size-y="0" size-y2="87"/>
     <module uuid="0f2a830e-feb4-4358-ba55-1084e3b5ea9e" bg-color="#E8FADF" position-x="5817" position-y="50" size-x="0" size-x2="650" size-y="0" size-y2="443"/>
-    <module uuid="1d850c73-f565-4952-9f5a-0ef0e24c3c6f" bg-color="4278222974" position-x="6567" position-y="50" size-x="0" size-x2="765" size-y="0" size-y2="307"/>
+    <module uuid="1d850c73-f565-4952-9f5a-0ef0e24c3c6f" position-x="6567" position-y="50"/>
     <module uuid="264804cf-5ddd-4089-aaa2-d7c0f129a5ed" bg-color="#FDF5F3" position-x="640" position-y="106" size-x="0" size-x2="700" size-y="56" size-y2="417"/>
     <module uuid="4b67ab76-3d9b-4d83-b24b-17ee1ffbfbca" bg-color="#BDB7B0" position-x="3161" position-y="72" size-x="0" size-x2="644" size-y="22" size-y2="591"/>
     <module uuid="860bb986-ef71-4cef-9da2-f560e58c2569" bg-color="#7E7975" position-x="50" position-y="50" size-x="0" size-x2="490" size-y="0" size-y2="327"/>
@@ -2386,6 +2318,6 @@
     <project uuid="e08d300e-6141-425b-a2f3-b8fdb04850f1" size-x="0" size-x2="10430" size-y="0" size-y2="1939"/>
     <region uuid="a71f3912-abe1-4941-b45a-a9b127753058" bg-color="4294834167" position-x="569" position-y="500" size-x="0" size-x2="550" size-y="0" size-y2="300"/>
     <region uuid="eb8f051e-df45-4160-b450-52e9fe147f71" bg-color="4294179829" position-x="80" position-y="500" size-x="361" size-x2="389" size-y="0" size-y2="350"/>
-    <region uuid="ecab9892-0004-4f8f-85dd-c7057a5af9b1" bg-color="4294505980" position-x="-281" position-y="50" size-x="0" size-x2="550" size-y="0" size-y2="400"/>
+    <region uuid="ecab9892-0004-4f8f-85dd-c7057a5af9b1" bg-color="4294505980" position-x="-281" position-y="50" size-x="1" size-x2="550" size-y="0" size-y2="437"/>
   </visual-data>
 </skipper>

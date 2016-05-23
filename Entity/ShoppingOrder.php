@@ -88,6 +88,24 @@ class ShoppingOrder extends CoreEntity
     private $installment_fee;
 
     /**
+     * @ORM\Column(type="text", nullable=true)
+     * @var string
+     */
+    private $session_id;
+
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     * @var string
+     */
+    private $ip_v4;
+
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     * @var string
+     */
+    private $ip_v6;
+
+    /**
      * @ORM\Column(type="decimal", length=7, nullable=false, options={"default":0})
      * @var float
      */
@@ -155,7 +173,7 @@ class ShoppingOrder extends CoreEntity
 
     /**
      * @ORM\ManyToOne(targetEntity="BiberLtd\Bundle\MemberManagementBundle\Entity\Member")
-     * @ORM\JoinColumn(name="purchaser", referencedColumnName="id", nullable=false, onDelete="RESTRICT")
+     * @ORM\JoinColumn(name="purchaser", referencedColumnName="id", onDelete="RESTRICT")
      * @var \BiberLtd\Bundle\MemberManagementBundle\Entity\Member
      */
     private $purchaser;
@@ -579,4 +597,68 @@ class ShoppingOrder extends CoreEntity
 
         return $this;
     }
+
+    /**
+     * @return string
+     */
+    public function getSessionId()
+    {
+        return $this->session_id;
+    }
+
+    /**
+     * @param string $session_id
+     * @return $this
+     */
+    public function setSessionId(string $session_id)
+    {
+        if (!$this->setModified('session_id', $session_id)->isModified()) {
+            return $this;
+        }
+        $this->session_id = $session_id;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getIpV4()
+    {
+        return $this->ip_v4;
+    }
+
+    /**
+     * @param string $ip_v4
+     * @return $this
+     */
+    public function setIpV4(string $ip_v4)
+    {
+        if (!$this->setModified('ip_v4', $ip_v4)->isModified()) {
+            return $this;
+        }
+        $this->ip_v4 = $ip_v4;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getIpV6()
+    {
+        return $this->ip_v6;
+    }
+
+    /**
+     * @param string $ip_v6
+     * @return $this
+     */
+    public function setIpV6(string $ip_v6)
+    {
+        if (!$this->setModified('ip_v6', $ip_v6)->isModified()) {
+            return $this;
+        }
+        $this->ip_v6 = $ip_v6;
+        return $this;
+    }
+    
 }
