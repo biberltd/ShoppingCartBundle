@@ -28,37 +28,37 @@ use BiberLtd\Bundle\CoreBundle\Exceptions as CoreExceptions;
 
 class ShoppingCartModel extends CoreModel {
 
-    /**
-     * ShoppingCartModel constructor.
-     *
-     * @param object $kernel
-     * @param string $db_connection
-     * @param string $orm
-     */
-    public function __construct($kernel, string $db_connection = 'default', string $orm = 'doctrine') {
-        parent::__construct($kernel, $db_connection, $orm);
+	/**
+	 * ShoppingCartModel constructor.
+	 *
+	 * @param object $kernel
+	 * @param string $db_connection
+	 * @param string $orm
+	 */
+	public function __construct($kernel, string $db_connection = 'default', string $orm = 'doctrine') {
+		parent::__construct($kernel, $db_connection, $orm);
 
-        /**
-         * Register entity names for easy reference.
-         */
-        $this->entity = array(
-            'c' => array('name' => 'ShoppingCartBundle:Coupon', 'alias' => 'c'),
-            'cl' => array('name' => 'ShoppingCartBundle:CouponLocalization', 'alias' => 'cl'),
-            'pt' => array('name' => 'ShoppingCartBundle:PaymentTransaction', 'alias' => 'pt'),
-            'rc' => array('name' => 'ShoppingCartBundle:RedeemedCoupon', 'alias' => 'rc'),
-            'so' => array('name' => 'ShoppingCartBundle:ShoppingOrder', 'alias' => 'so'),
-            'soi' => array('name' => 'ShoppingCartBundle:ShoppingOrderItem', 'alias' => 'soi'),
-        );
-    }
+		/**
+		 * Register entity names for easy reference.
+		 */
+		$this->entity = array(
+			'c' => array('name' => 'ShoppingCartBundle:Coupon', 'alias' => 'c'),
+			'cl' => array('name' => 'ShoppingCartBundle:CouponLocalization', 'alias' => 'cl'),
+			'pt' => array('name' => 'ShoppingCartBundle:PaymentTransaction', 'alias' => 'pt'),
+			'rc' => array('name' => 'ShoppingCartBundle:RedeemedCoupon', 'alias' => 'rc'),
+			'so' => array('name' => 'ShoppingCartBundle:ShoppingOrder', 'alias' => 'so'),
+			'soi' => array('name' => 'ShoppingCartBundle:ShoppingOrderItem', 'alias' => 'soi'),
+		);
+	}
 
-    /**
-     * Destructor
-     */
-    public function __destruct() {
-        foreach ($this as $property => $value) {
-            $this->$property = null;
-        }
-    }
+	/**
+	 * Destructor
+	 */
+	public function __destruct() {
+		foreach ($this as $property => $value) {
+			$this->$property = null;
+		}
+	}
 
 	/**
 	 * @param string     $flag
@@ -94,9 +94,9 @@ class ShoppingCartModel extends CoreModel {
 	 *
 	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
 	 */
-    public function countCompletedOrders(array $filter = null, array $sortOrder = null, array $limit = null){
-        return $this->countOrdersWithFlag('c', $filter, $sortOrder,$limit);
-    }
+	public function countCompletedOrders(array $filter = null, array $sortOrder = null, array $limit = null){
+		return $this->countOrdersWithFlag('c', $filter, $sortOrder,$limit);
+	}
 
 	/**
 	 * @param mixed $member
@@ -106,38 +106,38 @@ class ShoppingCartModel extends CoreModel {
 	 *
 	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse|mixed
 	 */
-    public function countOrdersOfMember($member, array $filter = null, array $sortOrder = null, array $limit = null){
-	    /**
-	     * @var \BiberLtd\Bundle\MemberManagementBundle\Services\MemberManagementModel $mModel
-	     */
-	    $mModel = $this->kernel->getContainer()->get('membermanagement.model');
-	    $response = $mModel->getMember($member);
-	    if($response->error->exist){
-		    return $response;
-	    }
-	    /**
-	     * @var \BiberLtd\Bundle\MemberManagementBundle\Entity\Member $member
-	     */
-	    $member = $response->result->set;
-	    unset($response);
-	    $filter[] = array(
-		    'glue' => 'and',
-		    'condition' => array(
-			    array(
-				    'glue' => 'and',
-				    'condition' => array('column' => $this->entity['so']['alias'] .'.purchaser', 'comparison' => '=', 'value' => $member->getId()),
-			    ),
-		    )
-	    );
-	    $response = $this->listShoppingOrders($filter, $sortOrder, $limit);
-        if($response->error->exist){
-	        return $response;
-        }
-        $response->result->set = count($response->result->set);
-        $response->result->count->set = 1;
-        $response->result->count->total = 1;
-        return $response;
-    }
+	public function countOrdersOfMember($member, array $filter = null, array $sortOrder = null, array $limit = null){
+		/**
+		 * @var \BiberLtd\Bundle\MemberManagementBundle\Services\MemberManagementModel $mModel
+		 */
+		$mModel = $this->kernel->getContainer()->get('membermanagement.model');
+		$response = $mModel->getMember($member);
+		if($response->error->exist){
+			return $response;
+		}
+		/**
+		 * @var \BiberLtd\Bundle\MemberManagementBundle\Entity\Member $member
+		 */
+		$member = $response->result->set;
+		unset($response);
+		$filter[] = array(
+			'glue' => 'and',
+			'condition' => array(
+				array(
+					'glue' => 'and',
+					'condition' => array('column' => $this->entity['so']['alias'] .'.purchaser', 'comparison' => '=', 'value' => $member->getId()),
+				),
+			)
+		);
+		$response = $this->listShoppingOrders($filter, $sortOrder, $limit);
+		if($response->error->exist){
+			return $response;
+		}
+		$response->result->set = count($response->result->set);
+		$response->result->count->set = 1;
+		$response->result->count->total = 1;
+		return $response;
+	}
 	/**
 	 * @param mixed $member
 	 * @param string     $flag
@@ -202,38 +202,38 @@ class ShoppingCartModel extends CoreModel {
 	 *
 	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
 	 */
-    public function countNoneOrderedCarts(array $filter = null, array $sortOrder = null, array $limit = null){
-	    $filter[] = array(
-		    'glue' => 'and',
-		    'condition' => array(
-			    array(
-				    'glue' => 'and',
-				    'condition' => array('column' => $this->entity['so']['alias'] .'.status', 'comparison' => '=', 'value' => 't'),
-			    ),
-			    array(
-				    'glue' => 'and',
-				    'condition' => array('column' => $this->entity['so']['alias'] .'.date_puschased', 'comparison' => 'isnull', 'value' => null),
-			    ),
-		    )
-	    );
-	    $response = $this->listShoppingOrders($filter, $sortOrder, $limit);
-	    if($response->error->exist){
-		    return $response;
-	    }
-	    $response->result->set = count($response->result->set);
-	    $response->result->count->set = 1;
-	    $response->result->count->total = 1;
-	    return $response;
-    }
+	public function countNoneOrderedCarts(array $filter = null, array $sortOrder = null, array $limit = null){
+		$filter[] = array(
+			'glue' => 'and',
+			'condition' => array(
+				array(
+					'glue' => 'and',
+					'condition' => array('column' => $this->entity['so']['alias'] .'.status', 'comparison' => '=', 'value' => 't'),
+				),
+				array(
+					'glue' => 'and',
+					'condition' => array('column' => $this->entity['so']['alias'] .'.date_puschased', 'comparison' => 'isnull', 'value' => null),
+				),
+			)
+		);
+		$response = $this->listShoppingOrders($filter, $sortOrder, $limit);
+		if($response->error->exist){
+			return $response;
+		}
+		$response->result->set = count($response->result->set);
+		$response->result->count->set = 1;
+		$response->result->count->total = 1;
+		return $response;
+	}
 
 	/**
 	 * @param mixed $data
 	 *
 	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
 	 */
-    public function deletePaymentTransaction($data) {
-        return $this->deletePaymentTransactions(array($data));
-    }
+	public function deletePaymentTransaction($data) {
+		return $this->deletePaymentTransactions(array($data));
+	}
 
 	/**
 	 * @param array $collection
@@ -271,9 +271,9 @@ class ShoppingCartModel extends CoreModel {
 	 *
 	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
 	 */
-    public function deleteShoppingOrder($order) {
-        return $this->deleteShoppingOrders(array($order));
-    }
+	public function deleteShoppingOrder($order) {
+		return $this->deleteShoppingOrders(array($order));
+	}
 
 	/**
 	 * @param array $collection
@@ -311,39 +311,39 @@ class ShoppingCartModel extends CoreModel {
 	 *
 	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
 	 */
-    public function deleteShoppingOrderItem($item) {
-        return $this->deleteShoppingOrderItems(array($item));
-    }
+	public function deleteShoppingOrderItem($item) {
+		return $this->deleteShoppingOrderItems(array($item));
+	}
 
 	/**
 	 * @param array $collection
 	 *
 	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
 	 */
-    public function deleteShoppingOrderItems(array $collection) {
-	    $timeStamp = microtime(true);
-	    if (!is_array($collection)) {
-		    return $this->createException('InvalidParameterValueException', 'Invalid parameter value. Parameter must be an array collection', 'E:S:001');
-	    }
-	    $countDeleted = 0;
-	    foreach ($collection as $entry) {
-		    if ($entry instanceof BundleEntity\ShoppingOrderItem) {
-			    $this->em->remove($entry);
-			    $countDeleted++;
-		    } else {
-			    $response = $this->getShoppingOrderItem($entry);
-			    if (!$response->error->exist) {
-				    $this->em->remove($response->result->set);
-				    $countDeleted++;
-			    }
-		    }
-	    }
-	    if ($countDeleted < 0) {
-		    return new ModelResponse(null, 0, 0, null, true, 'E:E:001', 'Unable to delete all or some of the selected entries.', $timeStamp, microtime(true));
-	    }
-	    $this->em->flush();
-	    return new ModelResponse(null, 0, 0, null, false, 'S:D:001', 'Selected entries have been successfully removed from database.', $timeStamp, microtime(true));
-    }
+	public function deleteShoppingOrderItems(array $collection) {
+		$timeStamp = microtime(true);
+		if (!is_array($collection)) {
+			return $this->createException('InvalidParameterValueException', 'Invalid parameter value. Parameter must be an array collection', 'E:S:001');
+		}
+		$countDeleted = 0;
+		foreach ($collection as $entry) {
+			if ($entry instanceof BundleEntity\ShoppingOrderItem) {
+				$this->em->remove($entry);
+				$countDeleted++;
+			} else {
+				$response = $this->getShoppingOrderItem($entry);
+				if (!$response->error->exist) {
+					$this->em->remove($response->result->set);
+					$countDeleted++;
+				}
+			}
+		}
+		if ($countDeleted < 0) {
+			return new ModelResponse(null, 0, 0, null, true, 'E:E:001', 'Unable to delete all or some of the selected entries.', $timeStamp, microtime(true));
+		}
+		$this->em->flush();
+		return new ModelResponse(null, 0, 0, null, false, 'S:D:001', 'Selected entries have been successfully removed from database.', $timeStamp, microtime(true));
+	}
 
 	/**
 	 * @param mixed $transaction
@@ -433,56 +433,56 @@ class ShoppingCartModel extends CoreModel {
 	 *
 	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
 	 */
-    public function getShoppingOrder($order) {
-	    $timeStamp = microtime(true);
-	    if ($order instanceof BundleEntity\ShoppingOrder) {
-		    return new ModelResponse($order, 1, 0, null, false, 'S:D:002', 'Entries successfully fetched from database.', $timeStamp, microtime(true));
-	    }
-	    $result = null;
-	    switch ($order) {
-		    case is_numeric($order):
-			    $result = $this->em->getRepository($this->entity['so']['name'])->findOneBy(array('id' => $order));
-			    break;
-		    case is_string($order):
-			    $result = $this->em->getRepository($this->entity['so']['name'])->findOneBy(array('order_number' => $order));
-			    break;
-	    }
-	    if (is_null($result)) {
-		    return new ModelResponse($result, 0, 0, null, true, 'E:D:002', 'Unable to find request entry in database.', $timeStamp, microtime(true));
-	    }
-	    return new ModelResponse($result, 1, 0, null, false, 'S:D:002', 'Entries successfully fetched from database.', $timeStamp, microtime(true));
-    }
+	public function getShoppingOrder($order) {
+		$timeStamp = microtime(true);
+		if ($order instanceof BundleEntity\ShoppingOrder) {
+			return new ModelResponse($order, 1, 0, null, false, 'S:D:002', 'Entries successfully fetched from database.', $timeStamp, microtime(true));
+		}
+		$result = null;
+		switch ($order) {
+			case is_numeric($order):
+				$result = $this->em->getRepository($this->entity['so']['name'])->findOneBy(array('id' => $order));
+				break;
+			case is_string($order):
+				$result = $this->em->getRepository($this->entity['so']['name'])->findOneBy(array('order_number' => $order));
+				break;
+		}
+		if (is_null($result)) {
+			return new ModelResponse($result, 0, 0, null, true, 'E:D:002', 'Unable to find request entry in database.', $timeStamp, microtime(true));
+		}
+		return new ModelResponse($result, 1, 0, null, false, 'S:D:002', 'Entries successfully fetched from database.', $timeStamp, microtime(true));
+	}
 
 	/**
 	 * @param $item
 	 *
 	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
 	 */
-    public function getShoppingOrderItem($item) {
-	    $timeStamp = microtime(true);
-	    if ($item instanceof BundleEntity\ShoppingOrderItem) {
-		    return new ModelResponse($item, 1, 0, null, false, 'S:D:002', 'Entries successfully fetched from database.', $timeStamp, microtime(true));
-	    }
-	    $result = null;
-	    switch ($item) {
-		    case is_numeric($item):
-			    $result = $this->em->getRepository($this->entity['soi']['name'])->findOneBy(array('id' => $item));
-			    break;
-	    }
-	    if (is_null($result)) {
-		    return new ModelResponse($result, 0, 0, null, true, 'E:D:002', 'Unable to find request entry in database.', $timeStamp, microtime(true));
-	    }
-	    return new ModelResponse($result, 1, 0, null, false, 'S:D:002', 'Entries successfully fetched from database.', $timeStamp, microtime(true));
-    }
+	public function getShoppingOrderItem($item) {
+		$timeStamp = microtime(true);
+		if ($item instanceof BundleEntity\ShoppingOrderItem) {
+			return new ModelResponse($item, 1, 0, null, false, 'S:D:002', 'Entries successfully fetched from database.', $timeStamp, microtime(true));
+		}
+		$result = null;
+		switch ($item) {
+			case is_numeric($item):
+				$result = $this->em->getRepository($this->entity['soi']['name'])->findOneBy(array('id' => $item));
+				break;
+		}
+		if (is_null($result)) {
+			return new ModelResponse($result, 0, 0, null, true, 'E:D:002', 'Unable to find request entry in database.', $timeStamp, microtime(true));
+		}
+		return new ModelResponse($result, 1, 0, null, false, 'S:D:002', 'Entries successfully fetched from database.', $timeStamp, microtime(true));
+	}
 
 	/**
 	 * @param mixed $transaction
 	 *
 	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
 	 */
-    public function insertPaymentTransaction($transaction) {
-        return $this->insertPaymentTransactions(array($transaction));
-    }
+	public function insertPaymentTransaction($transaction) {
+		return $this->insertPaymentTransactions(array($transaction));
+	}
 
 	/**
 	 * @param array $collection
@@ -580,9 +580,9 @@ class ShoppingCartModel extends CoreModel {
 	 *
 	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
 	 */
-    public function insertShoppingOrder($order) {
-        return $this->insertShoppingOrders(array($order));
-    }
+	public function insertShoppingOrder($order) {
+		return $this->insertShoppingOrders(array($order));
+	}
 
 	/**
 	 * @param array $collection
@@ -647,9 +647,9 @@ class ShoppingCartModel extends CoreModel {
 	 *
 	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
 	 */
-    public function insertShoppingOrderItem($item) {
-        return $this->insertShoppingOrderItems(array($item));
-    }
+	public function insertShoppingOrderItem($item) {
+		return $this->insertShoppingOrderItems(array($item));
+	}
 
 	/**
 	 * @param array $collection
@@ -724,18 +724,18 @@ class ShoppingCartModel extends CoreModel {
 	 *
 	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
 	 */
-    public function listCancelledShoppingOrders(array $filter = null, array $sortOrder = null, array $limit = null) {
-	    $filter[] = array(
-		    'glue' => 'and',
-		    'condition' => array(
-			    array(
-				    'glue' => 'and',
-				    'condition' => array('column' => $this->entity['shopping_order']['alias'] . '.date_cancelled', 'comparison' => 'notnull', 'value' => null),
-			    )
-		    )
-	    );
-	    return $this->listShoppingOrders($filter, $sortOrder, $limit);
-    }
+	public function listCancelledShoppingOrders(array $filter = null, array $sortOrder = null, array $limit = null) {
+		$filter[] = array(
+			'glue' => 'and',
+			'condition' => array(
+				array(
+					'glue' => 'and',
+					'condition' => array('column' => $this->entity['shopping_order']['alias'] . '.date_cancelled', 'comparison' => 'notnull', 'value' => null),
+				)
+			)
+		);
+		return $this->listShoppingOrders($filter, $sortOrder, $limit);
+	}
 
 	/**
 	 * @param array|null $filter
@@ -744,9 +744,9 @@ class ShoppingCartModel extends CoreModel {
 	 *
 	 * @return array
 	 */
-    public function listCompletedShoppingOrders(array $filter = null, array $sortorder = null, array $limit = null) {
-        return $this->listShoppingOrdersWithFlag('c', $filter, $sortorder, $limit);
-    }
+	public function listCompletedShoppingOrders(array $filter = null, array $sortorder = null, array $limit = null) {
+		return $this->listShoppingOrdersWithFlag('c', $filter, $sortorder, $limit);
+	}
 
 	/**
 	 * @param array|null $filter
@@ -755,9 +755,9 @@ class ShoppingCartModel extends CoreModel {
 	 *
 	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
 	 */
-    public function listOpenShoppingOrders(array $filter = null, array $sortOrder = null, array $limit = null) {
-        return $this->listShoppingOrdersWithFlag('o', $filter, $sortOrder, $limit);
-    }
+	public function listOpenShoppingOrders(array $filter = null, array $sortOrder = null, array $limit = null) {
+		return $this->listShoppingOrdersWithFlag('o', $filter, $sortOrder, $limit);
+	}
 
 	/**
 	 * @param array|null $filter
@@ -818,29 +818,29 @@ class ShoppingCartModel extends CoreModel {
 	 *
 	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse|mixed
 	 */
-    public function listPaymentTransactionsOfMember($member, array $filter = null, array $sortorder = null, array $limit = null) {
-	    /**
-	     * @var \BiberLtd\Bundle\MemberManagementBundle\Services\MemberManagementModel $mModel
-	     */
-	    $mModel = $this->kernel->getContainer()->get('membermanagement.model');
-	    $response = $mModel->getMember($member);
-	    if($response->error->exist){
-		    return $response;
-	    }
-	    $member = $response->result->set;
+	public function listPaymentTransactionsOfMember($member, array $filter = null, array $sortorder = null, array $limit = null) {
+		/**
+		 * @var \BiberLtd\Bundle\MemberManagementBundle\Services\MemberManagementModel $mModel
+		 */
+		$mModel = $this->kernel->getContainer()->get('membermanagement.model');
+		$response = $mModel->getMember($member);
+		if($response->error->exist){
+			return $response;
+		}
+		$member = $response->result->set;
 
-        $column = $this->entity['pt']['alias'] . '.member';
-        $condition = array('column' => $column, 'comparison' => '=', 'value' => $member->getId());
-        $filter[] = array(
-            'glue' => 'and',
-            'condition' => array(
-                array(
-                    'glue' => 'and',
-                    'condition' => $condition,
-                )
-            )
-        );
-    }
+		$column = $this->entity['pt']['alias'] . '.member';
+		$condition = array('column' => $column, 'comparison' => '=', 'value' => $member->getId());
+		$filter[] = array(
+			'glue' => 'and',
+			'condition' => array(
+				array(
+					'glue' => 'and',
+					'condition' => $condition,
+				)
+			)
+		);
+	}
 
 	/**
 	 * @param mixed $order
@@ -877,20 +877,20 @@ class ShoppingCartModel extends CoreModel {
 	 *
 	 * @return array|\BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
 	 */
-    public function listReturnedShoppingOrders(array $filter = null, array $sortOrder = null, array $limit = null) {
-        $column = $this->entity['so']['alias'] . '.date_returned';
-        $condition = array('column' => $column, 'comparison' => 'notnull', 'value' => null);
-        $filter[] = array(
-            'glue' => 'and',
-            'condition' => array(
-                array(
-                    'glue' => 'and',
-                    'condition' => $condition,
-                )
-            )
-        );
-        return $this->listShoppingOrders($filter, $sortOrder, $limit);
-    }
+	public function listReturnedShoppingOrders(array $filter = null, array $sortOrder = null, array $limit = null) {
+		$column = $this->entity['so']['alias'] . '.date_returned';
+		$condition = array('column' => $column, 'comparison' => 'notnull', 'value' => null);
+		$filter[] = array(
+			'glue' => 'and',
+			'condition' => array(
+				array(
+					'glue' => 'and',
+					'condition' => $condition,
+				)
+			)
+		);
+		return $this->listShoppingOrders($filter, $sortOrder, $limit);
+	}
 
 	/**
 	 * @param array|null $filter
@@ -899,24 +899,24 @@ class ShoppingCartModel extends CoreModel {
 	 *
 	 * @return array|\BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
 	 */
-    public function listPurchasedShoppingOrders(array $filter = null, array $sortorder = null, array $limit = null) {
-        $this->resetResponse();
-        /**
-         * Prepare $filter
-         */
-        $column = $this->entity['so']['alias'] . '.date_purchased';
-        $condition = array('column' => $column, 'comparison' => 'notnull', 'value' => null);
-        $filter[] = array(
-            'glue' => 'and',
-            'condition' => array(
-                array(
-                    'glue' => 'and',
-                    'condition' => $condition,
-                )
-            )
-        );
-        return $this->listShoppingOrders($filter, $sortorder, $limit);
-    }
+	public function listPurchasedShoppingOrders(array $filter = null, array $sortorder = null, array $limit = null) {
+		$this->resetResponse();
+		/**
+		 * Prepare $filter
+		 */
+		$column = $this->entity['so']['alias'] . '.date_purchased';
+		$condition = array('column' => $column, 'comparison' => 'notnull', 'value' => null);
+		$filter[] = array(
+			'glue' => 'and',
+			'condition' => array(
+				array(
+					'glue' => 'and',
+					'condition' => $condition,
+				)
+			)
+		);
+		return $this->listShoppingOrders($filter, $sortorder, $limit);
+	}
 
 	/**
 	 * @param mixed $member
@@ -926,35 +926,35 @@ class ShoppingCartModel extends CoreModel {
 	 *
 	 * @return array|\BiberLtd\Bundle\CoreBundle\Responses\ModelResponse|mixed
 	 */
-    public function listShoppingCartsOfMember($member, array $filter = null, array $sortOrder = null, array $limit = null) {
-	    /**
-	     * @var \BiberLtd\Bundle\MemberManagementBundle\Services\MemberManagementModel $mModel
-	     */
-	    $mModel = $this->kernel->getContainer()->get('membermanagement.model');
-	    $response = $mModel->getMember($member);
-	    if($response->error->exist){
-		    return $response;
-	    }
-	    /**
-	     * @var \BiberLtd\Bundle\MemberManagementBundle\Entity\Member $member
-	     */
-	    $member = $response->result->set;
-	    unset($response);
-	    $filter[] = array(
-		    'glue' => 'and',
-		    'condition' => array(
-			    array(
-				    'glue' => 'and',
-				    'condition' =>  array('column' => $this->entity['so']['alias'] . '.status', 'comparison' => '=', 'value' => 't'),
-			    ),
-			    array(
-				    'glue' => 'and',
-				    'condition' =>  array('column' => $this->entity['so']['alias'] . '.member', 'comparison' => '=', 'value' => $member->getId()),
-			    )
-		    )
-	    );
-	    return $this->listShoppingOrders($filter, $sortOrder, $limit);
-    }
+	public function listShoppingCartsOfMember($member, array $filter = null, array $sortOrder = null, array $limit = null) {
+		/**
+		 * @var \BiberLtd\Bundle\MemberManagementBundle\Services\MemberManagementModel $mModel
+		 */
+		$mModel = $this->kernel->getContainer()->get('membermanagement.model');
+		$response = $mModel->getMember($member);
+		if($response->error->exist){
+			return $response;
+		}
+		/**
+		 * @var \BiberLtd\Bundle\MemberManagementBundle\Entity\Member $member
+		 */
+		$member = $response->result->set;
+		unset($response);
+		$filter[] = array(
+			'glue' => 'and',
+			'condition' => array(
+				array(
+					'glue' => 'and',
+					'condition' =>  array('column' => $this->entity['so']['alias'] . '.status', 'comparison' => '=', 'value' => 't'),
+				),
+				array(
+					'glue' => 'and',
+					'condition' =>  array('column' => $this->entity['so']['alias'] . '.member', 'comparison' => '=', 'value' => $member->getId()),
+				)
+			)
+		);
+		return $this->listShoppingOrders($filter, $sortOrder, $limit);
+	}
 
 	/**
 	 * @param array|null $filter
@@ -1013,69 +1013,69 @@ class ShoppingCartModel extends CoreModel {
 		return new ModelResponse($result, $totalRows, 0, null, false, 'S:D:002', 'Entries successfully fetched from database.', $timeStamp, microtime(true));
 	}
 
-    /**
-     * @param array|null $filter
-     * @param array|null $sortOrder
-     * @param array|null $limit
-     *
-     * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
-     */
-    public function listShoppingOrders(array $filter = null, array $sortOrder = null, array $limit = null) {
-        $timeStamp = microtime(true);
-        if (!is_array($sortOrder) && !is_null($sortOrder)) {
-            return $this->createException('InvalidSortOrderException', '$sortOrder must be an array with key => value pairs where value can only be "asc" or "desc".', 'E:S:002');
-        }
-        $oStr = $wStr = $gStr = $fStr = '';
+	/**
+	 * @param array|null $filter
+	 * @param array|null $sortOrder
+	 * @param array|null $limit
+	 *
+	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
+	 */
+	public function listShoppingOrders(array $filter = null, array $sortOrder = null, array $limit = null) {
+		$timeStamp = microtime(true);
+		if (!is_array($sortOrder) && !is_null($sortOrder)) {
+			return $this->createException('InvalidSortOrderException', '$sortOrder must be an array with key => value pairs where value can only be "asc" or "desc".', 'E:S:002');
+		}
+		$oStr = $wStr = $gStr = $fStr = '';
 
-        $qStr = 'SELECT ' . $this->entity['so']['alias']
-            . ' FROM ' . $this->entity['so']['name'] . ' ' . $this->entity['so']['alias'];
+		$qStr = 'SELECT ' . $this->entity['so']['alias']
+			. ' FROM ' . $this->entity['so']['name'] . ' ' . $this->entity['so']['alias'];
 
-        if (!is_null($sortOrder)) {
-            foreach ($sortOrder as $column => $direction) {
-                switch ($column) {
-                    case 'id':
-                    case 'order_numder':
-                    case 'date_added':
-                    case 'date_created':
-                    case 'date_updated':
-                    case 'date_purchased':
-                    case 'date_cancelled':
-                    case 'date_returned':
-                    case 'count_items':
-                    case 'total_amount':
-                    case 'flag':
-                    case 'status':
-                    case 'subtotal':
-                    case 'total_shipment':
-                    case 'total_tax':
-                    case 'total_discount':
-                    case 'installment_fee':
-                        $column = $this->entity['so']['alias'] . '.' . $column;
-                        break;
-                }
-                $oStr .= ' ' . $column . ' ' . strtoupper($direction) . ', ';
-            }
-            $oStr = rtrim($oStr, ', ');
-            $oStr = ' ORDER BY ' . $oStr . ' ';
-        }
+		if (!is_null($sortOrder)) {
+			foreach ($sortOrder as $column => $direction) {
+				switch ($column) {
+					case 'id':
+					case 'order_numder':
+					case 'date_added':
+					case 'date_created':
+					case 'date_updated':
+					case 'date_purchased':
+					case 'date_cancelled':
+					case 'date_returned':
+					case 'count_items':
+					case 'total_amount':
+					case 'flag':
+					case 'status':
+					case 'subtotal':
+					case 'total_shipment':
+					case 'total_tax':
+					case 'total_discount':
+					case 'installment_fee':
+						$column = $this->entity['so']['alias'] . '.' . $column;
+						break;
+				}
+				$oStr .= ' ' . $column . ' ' . strtoupper($direction) . ', ';
+			}
+			$oStr = rtrim($oStr, ', ');
+			$oStr = ' ORDER BY ' . $oStr . ' ';
+		}
 
-        if (!is_null($filter)) {
-            $fStr = $this->prepareWhere($filter);
-            $wStr .= ' WHERE ' . $fStr;
-        }
+		if (!is_null($filter)) {
+			$fStr = $this->prepareWhere($filter);
+			$wStr .= ' WHERE ' . $fStr;
+		}
 
-        $qStr .= $wStr . $gStr . $oStr;
-        $q = $this->em->createQuery($qStr);
-        $q = $this->addLimit($q, $limit);
+		$qStr .= $wStr . $gStr . $oStr;
+		$q = $this->em->createQuery($qStr);
+		$q = $this->addLimit($q, $limit);
 
-        $result = $q->getResult();
+		$result = $q->getResult();
 
-        $totalRows = count($result);
-        if ($totalRows < 1) {
-            return new ModelResponse(null, 0, 0, null, true, 'E:D:002', 'No entries found in database that matches to your criterion.', $timeStamp, microtime(true));
-        }
-        return new ModelResponse($result, $totalRows, 0, null, false, 'S:D:002', 'Entries successfully fetched from database.', $timeStamp, microtime(true));
-    }
+		$totalRows = count($result);
+		if ($totalRows < 1) {
+			return new ModelResponse(null, 0, 0, null, true, 'E:D:002', 'No entries found in database that matches to your criterion.', $timeStamp, microtime(true));
+		}
+		return new ModelResponse($result, $totalRows, 0, null, false, 'S:D:002', 'Entries successfully fetched from database.', $timeStamp, microtime(true));
+	}
 
 	/**
 	 * @param mixed $member
@@ -1085,32 +1085,32 @@ class ShoppingCartModel extends CoreModel {
 	 *
 	 * @return array|\BiberLtd\Bundle\CoreBundle\Responses\ModelResponse|mixed
 	 */
-    public function listShoppingOrdersOfMember($member, array $filter = null, array $sortOrder = null, array $limit = null) {
-	    /**
-	     * @var \BiberLtd\Bundle\MemberManagementBundle\Services\MemberManagementModel $mModel
-	     */
-	    $mModel = $this->kernel->getContainer()->get('membermanagement.model');
-	    $response = $mModel->getMember($member);
-	    if($response->error->exist){
-		    return $response;
-	    }
-	    $member = $response->result->set;
-	    unset($response);
-	    $filter[] = array(
-		    'glue' => 'and',
-		    'condition' => array(
-			    array(
-				    'glue' => 'and',
-				    'condition' =>  array('column' => $this->entity['so']['alias'] . '.status', 'comparison' => '!=', 'value' => 't'),
-			    ),
-			    array(
-				    'glue' => 'and',
-				    'condition' =>  array('column' => $this->entity['so']['alias'] . '.purchaser', 'comparison' => '=', 'value' => $member->getId()),
-			    )
-		    )
-	    );
-	    return $this->listShoppingOrders($filter, $sortOrder, $limit);
-    }
+	public function listShoppingOrdersOfMember($member, array $filter = null, array $sortOrder = null, array $limit = null) {
+		/**
+		 * @var \BiberLtd\Bundle\MemberManagementBundle\Services\MemberManagementModel $mModel
+		 */
+		$mModel = $this->kernel->getContainer()->get('membermanagement.model');
+		$response = $mModel->getMember($member);
+		if($response->error->exist){
+			return $response;
+		}
+		$member = $response->result->set;
+		unset($response);
+		$filter[] = array(
+			'glue' => 'and',
+			'condition' => array(
+				array(
+					'glue' => 'and',
+					'condition' =>  array('column' => $this->entity['so']['alias'] . '.status', 'comparison' => '!=', 'value' => 't'),
+				),
+				array(
+					'glue' => 'and',
+					'condition' =>  array('column' => $this->entity['so']['alias'] . '.purchaser', 'comparison' => '=', 'value' => $member->getId()),
+				)
+			)
+		);
+		return $this->listShoppingOrders($filter, $sortOrder, $limit);
+	}
 
 	/**
 	 * @param string     $flag
@@ -1120,29 +1120,29 @@ class ShoppingCartModel extends CoreModel {
 	 *
 	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
 	 */
-    public function listShoppingOrdersWithFlag(string $flag, array $filter = null, array $sortorder = null, array $limit = null) {
-        $column = $this->entity['so']['alias'] . '.flag';
-        $condition = array('column' => $column, 'comparison' => '=', 'value' => $flag);
-        $filter[] = array(
-            'glue' => 'and',
-            'condition' => array(
-                array(
-                    'glue' => 'and',
-                    'condition' => $condition,
-                )
-            )
-        );
-        return $this->listShoppingOrders($filter, $sortorder, $limit);
-    }
+	public function listShoppingOrdersWithFlag(string $flag, array $filter = null, array $sortorder = null, array $limit = null) {
+		$column = $this->entity['so']['alias'] . '.flag';
+		$condition = array('column' => $column, 'comparison' => '=', 'value' => $flag);
+		$filter[] = array(
+			'glue' => 'and',
+			'condition' => array(
+				array(
+					'glue' => 'and',
+					'condition' => $condition,
+				)
+			)
+		);
+		return $this->listShoppingOrders($filter, $sortorder, $limit);
+	}
 
 	/**
 	 * @param mixed $transaction
 	 *
 	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
 	 */
-    public function updatePaymentTransaction($transaction) {
-        return $this->updatePaymentTransactions(array($transaction));
-    }
+	public function updatePaymentTransaction($transaction) {
+		return $this->updatePaymentTransactions(array($transaction));
+	}
 
 	/**
 	 * @param array $collection
@@ -1246,18 +1246,18 @@ class ShoppingCartModel extends CoreModel {
 	 *
 	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
 	 */
-    public function updateShoppingOrder($order) {
-        return $this->updateShoppingOrders(array($order));
-    }
+	public function updateShoppingOrder($order) {
+		return $this->updateShoppingOrders(array($order));
+	}
 
 	/**
 	 * @param $item
 	 *
 	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
 	 */
-    public function updateShoppingOrderItem($item) {
-        return $this->updateShoppingOrderItems(array($item));
-    }
+	public function updateShoppingOrderItem($item) {
+		return $this->updateShoppingOrderItems(array($item));
+	}
 
 	/**
 	 * @param array $collection
@@ -1344,7 +1344,7 @@ class ShoppingCartModel extends CoreModel {
 		$updatedItems = [];
 		$now = new \DateTime('now', new \DateTimeZone($this->kernel->getContainer()->getParameter('app_timezone')));
 		foreach ($collection as $data) {
-			if ($data instanceof BundleEntity\PaymentTransaction) {
+			if ($data instanceof BundleEntity\ShoppingOrder) {
 				$entity = $data;
 				$this->em->persist($entity);
 				$updatedItems[] = $entity;
@@ -1356,7 +1356,7 @@ class ShoppingCartModel extends CoreModel {
 				if (property_exists($data, 'date_added')) {
 					unset($data->date_added);
 				}
-				$response = $this->getPaymentTransaction($data->id);
+				$response = $this->getShoppingOrder($data->id);
 				if ($response->error->exist) {
 					return $this->createException('EntityDoesNotExist', 'Brand with id ' . $data->id, 'err.invalid.entity');
 				}
@@ -1402,9 +1402,9 @@ class ShoppingCartModel extends CoreModel {
 	 *
 	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
 	 */
-    public function deleteCoupon($coupon) {
-        return $this->deleteCoupons(array($coupon));
-    }
+	public function deleteCoupon($coupon) {
+		return $this->deleteCoupons(array($coupon));
+	}
 
 	/**
 	 * @param array $collection
@@ -1562,9 +1562,9 @@ class ShoppingCartModel extends CoreModel {
 	 *
 	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
 	 */
-    public function insertCoupon($coupon) {
-        return $this->insertCoupons(array($coupon));
-    }
+	public function insertCoupon($coupon) {
+		return $this->insertCoupons(array($coupon));
+	}
 
 	/**
 	 * @param array $collection
@@ -1698,9 +1698,9 @@ class ShoppingCartModel extends CoreModel {
 	 *
 	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
 	 */
-    public function updateCoupon($coupon) {
-        return $this->updateCoupons(array($coupon));
-    }
+	public function updateCoupon($coupon) {
+		return $this->updateCoupons(array($coupon));
+	}
 
 	/**
 	 * @param array $collection
@@ -1801,49 +1801,49 @@ class ShoppingCartModel extends CoreModel {
 	 *
 	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
 	 */
-    public function listPurchasedOrders(bool $returned = null, bool $cancelled = null, array $sortOrder = null, array $limit = null) {
-	    $filter = [];
+	public function listPurchasedOrders(bool $returned = null, bool $cancelled = null, array $sortOrder = null, array $limit = null) {
+		$filter = [];
 		$returned = $returned ?? null;
 		$cancelled = $cancelled ?? null;
-	    if ($returned) {
-            $column = $this->entity['so']['alias'] . '.date_returned';
-            $condition = array('column' => $column, 'comparison' => '!=', 'value' => null);
-            $filter[] = array(
-                'glue' => 'and',
-                'condition' => array(
-                    array(
-                        'glue' => 'and',
-                        'condition' => $condition,
-                    )
-                )
-            );
-        }
-        if ($cancelled) {
-            $column = $this->entity['so']['alias'] . '.date_cancelled';
-            $condition = array('column' => $column, 'comparison' => '!=', 'value' => null);
-            $filter[] = array(
-                'glue' => 'and',
-                'condition' => array(
-                    array(
-                        'glue' => 'and',
-                        'condition' => $condition,
-                    )
-                )
-            );
-        }
-        $column = $this->entity['so']['alias'] . '.date_purchased';
-        $condition = array('column' => $column, 'comparison' => '!=', 'value' => null);
-        $filter[] = array(
-            'glue' => 'and',
-            'condition' => array(
-                array(
-                    'glue' => 'and',
-                    'condition' => $condition,
-                )
-            )
-        );
-        return $this->listShoppingOrders($filter, $sortOrder, $limit);
-    }
+		if ($returned) {
+			$column = $this->entity['so']['alias'] . '.date_returned';
+			$condition = array('column' => $column, 'comparison' => '!=', 'value' => null);
+			$filter[] = array(
+				'glue' => 'and',
+				'condition' => array(
+					array(
+						'glue' => 'and',
+						'condition' => $condition,
+					)
+				)
+			);
+		}
+		if ($cancelled) {
+			$column = $this->entity['so']['alias'] . '.date_cancelled';
+			$condition = array('column' => $column, 'comparison' => '!=', 'value' => null);
+			$filter[] = array(
+				'glue' => 'and',
+				'condition' => array(
+					array(
+						'glue' => 'and',
+						'condition' => $condition,
+					)
+				)
+			);
+		}
+		$column = $this->entity['so']['alias'] . '.date_purchased';
+		$condition = array('column' => $column, 'comparison' => '!=', 'value' => null);
+		$filter[] = array(
+			'glue' => 'and',
+			'condition' => array(
+				array(
+					'glue' => 'and',
+					'condition' => $condition,
+				)
+			)
+		);
+		return $this->listShoppingOrders($filter, $sortOrder, $limit);
+	}
 
 	/**
 	 * @param \DateTime  $dateStart
@@ -1855,50 +1855,50 @@ class ShoppingCartModel extends CoreModel {
 	 *
 	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
 	 */
-    public function listPurchasedOrdersBetween(\DateTime $dateStart, \DateTime $dateEnd, bool $returned = null, bool $cancelled = null, array $sortOrder = null, array $limit = null) {
-        $filter = [];
+	public function listPurchasedOrdersBetween(\DateTime $dateStart, \DateTime $dateEnd, bool $returned = null, bool $cancelled = null, array $sortOrder = null, array $limit = null) {
+		$filter = [];
 		$returned = $returned ?? false;
 		$cancelled = $cancelled ?? false;
-        if ($returned) {
-            $column = $this->entity['so']['alias'] . '.date_returned';
-            $condition = array('column' => $column, 'comparison' => '!=', 'value' => null);
-            $filter[] = array(
-                'glue' => 'and',
-                'condition' => array(
-                    array(
-                        'glue' => 'and',
-                        'condition' => $condition,
-                    )
-                )
-            );
-        }
-        if ($cancelled) {
-            $column = $this->entity['so']['alias'] . '.date_cancelled';
-            $condition = array('column' => $column, 'comparison' => '!=', 'value' => null);
-            $filter[] = array(
-                'glue' => 'and',
-                'condition' => array(
-                    array(
-                        'glue' => 'and',
-                        'condition' => $condition,
-                    )
-                )
-            );
-        }
-        $column = $this->entity['so']['alias'] . '.date_purchased';
-        $condition = array('column' => $column, 'comparison' => 'between', 'value' => array($dateStart, $dateEnd));
-        $filter[] = array(
-            'glue' => 'and',
-            'condition' => array(
-                array(
-                    'glue' => 'and',
-                    'condition' => $condition,
-                )
-            )
-        );
-        return $this->listShoppingOrders($filter, $sortOrder, $limit);
+		if ($returned) {
+			$column = $this->entity['so']['alias'] . '.date_returned';
+			$condition = array('column' => $column, 'comparison' => '!=', 'value' => null);
+			$filter[] = array(
+				'glue' => 'and',
+				'condition' => array(
+					array(
+						'glue' => 'and',
+						'condition' => $condition,
+					)
+				)
+			);
+		}
+		if ($cancelled) {
+			$column = $this->entity['so']['alias'] . '.date_cancelled';
+			$condition = array('column' => $column, 'comparison' => '!=', 'value' => null);
+			$filter[] = array(
+				'glue' => 'and',
+				'condition' => array(
+					array(
+						'glue' => 'and',
+						'condition' => $condition,
+					)
+				)
+			);
+		}
+		$column = $this->entity['so']['alias'] . '.date_purchased';
+		$condition = array('column' => $column, 'comparison' => 'between', 'value' => array($dateStart, $dateEnd));
+		$filter[] = array(
+			'glue' => 'and',
+			'condition' => array(
+				array(
+					'glue' => 'and',
+					'condition' => $condition,
+				)
+			)
+		);
+		return $this->listShoppingOrders($filter, $sortOrder, $limit);
 
-    }
+	}
 
 	/**
 	 * @param mixed $member
@@ -1908,30 +1908,30 @@ class ShoppingCartModel extends CoreModel {
 	 *
 	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
 	 */
-    public function listPurchasedOrdersOfMember($member, array $filter = null, array $sortOrder = null, array $limit = null) {
-	    /**
-	     * @var \BiberLtd\Bundle\MemberManagementBundle\Services\MemberManagementModel $mModel
-	     */
-	    $mModel = $this->kernel->getContainer()->get('membermanagement.model');
-	    $response = $mModel->getMember($member);
-	    if($response->error->exist){
-		    return $response;
-	    }
-	    $member = $response->result->set;
-	    $column = $this->entity['shopping_order']['alias'] . '.purchaser';
-        $condition = array('column' => $column, 'comparison' => '=', 'value' => $member->getId());
-        $filter[] = array(
-            'glue' => 'and',
-            'condition' => array(
-                array(
-                    'glue' => 'and',
-                    'condition' => $condition,
-                )
-            )
-        );
-        return $this->listShoppingOrders($filter, $sortOrder, $limit);
+	public function listPurchasedOrdersOfMember($member, array $filter = null, array $sortOrder = null, array $limit = null) {
+		/**
+		 * @var \BiberLtd\Bundle\MemberManagementBundle\Services\MemberManagementModel $mModel
+		 */
+		$mModel = $this->kernel->getContainer()->get('membermanagement.model');
+		$response = $mModel->getMember($member);
+		if($response->error->exist){
+			return $response;
+		}
+		$member = $response->result->set;
+		$column = $this->entity['shopping_order']['alias'] . '.purchaser';
+		$condition = array('column' => $column, 'comparison' => '=', 'value' => $member->getId());
+		$filter[] = array(
+			'glue' => 'and',
+			'condition' => array(
+				array(
+					'glue' => 'and',
+					'condition' => $condition,
+				)
+			)
+		);
+		return $this->listShoppingOrders($filter, $sortOrder, $limit);
 
-    }
+	}
 
 	/**
 	 * @param mixed $member
@@ -1942,55 +1942,55 @@ class ShoppingCartModel extends CoreModel {
 	 *
 	 * @return array|\BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
 	 */
-    public function getTotalSalesVolumeOfMember($member, \DateTime $dateStart = null, \DateTime $dateEnd = null, array $sortOrder = null, array $limit = null) {
-	    /**
-	     * @var \BiberLtd\Bundle\MemberManagementBundle\Services\MemberManagementModel $mModel
-	     */
-	    $mModel = $this->kernel->getContainer()->get('membermanagement.model');
-	    $response = $mModel->getMember($member);
-	    if($response->error->exist){
-		    return $response;
-	    }
-	    $member = $response->result->set;
-	    $filter = [];
-        $column = $this->entity['so']['alias'] . '.purchaser';
-        $condition = array('column' => $column, 'comparison' => '=', 'value' => $member->getId());
-        $filter[] = array(
-            'glue' => 'and',
-            'condition' => array(
-                array(
-                    'glue' => 'and',
-                    'condition' => $condition,
-                )
-            )
-        );
-        if ($dateEnd != null && $dateStart != null) {
-            $column = $this->entity['so']['alias'] . '.date_purchased';
-            $condition = array('column' => $column, 'comparison' => 'between', 'value' => array($dateStart, $dateEnd));
-            $filter[] = array(
-                'glue' => 'and',
-                'condition' => array(
-                    array(
-                        'glue' => 'and',
-                        'condition' => $condition,
-                    )
-                )
-            );
-        }
-        $response = $this->listShoppingOrders($filter, $sortOrder, $limit);
-        if ($response['error']) {
-            return $response;
-        }
-        (float) $total = 0;
-        foreach ($response['result']['set'] as $order) {
-            $total += $order->getTotalAmount();
-        }
+	public function getTotalSalesVolumeOfMember($member, \DateTime $dateStart = null, \DateTime $dateEnd = null, array $sortOrder = null, array $limit = null) {
+		/**
+		 * @var \BiberLtd\Bundle\MemberManagementBundle\Services\MemberManagementModel $mModel
+		 */
+		$mModel = $this->kernel->getContainer()->get('membermanagement.model');
+		$response = $mModel->getMember($member);
+		if($response->error->exist){
+			return $response;
+		}
+		$member = $response->result->set;
+		$filter = [];
+		$column = $this->entity['so']['alias'] . '.purchaser';
+		$condition = array('column' => $column, 'comparison' => '=', 'value' => $member->getId());
+		$filter[] = array(
+			'glue' => 'and',
+			'condition' => array(
+				array(
+					'glue' => 'and',
+					'condition' => $condition,
+				)
+			)
+		);
+		if ($dateEnd != null && $dateStart != null) {
+			$column = $this->entity['so']['alias'] . '.date_purchased';
+			$condition = array('column' => $column, 'comparison' => 'between', 'value' => array($dateStart, $dateEnd));
+			$filter[] = array(
+				'glue' => 'and',
+				'condition' => array(
+					array(
+						'glue' => 'and',
+						'condition' => $condition,
+					)
+				)
+			);
+		}
+		$response = $this->listShoppingOrders($filter, $sortOrder, $limit);
+		if ($response['error']) {
+			return $response;
+		}
+		(float) $total = 0;
+		foreach ($response['result']['set'] as $order) {
+			$total += $order->getTotalAmount();
+		}
 
-	    $response->result->set = $total;
-	    $response->result->count->set = 1;
-	    $response->result->count->total = 1;
-        return $response;
-    }
+		$response->result->set = $total;
+		$response->result->count->set = 1;
+		$response->result->count->total = 1;
+		return $response;
+	}
 
 	/**
 	 * @param array|null $filter
@@ -2048,23 +2048,23 @@ class ShoppingCartModel extends CoreModel {
 	 *
 	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
 	 */
-    public function listItemsOfShoppingOrder($order, array $filter = null, array $sortOrder = null, array $limit = null) {
-        $response = $this->getShoppingOrder($order);
-	    if($response->error->exist){
-		    return $response;
-	    }
-	    $order = $response->result->set;
-        $filter[] = array(
-            'glue' => 'and',
-            'condition' => array(
-                array(
-                    'glue' => 'and',
-                    'condition' => array('column' => $this->entity['soi']['alias'] . '.order', 'comparison' => '=', 'value' => $order->getId()),
-                )
-            )
-        );
-        return $this->listShoppingOrderItems($filter, $sortOrder, $limit);
-    }
+	public function listItemsOfShoppingOrder($order, array $filter = null, array $sortOrder = null, array $limit = null) {
+		$response = $this->getShoppingOrder($order);
+		if($response->error->exist){
+			return $response;
+		}
+		$order = $response->result->set;
+		$filter[] = array(
+			'glue' => 'and',
+			'condition' => array(
+				array(
+					'glue' => 'and',
+					'condition' => array('column' => $this->entity['soi']['alias'] . '.order', 'comparison' => '=', 'value' => $order->getId()),
+				)
+			)
+		);
+		return $this->listShoppingOrderItems($filter, $sortOrder, $limit);
+	}
 	/**
 	 * @param mixed $coupon
 	 *
