@@ -154,7 +154,7 @@ class ShoppingOrder extends CoreEntity
     private $flag;
 
     /**
-     * @ORM\Column(type="STRİNG", unique=true, length=20, nullable=false)
+     * @ORM\Column(type="string", unique=true, length=20, nullable=false)
      * @var string
      */
     private $order_number;
