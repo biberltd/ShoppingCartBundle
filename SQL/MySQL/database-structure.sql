@@ -99,7 +99,7 @@ CREATE TABLE `redeemed_coupon` (
 DROP TABLE IF EXISTS `shopping_order`;
 CREATE TABLE `shopping_order` (
   `id` int(15) unsigned NOT NULL COMMENT 'System given id.',
-  `order_number` bigint(20) unsigned DEFAULT NULL,
+  `order_number` VARCHAR(20) DEFAULT NULL COMMENT 'system given order number.',
   `date_created` datetime NOT NULL COMMENT 'Date when the order is created.',
   `date_updated` datetime NOT NULL COMMENT 'Date when the order is last updated.',
   `date_purchased` datetime DEFAULT NULL COMMENT 'Date when the purchase has been completed.',
@@ -120,6 +120,9 @@ CREATE TABLE `shopping_order` (
   `installment_fee` decimal(7,2) DEFAULT '0.00' COMMENT 'Installment fee of payment gateway',
   `content` longtext COLLATE utf8_turkish_ci COMMENT 'Shopping cart / order content. Json or serialized data.',
   `transaction_info` longtext COLLATE utf8_turkish_ci COMMENT 'Recorded transaction information. Json or serialized string.',
+  `session_id` VARCHAR(26) COLLATE utf8_turkish_ci COMMENT 'Session id of client.',
+  `ip_v4` VARCHAR(26) COLLATE utf8_turkish_ci COMMENT 'IP v4 address of client.',
+  `ip_v6` VARCHAR(26) COLLATE utf8_turkish_ci COMMENT 'IP v6 address of client.',
   PRIMARY KEY (`id`),
   UNIQUE KEY `idxUShoppingOrderNumber` (`order_number`),
   KEY `idxNShoppingOrderDateCreated` (`date_created`),

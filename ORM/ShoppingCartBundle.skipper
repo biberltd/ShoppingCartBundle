@@ -2012,7 +2012,7 @@
         <field name="flag" description="o:open;r:returned;c:completed" type="string" size="1" default="o" required="true" uuid="4cc6505d-df7a-4633-9908-de367d00b54c"/>
         <field name="status" description="t:cart,p:purchased,c:cancelled,r:in preperation,s:shipped,r:returned,d:completed" type="string" size="1" required="true" uuid="13c01f65-65b6-413c-8814-069bf6d75463"/>
         <field name="purchaser" description="Member who made the purchase." type="integer" size="10" uuid="3ea09ec0-167e-4e31-bdfc-52a097bea020"/>
-        <field name="order_number" description="Shopping order number. Recommended using date_created field." type="integer" size="20" required="true" unique="true" uuid="16e0bd4c-a26f-4105-b1c9-3936317c44e6"/>
+        <field name="order_number" description="Shopping order number. Recommended using date_created field." type="string" size="20" required="true" unique="true" uuid="16e0bd4c-a26f-4105-b1c9-3936317c44e6"/>
         <field name="content" description="Cart content, a json string or a serialized string." type="text" uuid="958f28c2-53dd-4194-b5ca-602f640a9812"/>
         <field name="transaction_info" description="Serialized or json string that contains transaction details for fast access." type="text" uuid="c63a23ce-5bd8-4ac3-ac27-f5aefe8c5f70"/>
         <field name="installment_fee" description="If the payment is made in more than 1 installments..." type="decimal" size="10" uuid="c928ee86-f714-4668-9431-be82e57e9a24"/>
