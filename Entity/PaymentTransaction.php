@@ -74,7 +74,7 @@ class PaymentTransaction extends CoreEntity
     private $member;
 
     /**
-     * @ORM\ManyToOne(targetEntity="PaymentGateway")
+     * @ORM\ManyToOne(targetEntity="\BiberLtd\Bundle\PaymentGatewayBundle\Entity\PaymentGateway")
      * @ORM\JoinColumn(name="gateway", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      * @var \BiberLtd\Bundle\PaymentGatewayBundle\Entity\PaymentGateway
      */
