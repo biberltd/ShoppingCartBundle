@@ -112,7 +112,7 @@ class ShoppingOrderItem extends CoreEntity
     private $shopping_order;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Product")
+     * @ORM\ManyToOne(targetEntity="\BiberLtd\Bundle\ProductManagementBundle\Entity\Product")
      * @ORM\JoinColumn(name="product", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      * @var \BiberLtd\Bundle\ProductManagementBundle\Entity\Product
      */
