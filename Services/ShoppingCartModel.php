@@ -61,14 +61,11 @@ class ShoppingCartModel extends CoreModel {
 	}
 
 	/**
-	 * @param string     $flag
+	 * @param string $flag
 	 * @param array|null $filter
-	 * @param array|null $sortOrder
-	 * @param array|null $limit
-	 *
-	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
+	 * @return ModelResponse
 	 */
-	public function countOrdersWithFlag(string $flag, array $filter = null, array $sortOrder = null, array $limit = null){
+	public function countOrdersWithFlag(string $flag, array $filter = null){
 		$filter[] = array(
 			'glue' => 'and',
 			'condition' => array(
@@ -78,7 +75,7 @@ class ShoppingCartModel extends CoreModel {
 				),
 			)
 		);
-		$response = $this->listShoppingOrders($filter, $sortOrder, $limit);
+		$response = $this->listShoppingOrders($filter);
 		if($response->error->exist){
 			return $response;
 		}
@@ -95,7 +92,7 @@ class ShoppingCartModel extends CoreModel {
 	 * @return \BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
 	 */
 	public function countCompletedOrders(array $filter = null, array $sortOrder = null, array $limit = null){
-		return $this->countOrdersWithFlag('c', $filter, $sortOrder,$limit);
+		return $this->countOrdersWithFlag('c', $filter, $sortOrder, $limit);
 	}
 
 	/**
@@ -2278,5 +2275,119 @@ class ShoppingCartModel extends CoreModel {
 			)
 		);
 		return $this->listRedeemedCoupons($filter, $sortOrder, $limit);
+	}
+
+	/**
+	 * @param \DateTime $startDate
+	 * @param \DateTime $endDate
+	 * @param bool|null $inclusive
+	 * @param array|null $filter
+	 * @return ModelResponse
+	 */
+	public function getSumOfCompletedSalesBetween(\DateTime $startDate, \DateTime $endDate, bool $inclusive = null, array $filter =  null){
+		$timeStamp = microtime(true);
+		$inclusive = $inclusive ?? true;
+		$statuses = ['d', 'p'];
+		$gt = '>=';
+		$lt = '<=';
+
+		if(!$inclusive){
+			$gt = '>';
+			$lt = '<';
+		}
+
+		$filter[] = [
+			'glue' => 'and',
+			'condition' => [
+				[
+					'glue' => 'and',
+					'condition' => array('column' => $this->entity['so']['alias'] .'.date_returned', 'comparison' => 'isnull', 'value' => null),
+				],
+				[
+					'glue' => 'and',
+					'condition' => array('column' => $this->entity['so']['alias'] .'.date_purchased', 'comparison' => $gt, 'value' => $startDate->format('Y-m-d H:i:s')),
+				],
+				[
+					'glue' => 'and',
+					'condition' => array('column' => $this->entity['so']['alias'] .'.date_purchased', 'comparison' => $lt, 'value' => $endDate->format('Y-m-d H:i:s')),
+				],
+			]
+		];
+
+		$qStr = 'SELECT SUM('.$this->entity['so']['alias'].'.total_amount)'
+			.' FROM '.$this->entity['so']['name'].' '.$this->entity['so']['alias'];
+
+		$wStr = '';
+		if (!is_null($filter)) {
+			$fStr = $this->prepareWhere($filter);
+			$wStr .= ' WHERE ' . $fStr;
+		}
+
+		$qStr .= $wStr;
+		$q = $this->em->createQuery($qStr);
+
+		$result = $q->getSingleScalarResult() ?? 0;
+
+		return new ModelResponse($result, 1, 0, null, false, 'S:D:003', 'Calculation sucessfuly completed.', $timeStamp, microtime(true));
+	}
+
+	/**
+	 * @param \DateTime $startDate
+	 * @param \DateTime $endDate
+	 * @param array $statuses
+	 * @param bool|null $inclusive
+	 * @param array|null $filter
+	 * @return ModelResponse
+	 */
+	public function getCountOfOrdersWithStatusBetween(\DateTime $startDate, \DateTime $endDate, array $statuses = ['d', 'p'], bool $inclusive = null, array $filter =  null){
+		$timeStamp = microtime(true);
+		$inclusive = $inclusive ?? true;
+
+		$gt = '>=';
+		$lt = '<=';
+
+		if(!$inclusive){
+			$gt = '>';
+			$lt = '<';
+		}
+
+		$filter[] = [
+			'glue' => 'and',
+			'condition' => [
+				[
+					'glue' => 'and',
+					'condition' => array('column' => $this->entity['so']['alias'] .'.status', 'comparison' => 'in', 'value' => $statuses),
+				],
+				[
+					'glue' => 'and',
+					'condition' => array('column' => $this->entity['so']['alias'] .'.date_returned', 'comparison' => 'isnull', 'value' => null),
+				],
+				[
+					'glue' => 'and',
+					'condition' => array('column' => $this->entity['so']['alias'] .'.date_purchased', 'comparison' => $gt, 'value' => $startDate->format('Y-m-d H:i:s')),
+				],
+				[
+					'glue' => 'and',
+					'condition' => array('column' => $this->entity['so']['alias'] .'.date_purchased', 'comparison' => $lt, 'value' => $endDate->format('Y-m-d H:i:s')),
+				],
+			]
+		];
+
+		$qStr = 'SELECT SUM('.$this->entity['so']['alias'].'.total_amount)'
+			.' FROM '.$this->entity['so']['name'].' '.$this->entity['so']['alias'];
+
+		$wStr = '';
+		if (!is_null($filter)) {
+			$fStr = $this->prepareWhere($filter);
+			$wStr .= ' WHERE ' . $fStr;
+		}
+
+		$qStr .= $wStr;
+		$q = $this->em->createQuery($qStr);
+
+		$result = $q->getSingleScalarResult() ?? 0;
+
+		return new ModelResponse($result, 1, 0, null, false, 'S:D:003', 'Calculation sucessfuly completed.', $timeStamp, microtime(true));
+
 	}
 }
