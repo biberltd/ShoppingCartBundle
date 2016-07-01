@@ -2390,4 +2390,24 @@ class ShoppingCartModel extends CoreModel {
 		return new ModelResponse($result, 1, 0, null, false, 'S:D:003', 'Calculation sucessfuly completed.', $timeStamp, microtime(true));
 
 	}
+
+	/**
+	 * @param $status
+	 * @param array|null $filter
+	 * @param array|null $sortOrder
+	 * @param array|null $limit
+	 * @return ModelResponse
+	 */
+	public function listOrdersOfStatus($status, array $filter = null, array $sortOrder = null, array $limit = null){
+		$filter[] = array(
+			'glue' => 'and',
+			'condition' => array(
+				array(
+					'glue' => 'and',
+					'condition' => array('column' => $this->entity['so']['alias'] . '.status', 'comparison' => '=', 'value' => $status),
+				)
+			)
+		);
+		return $this->listShoppingOrders($filter, $sortOrder, $limit);
+	}
 }
