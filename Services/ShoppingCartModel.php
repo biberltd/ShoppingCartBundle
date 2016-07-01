@@ -2410,4 +2410,24 @@ class ShoppingCartModel extends CoreModel {
 		);
 		return $this->listShoppingOrders($filter, $sortOrder, $limit);
 	}
+
+	/**
+	 * @param array $ids
+	 * @param array|null $sortOrder
+	 * @param array|null $limit
+	 * @return ModelResponse
+	 */
+	public function listShoppingOrdersWithIds(array $ids, array $sortOrder = null, array $limit = null){
+		$filter[] = array(
+			'glue' => 'and',
+			'condition' => array(
+				array(
+					'glue' => 'and',
+					'condition' =>  array('column' => $this->entity['so']['alias'] . '.id', 'comparison' => 'in', 'value' => $ids),
+				)
+			)
+		);
+		return $this->listShoppingOrders($filter, $sortOrder, $limit);
+
+	}
 }
