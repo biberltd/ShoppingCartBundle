@@ -2399,12 +2399,23 @@ class ShoppingCartModel extends CoreModel {
 	 * @return ModelResponse
 	 */
 	public function listOrdersOfStatus($status, array $filter = null, array $sortOrder = null, array $limit = null){
+		return $this->listOrdersOfStatutes((array)$status, $filter, $filter, $sortOrder, $limit);
+	}
+
+	/**
+	 * @param array $statuses
+	 * @param array|null $filter
+	 * @param array|null $sortOrder
+	 * @param array|null $limit
+	 * @return ModelResponse
+	 */
+	public function listOrdersOfStatutes(array $statuses, array $filter = null, array $sortOrder = null, array $limit = null){
 		$filter[] = array(
 			'glue' => 'and',
 			'condition' => array(
 				array(
 					'glue' => 'and',
-					'condition' => array('column' => $this->entity['so']['alias'] . '.status', 'comparison' => '=', 'value' => $status),
+					'condition' => array('column' => $this->entity['so']['alias'] . '.status', 'comparison' => 'in', 'value' => $statuses),
 				)
 			)
 		);
