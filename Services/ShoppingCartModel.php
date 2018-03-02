@@ -2373,7 +2373,7 @@ class ShoppingCartModel extends CoreModel {
 			]
 		];
 
-		$qStr = 'SELECT SUM('.$this->entity['so']['alias'].'.total_amount)'
+		$qStr = 'SELECT COUNT('.$this->entity['so']['alias'].'.id)'
 			.' FROM '.$this->entity['so']['name'].' '.$this->entity['so']['alias'];
 
 		$wStr = '';
