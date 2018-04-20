@@ -1930,6 +1930,27 @@ class ShoppingCartModel extends CoreModel {
 
 	}
 
+    /**
+     * @param mixed  $start
+     * @param mixed  $end
+     * @return array|\BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
+     */
+    public function listPriceOrdersBetween($start = null, $end = null, $filter = null,  array $sortOrder = null, $limit = null){
+        if ($start != null && $end != null) {
+            $column = $this->entity['so']['alias'] . '.total_amount';
+            $condition = array('column' => $column, 'comparison' => 'between', 'value' => array($start, $end));
+            $filter[] = array(
+                'glue' => 'and',
+                'condition' => array(
+                    array(
+                        'glue' => 'and',
+                        'condition' => $condition,
+                    )
+                )
+            );
+        }
+        return $this->listShoppingOrders($filter, $sortOrder, $limit);
+    }
 	/**
 	 * @param mixed $member
 	 * @param \DateTime  $dateStart
