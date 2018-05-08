@@ -1929,7 +1929,38 @@ class ShoppingCartModel extends CoreModel {
 		return $this->listShoppingOrders($filter, $sortOrder, $limit);
 
 	}
-
+    /**
+     * @param array  $filterKeys
+     * @return array|\BiberLtd\Bundle\CoreBundle\Responses\ModelResponse
+     */
+    public function shoppingOrderFilter($filterKeys, $sortOrder, $limit){
+        $filter = array();
+        foreach ($filterKeys as $keys){
+            if(!is_null($keys['value']) or !empty($keys['value'])){
+                $value = $keys['value'];
+                if ($keys["column"] == 'member') {
+                    $response = $mModel->getMember($keys['value']);
+                    if ($response->error->exist) {
+                        return $response;
+                    }
+                    $member = $response->result->set;
+                    echo $value = $member->getId();
+                }
+                $column = $this->entity['so']['alias'].'.'.$keys['column'];
+                $condition = array('column' =>$column, 'comparison' => $keys['comparison'], 'value' => $value);
+                $filter[] = array(
+                    'glue' => 'and',
+                    'condition' => array(
+                        array(
+                            'glue' => 'and',
+                            'condition' => $condition,
+                        )
+                    )
+                );
+            }
+        }
+        return $this->listShoppingOrders($filter, $sortOrder, $limit);
+    }
     /**
      * @param mixed  $start
      * @param mixed  $end
